@@ -63,7 +63,7 @@ dev = [
     "pre-commit~=4.0.0",
     "pytest-cov~=6.0.0",
     "pip-audit~=2.7.0",
-    "pytest-benchmark~=4.0.0",
+    "pytest-benchmark>=4.0,<5.3",
 ]
 
 [project.urls]
