@@ -633,13 +633,13 @@ def test_model_id_double_url_encoded(client: TestClient, image_bytes: bytes):
 
 def test_base_handler_bgr_to_pil():
     """测试 BGR 到 PIL 转换"""
-    from app.handlers.base import BaseHandler
+    from app.handlers.utils import bgr_to_pil
 
     # 创建 BGR 图像 (蓝色)
     bgr_image = np.zeros((100, 100, 3), dtype=np.uint8)
     bgr_image[:, :, 0] = 255  # B 通道为 255
 
-    pil_image = BaseHandler.bgr_to_pil(bgr_image)
+    pil_image = bgr_to_pil(bgr_image)
 
     assert pil_image.size == (100, 100)
     assert pil_image.mode == "RGB"
@@ -652,14 +652,12 @@ def test_base_handler_bgr_to_pil():
 
 def test_base_handler_make_result():
     """测试结果字典构造"""
-    from app.handlers.base import BaseHandler
+    from app.handlers.utils import make_result
 
     image = np.zeros((480, 640, 3), dtype=np.uint8)
     detections = [{"bbox": [0, 0, 10, 10], "score": 0.9, "label": "test"}]
 
-    result = BaseHandler.make_result(
-        image, detections=detections, inference_time=15.5, task="detect"
-    )
+    result = make_result(image, detections=detections, inference_time=15.5, task="detect")
 
     assert result["width"] == 640
     assert result["height"] == 480
@@ -670,11 +668,11 @@ def test_base_handler_make_result():
 
 def test_base_handler_make_result_with_extra():
     """测试结果字典构造（带额外字段）"""
-    from app.handlers.base import BaseHandler
+    from app.handlers.utils import make_result
 
     image = np.zeros((100, 100, 3), dtype=np.uint8)
 
-    result = BaseHandler.make_result(
+    result = make_result(
         image,
         inference_time=10.0,
         task="caption",
@@ -693,49 +691,49 @@ def test_base_handler_make_result_with_extra():
 
 def test_parse_text_queries_string():
     """测试文本查询解析（字符串）"""
-    from app.routes import _parse_text_queries
+    from app.api.utils import parse_text_queries
 
-    result = _parse_text_queries("cat, dog, bird")
+    result = parse_text_queries("cat, dog, bird")
     assert result == ["cat", "dog", "bird"]
 
 
 def test_parse_text_queries_list():
     """测试文本查询解析（列表）"""
-    from app.routes import _parse_text_queries
+    from app.api.utils import parse_text_queries
 
-    result = _parse_text_queries(["cat", "dog"])
+    result = parse_text_queries(["cat", "dog"])
     assert result == ["cat", "dog"]
 
 
 def test_parse_text_queries_empty():
     """测试文本查询解析（空值）"""
-    from app.routes import _parse_text_queries
+    from app.api.utils import parse_text_queries
 
-    assert _parse_text_queries(None) is None
-    assert _parse_text_queries("") is None
-    assert _parse_text_queries("   ") is None
+    assert parse_text_queries(None) is None
+    assert parse_text_queries("") is None
+    assert parse_text_queries("   ") is None
 
 
 def test_get_optional_float():
     """测试可选浮点数解析"""
-    from app.routes import _get_optional_float
+    from app.api.utils import parse_optional_float
 
-    assert _get_optional_float("3.14") == 3.14
-    assert _get_optional_float("0") == 0.0
-    assert _get_optional_float(None) is None
-    assert _get_optional_float("") is None
-    assert _get_optional_float("invalid") is None
+    assert parse_optional_float("3.14") == 3.14
+    assert parse_optional_float("0") == 0.0
+    assert parse_optional_float(None) is None
+    assert parse_optional_float("") is None
+    assert parse_optional_float("invalid") is None
 
 
 def test_get_optional_int():
     """测试可选整数解析"""
-    from app.routes import _get_optional_int
+    from app.api.utils import parse_optional_int
 
-    assert _get_optional_int("42") == 42
-    assert _get_optional_int("0") == 0
-    assert _get_optional_int(None) is None
-    assert _get_optional_int("") is None
-    assert _get_optional_int("invalid") is None
+    assert parse_optional_int("42") == 42
+    assert parse_optional_int("0") == 0
+    assert parse_optional_int(None) is None
+    assert parse_optional_int("") is None
+    assert parse_optional_int("invalid") is None
 
 
 # ------------------------------------------------------------------

@@ -15,8 +15,8 @@ from app.api.system import router as system_router
 from app.api.websocket import router as ws_router
 
 __all__ = [
-    "system_router",
-    "models_router",
     "inference_router",
+    "models_router",
+    "system_router",
     "ws_router",
 ]

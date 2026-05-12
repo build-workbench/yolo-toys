@@ -334,16 +334,14 @@ def test_model_manager_get_memory_usage():
 
 
 def test_base_handler_result():
-    """测试 BaseHandler make_result 方法"""
+    """测试 make_result 工具函数"""
     import numpy as np
 
-    from app.handlers.yolo_handler import YOLOHandler
+    from app.handlers.utils import make_result
 
-    # 使用具体实现类而不是抽象基类
-    handler = YOLOHandler("cpu")
     # make_result 需要 image 参数 (ndarray)
     dummy_image = np.zeros((100, 200, 3), dtype=np.uint8)
-    result = handler.make_result(dummy_image, inference_time=1.0, task="detect")
+    result = make_result(dummy_image, inference_time=1.0, task="detect")
     assert result["width"] == 200
     assert result["height"] == 100
     assert result["task"] == "detect"
@@ -446,25 +444,25 @@ def test_parse_ws_state_defaults():
 
 
 def test_get_optional_float():
-    """测试 _get_optional_float"""
-    from app.api.websocket import _get_optional_float
+    """测试 parse_optional_float"""
+    from app.api.utils import parse_optional_float
 
-    assert _get_optional_float("3.14") == 3.14
-    assert _get_optional_float("0") == 0.0
-    assert _get_optional_float(None) is None
-    assert _get_optional_float("") is None
-    assert _get_optional_float("invalid") is None
+    assert parse_optional_float("3.14") == 3.14
+    assert parse_optional_float("0") == 0.0
+    assert parse_optional_float(None) is None
+    assert parse_optional_float("") is None
+    assert parse_optional_float("invalid") is None
 
 
 def test_get_optional_int():
-    """测试 _get_optional_int"""
-    from app.api.websocket import _get_optional_int
+    """测试 parse_optional_int"""
+    from app.api.utils import parse_optional_int
 
-    assert _get_optional_int("42") == 42
-    assert _get_optional_int("0") == 0
-    assert _get_optional_int(None) is None
-    assert _get_optional_int("") is None
-    assert _get_optional_int("invalid") is None
+    assert parse_optional_int("42") == 42
+    assert parse_optional_int("0") == 0
+    assert parse_optional_int(None) is None
+    assert parse_optional_int("") is None
+    assert parse_optional_int("invalid") is None
 
 
 # ------------------------------------------------------------------
@@ -597,7 +595,7 @@ def test_api_init():
 def test_routes_all():
     """测试 routes 模块导出"""
     from app.routes import (
-        _parse_text_queries,
+        parse_text_queries,
         read_upload_image,
         router,
         validate_image_mime,
@@ -606,7 +604,7 @@ def test_routes_all():
     assert router is not None
     assert read_upload_image is not None
     assert validate_image_mime is not None
-    assert _parse_text_queries is not None
+    assert parse_text_queries is not None
 
 
 @pytest.mark.asyncio

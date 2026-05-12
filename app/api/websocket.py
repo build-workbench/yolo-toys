@@ -17,7 +17,12 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from starlette.datastructures import QueryParams
 
 from app import __version__ as VERSION
-from app.api.utils import parse_text_queries, validate_image_mime
+from app.api.utils import (
+    parse_optional_float,
+    parse_optional_int,
+    parse_text_queries,
+    validate_image_mime,
+)
 from app.config import get_settings, parse_bool_string
 from app.metrics import (
     INFERENCE_LATENCY,
@@ -36,9 +41,9 @@ semaphore = asyncio.Semaphore(settings.max_concurrency)
 def _parse_ws_state(params: QueryParams) -> dict[str, Any]:
     """从 WebSocket query params 解析初始推理状态"""
     text_queries = parse_text_queries(params.get("text_queries"))
-    conf = _get_optional_float(params.get("conf"))
-    iou = _get_optional_float(params.get("iou"))
-    max_det = _get_optional_int(params.get("max_det"))
+    conf = parse_optional_float(params.get("conf"))
+    iou = parse_optional_float(params.get("iou"))
+    max_det = parse_optional_int(params.get("max_det"))
     half = parse_bool_string(params.get("half"))
     return {
         "model_id": params.get("model") or settings.model_name,
@@ -46,7 +51,7 @@ def _parse_ws_state(params: QueryParams) -> dict[str, Any]:
         "iou": iou if iou is not None else settings.iou_threshold,
         "max_det": max_det if max_det is not None else settings.max_det,
         "device": params.get("device") or None,
-        "imgsz": _get_optional_int(params.get("imgsz")),
+        "imgsz": parse_optional_int(params.get("imgsz")),
         "half": half if half is not None else False,
         "text_queries": text_queries,
         "question": params.get("question") or None,
@@ -76,24 +81,6 @@ def _decode_ws_frame(data: bytes) -> np.ndarray | None:
 async def _ws_send_json(websocket: WebSocket, payload: dict[str, Any]) -> None:
     """发送 JSON 消息"""
     await websocket.send_text(json.dumps(payload, ensure_ascii=False))
-
-
-def _get_optional_float(value: str | None) -> float | None:
-    if value is None or value == "":
-        return None
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return None
-
-
-def _get_optional_int(value: str | None) -> int | None:
-    if value is None or value == "":
-        return None
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return None
 
 
 @router.websocket("/ws")

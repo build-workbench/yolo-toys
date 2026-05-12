@@ -309,22 +309,22 @@ class TestBgrToPil:
 
     def test_bgr_to_pil_conversion(self, test_image: np.ndarray):
         """测试 BGR 到 PIL 转换"""
-        from app.handlers.base import BaseHandler
+        from app.handlers.utils import bgr_to_pil
 
-        pil_image = BaseHandler.bgr_to_pil(test_image)
+        pil_image = bgr_to_pil(test_image)
 
         assert pil_image.size == (640, 480)
         assert pil_image.mode == "RGB"
 
     def test_bgr_to_pil_color_order(self):
         """测试颜色通道顺序"""
-        from app.handlers.base import BaseHandler
+        from app.handlers.utils import bgr_to_pil
 
         # 创建纯蓝色 BGR 图像 (B=255, G=0, R=0)
         bgr_image = np.zeros((100, 100, 3), dtype=np.uint8)
         bgr_image[:, :, 0] = 255  # B channel
 
-        pil_image = BaseHandler.bgr_to_pil(bgr_image)
+        pil_image = bgr_to_pil(bgr_image)
 
         # BGR 的蓝色在 RGB 中应该是 (R=0, G=0, B=255)
         pixel = pil_image.getpixel((50, 50))

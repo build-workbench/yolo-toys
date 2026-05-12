@@ -11,6 +11,7 @@ import numpy as np
 
 from app.config import get_settings
 from app.handlers.base import BaseHandler
+from app.handlers.error_handling import handle_inference_errors
 
 try:
     import torch
@@ -75,16 +76,7 @@ class DETRHandler(BaseHandler):
         inputs = processor(images=pil_image, return_tensors="pt")
         inputs = self._to_device(inputs)
 
-        try:
-            with torch_module.no_grad():
-                outputs = model(**inputs)
-        except RuntimeError as e:
-            if "out of memory" in str(e).lower():
-                logger.error("DETR GPU 内存不足: %s", e)
-            raise
-        except Exception as e:
-            logger.exception("DETR 推理失败: %s", e)
-            raise
+        outputs = self._call_model_detr(torch_module, model, inputs)
 
         target_sizes = torch_module.as_tensor([pil_image.size[::-1]])
         if self._device != "cpu":
@@ -112,6 +104,13 @@ class DETRHandler(BaseHandler):
             )
 
         return self.make_result(image, detections=dets, inference_time=elapsed, task="detect")
+
+    @staticmethod
+    @handle_inference_errors("DETR")
+    def _call_model_detr(torch_module: Any, model: Any, inputs: dict[str, Any]) -> Any:
+        """调用 DETR 模型推理（带统一错误处理）"""
+        with torch_module.no_grad():
+            return model(**inputs)
 
 
 # ======================================================================
@@ -154,16 +153,7 @@ class OWLViTHandler(BaseHandler):
         inputs = processor(text=queries, images=pil_image, return_tensors="pt")
         inputs = self._to_device(inputs)
 
-        try:
-            with torch_module.no_grad():
-                outputs = model(**inputs)
-        except RuntimeError as e:
-            if "out of memory" in str(e).lower():
-                logger.error("OWL-ViT GPU 内存不足: %s", e)
-            raise
-        except Exception as e:
-            logger.exception("OWL-ViT 推理失败: %s", e)
-            raise
+        outputs = self._call_model_owlvit(torch_module, model, inputs)
 
         target_sizes = torch_module.as_tensor([pil_image.size[::-1]])
         if self._device != "cpu":
@@ -192,6 +182,13 @@ class OWLViTHandler(BaseHandler):
         return self.make_result(
             image, detections=dets, inference_time=elapsed, task="detect", text_queries=queries
         )
+
+    @staticmethod
+    @handle_inference_errors("OWL-ViT")
+    def _call_model_owlvit(torch_module: Any, model: Any, inputs: dict[str, Any]) -> Any:
+        """调用 OWL-ViT 模型推理（带统一错误处理）"""
+        with torch_module.no_grad():
+            return model(**inputs)
 
 
 # ======================================================================
@@ -244,16 +241,7 @@ class GroundingDINOHandler(BaseHandler):
 
         inputs = self._to_device(inputs)
 
-        try:
-            with torch_module.no_grad():
-                outputs = model(**inputs)
-        except RuntimeError as e:
-            if "out of memory" in str(e).lower():
-                logger.error("GroundingDINO GPU 内存不足: %s", e)
-            raise
-        except Exception as e:
-            logger.exception("GroundingDINO 推理失败: %s", e)
-            raise
+        outputs = self._call_model_grounding_dino(torch_module, model, inputs)
 
         if not hasattr(processor, "post_process_grounded_object_detection"):
             raise RuntimeError("transformers 版本过低，缺少 GroundingDINO 后处理方法")
@@ -303,6 +291,13 @@ class GroundingDINOHandler(BaseHandler):
         return self.make_result(
             image, detections=dets, inference_time=elapsed, task="detect", text_queries=queries
         )
+
+    @staticmethod
+    @handle_inference_errors("GroundingDINO")
+    def _call_model_grounding_dino(torch_module: Any, model: Any, inputs: dict[str, Any]) -> Any:
+        """调用 Grounding DINO 模型推理（带统一错误处理）"""
+        with torch_module.no_grad():
+            return model(**inputs)
 
     @staticmethod
     def _prepare_labels(queries: list[str]) -> list[str]:

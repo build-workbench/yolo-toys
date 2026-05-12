@@ -77,7 +77,7 @@ def track_inference(model: str, task: str = "detect"):
                 INFERENCE_REQUESTS.labels(model=model, task=task, status=status).inc()
                 INFERENCE_LATENCY.labels(model=model, task=task).observe(duration)
 
-        return cast(F, wrapper)
+        return cast("F", wrapper)
 
     return decorator
 

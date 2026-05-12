@@ -9,6 +9,7 @@ from typing import Any
 import numpy as np
 
 from app.handlers.base import BaseHandler
+from app.handlers.error_handling import handle_inference_errors
 
 try:
     import torch
@@ -58,16 +59,7 @@ class YOLOHandler(BaseHandler):
         if half and dev.startswith("cuda"):
             kwargs["half"] = True
 
-        try:
-            results = model(image, **kwargs)
-        except RuntimeError as e:
-            # CUDA out of memory or other runtime errors
-            if torch is not None and "out of memory" in str(e).lower():
-                logger.error("YOLO GPU 内存不足: %s", e)
-            raise
-        except Exception as e:
-            logger.exception("YOLO 推理失败: %s", e)
-            raise
+        results = self._call_model(model, image, kwargs)
         elapsed = (time.time() - t0) * 1000.0
 
         r = results[0]
@@ -75,6 +67,12 @@ class YOLOHandler(BaseHandler):
         dets = self._parse_detections(r, task)
 
         return self.make_result(image, detections=dets, inference_time=elapsed, task=task)
+
+    @staticmethod
+    @handle_inference_errors("YOLO")
+    def _call_model(model: Any, image: np.ndarray, kwargs: dict[str, Any]) -> Any:
+        """调用模型推理（带统一错误处理）"""
+        return model(image, **kwargs)
 
     # ------------------------------------------------------------------
     # 内部方法

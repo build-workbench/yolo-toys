@@ -1,0 +1,87 @@
+# System Architecture Overview
+
+Understanding the design principles and data flow of YOLO-Toys.
+
+---
+
+## 📐 High-Level Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         Frontend Layer                           │
+│  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐   │
+│  │  Camera    │ │  Canvas    │ │  API Client│ │ WebSocket  │   │
+│  │  Module    │ │  Renderer  │ │  (HTTP)    │ │  Client    │   │
+│  └──────┬─────┘ └──────┬─────┘ └──────┬─────┘ └──────┬─────┘   │
+└─────────────────────────────────┬───────────────────────────────┘
+                                  │ REST / WebSocket
+┌─────────────────────────────────┴───────────────────────────────┐
+│                     FastAPI Backend Layer                        │
+│                                                                  │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │              ModelManager (Router/Cache)                 │   │
+│  └────────────────────────┬────────────────────────────────┘   │
+│                           │                                      │
+│  ┌────────────────────────┴────────────────────────────────┐   │
+│  │              HandlerRegistry (Factory)                   │   │
+│  └────┬──────────┬──────────┬──────────┬──────────┬────────┘   │
+│       │          │          │          │          │             │
+│  ┌────┴───┐ ┌────┴───┐ ┌────┴───┐ ┌────┴───┐ ┌────┴───┐       │
+│  │  YOLO  │ │  DETR  │ │OWLViT  │ │Ground. │ │  BLIP  │       │
+│  │Handler │ │Handler │ │Handler │ │ DINO   │ │Handler │       │
+│  └────────┘ └────────┘ └────────┘ └────────┘ └────────┘       │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🧩 Design Patterns
+
+### 1. Strategy Pattern (Handler System)
+
+All model types implement a common interface:
+
+```python
+class BaseHandler(ABC):
+    @abstractmethod
+    def load(self, model_id: str) -> tuple[Any, Any | None]:
+        """Load model and processor"""
+        pass
+
+    @abstractmethod
+    def infer(self, model, processor, image, **params) -> dict:
+        """Run inference and return formatted results"""
+        pass
+```
+
+### 2. Registry Pattern
+
+Centralized model registration and lookup:
+
+```python
+MODEL_REGISTRY = {
+    "yolov8n.pt": {
+        "category": ModelCategory.YOLO_DETECT,
+        "name": "YOLOv8 Nano",
+        "task": "detect"
+    }
+}
+```
+
+---
+
+## 📦 Component Details
+
+| Component | Responsibility |
+|-----------|----------------|
+| ModelManager | Model lifecycle, caching, concurrency control |
+| HandlerRegistry | Model category resolution, handler instantiation |
+| Handlers | Model-specific loading and inference logic |
+
+---
+
+## 🔗 Related Documentation
+
+- [Handler Pattern](/en/architecture/handlers) — Handler implementation details
+- [REST API](/en/api/rest-api) — API endpoint reference
+- [Models](/en/reference/models) — Supported model list

@@ -1,0 +1,110 @@
+# Installation Guide
+
+This guide covers all the ways to install and set up YOLO-Toys on your system.
+
+---
+
+## 📋 System Requirements
+
+### Minimum Requirements
+
+| Component | Requirement |
+|-----------|-------------|
+| **Python** | 3.11 or higher |
+| **RAM** | 4 GB (8 GB+ recommended) |
+| **Storage** | 2 GB free space |
+| **OS** | Linux, macOS, or Windows |
+
+### GPU Support (Optional)
+
+| Hardware | Requirements |
+|----------|--------------|
+| **NVIDIA** | CUDA 11.8+ with cuDNN |
+| **Apple Silicon** | macOS 12.3+ with MPS support |
+| **AMD** | ROCm (community supported) |
+
+---
+
+## 🐍 Method 1: Python Native (Recommended for Development)
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/LessUp/yolo-toys.git
+cd yolo-toys
+```
+
+### Step 2: Create Virtual Environment
+
+```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate on Linux/macOS
+source .venv/bin/activate
+
+# Activate on Windows PowerShell
+.venv\Scripts\Activate.ps1
+```
+
+### Step 3: Install Dependencies
+
+```bash
+# Install runtime dependencies
+pip install -r requirements.txt
+
+# (Optional) Install development dependencies
+pip install -r requirements-dev.txt
+```
+
+### Step 4: Configure Environment
+
+```bash
+# Copy example environment file
+cp .env.example .env
+
+# Edit .env to customize settings
+```
+
+### Step 5: Verify Installation
+
+```bash
+# Run linting to verify setup
+make lint
+
+# Run tests
+make test
+```
+
+---
+
+## 🐳 Method 2: Docker
+
+### Quick Start with Docker
+
+```bash
+# Clone repository
+git clone https://github.com/LessUp/yolo-toys.git
+cd yolo-toys
+
+# Copy environment file
+cp .env.example .env
+
+# Build and run
+docker build -t yolo-toys .
+docker run -p 8000:8000 --env-file .env yolo-toys
+```
+
+### Using Docker Compose (Recommended for Production)
+
+```bash
+docker-compose up --build -d
+```
+
+---
+
+## ✅ Next Steps
+
+- [Quick Start](/en/getting-started/quickstart) — Run your first detection
+- [API Reference](/en/api/rest-api) — Learn the API
+- [Deployment Guide](/en/deployment/docker) — Production deployment

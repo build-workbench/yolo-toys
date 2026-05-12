@@ -6,7 +6,8 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 import numpy as np
-from PIL import Image
+
+from app.handlers.utils import bgr_to_pil, make_result
 
 
 class BaseHandler(ABC):
@@ -49,35 +50,17 @@ class BaseHandler(ABC):
         """执行推理，返回标准结果字典"""
 
     # ------------------------------------------------------------------
-    # 公共工具方法
+    # 工具方法（向后兼容别名）
     # ------------------------------------------------------------------
 
-    @staticmethod
-    def bgr_to_pil(image: np.ndarray) -> Image.Image:
-        """OpenCV BGR ndarray → PIL RGB Image"""
-        return Image.fromarray(image[:, :, ::-1])
+    # 提供静态方法作为向后兼容的别名
+    # 新代码应直接使用 utils.bgr_to_pil 和 utils.make_result
+    bgr_to_pil = staticmethod(bgr_to_pil)
+    make_result = staticmethod(make_result)
 
-    @staticmethod
-    def make_result(
-        image: np.ndarray,
-        *,
-        detections: list[dict[str, Any]] | None = None,
-        inference_time: float,
-        task: str = "detect",
-        **extra,
-    ) -> dict[str, Any]:
-        """构造标准返回字典"""
-        h, w = image.shape[:2]
-        result: dict[str, Any] = {
-            "width": w,
-            "height": h,
-            "inference_time": inference_time,
-            "task": task,
-        }
-        if detections is not None:
-            result["detections"] = detections
-        result.update(extra)
-        return result
+    # ------------------------------------------------------------------
+    # 实例方法
+    # ------------------------------------------------------------------
 
     def _model_to_device(self, model: Any) -> Any:
         """将模型移动到当前设备（GPU 场景）"""

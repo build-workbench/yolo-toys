@@ -36,19 +36,11 @@ router.include_router(models_router)
 router.include_router(inference_router)
 router.include_router(ws_router)
 
-# 测试兼容性别名
-_parse_text_queries = parse_text_queries
-_get_optional_float = parse_optional_float
-_get_optional_int = parse_optional_int
-
 __all__ = [
-    "router",
-    "read_upload_image",
-    "validate_image_mime",
     "parse_optional_float",
     "parse_optional_int",
     "parse_text_queries",
-    "_parse_text_queries",
-    "_get_optional_float",
-    "_get_optional_int",
+    "read_upload_image",
+    "router",
+    "validate_image_mime",
 ]

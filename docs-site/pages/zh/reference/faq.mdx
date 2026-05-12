@@ -1,0 +1,89 @@
+# 常见问题 (FAQ)
+
+常见问题与故障排除技巧。
+
+---
+
+## 🚀 入门
+
+### Q：最低硬件要求是什么？
+
+**A：** 基本使用：
+- CPU：任何现代处理器
+- 内存：最低 4GB，推荐 8GB
+- 存储：2GB 可用空间
+
+GPU 加速：
+- NVIDIA：GTX 1060 6GB 或更高
+- Apple Silicon：M1 或更新
+
+---
+
+## 🐛 安装问题
+
+### Q：CUDA 可用但未检测到
+
+**A：** 验证 PyTorch CUDA：
+
+```bash
+python -c "import torch; print(torch.cuda.is_available())"
+```
+
+如果返回 False，重新安装正确 CUDA 版本：
+```bash
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+```
+
+---
+
+## ⚡ 性能
+
+### Q：如何提升推理速度？
+
+**A：** 尝试以下优化：
+
+1. **使用更小的模型：**
+   ```bash
+   MODEL_NAME=yolov8n.pt
+   ```
+
+2. **降低分辨率：**
+   ```javascript
+   canvas.toBlob(sendFrame, 'image/jpeg', 0.7)
+   ```
+
+3. **启用 GPU：**
+   ```bash
+   DEVICE=cuda:0
+   ```
+
+### Q：内存不足错误
+
+**A：** 减少内存使用：
+
+```bash
+MODEL_NAME=yolov8n.pt
+MAX_CONCURRENCY=1
+```
+
+---
+
+## 🎯 模型使用
+
+### Q：如何检测自定义对象？
+
+**A：** 使用开放词汇检测：
+
+```bash
+curl -X POST "http://localhost:8000/infer" \
+  -F "model=google/owlvit-base-patch32" \
+  -F "file=@image.jpg" \
+  -F "text_queries=你的自定义对象"
+```
+
+---
+
+## 🔗 仍需帮助？
+
+- [文档](/zh)
+- [GitHub Issues](https://github.com/LessUp/yolo-toys/issues)

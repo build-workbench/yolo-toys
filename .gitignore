@@ -43,3 +43,11 @@ htmlcov/
 # Type checker
 pyrightconfig.json
 .omc/
+
+# Build output
+.site/
+
+# Node
+node_modules/
+.next/
+out/

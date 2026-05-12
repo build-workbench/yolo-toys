@@ -1,0 +1,50 @@
+---
+title: YOLO-Toys
+description: 多模型视觉推理服务
+---
+
+import { Callout } from 'nextra/components'
+
+# YOLO-Toys
+
+多模型视觉推理服务 —— 统一的 FastAPI + WebSocket 接口。
+
+```bash
+# Docker 启动
+docker run -p 8000:8000 ghcr.io/lessup/yolo-toys:latest
+
+# 检测
+curl -X POST "http://localhost:8000/detect" \
+  -F "file=@image.jpg" \
+  -F "model=yolov8n"
+
+# WebSocket 流式检测
+python -c "
+import asyncio, websockets, json
+async def stream():
+    async with websockets.connect('ws://localhost:8000/ws/detect') as ws:
+        await ws.send(json.dumps({'model': 'yolov8n'}))
+        # 发送图像并接收结果
+asyncio.run(stream())
+"
+```
+
+## 性能
+
+| 指标 | 数值 |
+|---|---|
+| 支持模型 | YOLOv8 / DETR / OWL-ViT / Grounding DINO / BLIP |
+| 接口 | REST API + WebSocket |
+| GPU 支持 | NVIDIA CUDA / Apple MPS / CPU |
+| 延迟 | < 50ms (YOLOv8n, RTX 4090) |
+
+## 特性
+
+- **多模型统一** — 一个服务运行 YOLO、DETR、OWL-ViT 等
+- **REST + WebSocket** — HTTP 请求或流式推理
+- **Handler 架构** — 模型隔离，易于扩展
+- **开箱即用** — Docker 镜像、简洁 CLI
+
+<Callout type="info">
+v3.1.0 — 稳定版本，生产就绪
+</Callout>

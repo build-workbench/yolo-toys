@@ -10,6 +10,7 @@ import numpy as np
 
 from app.config import get_settings
 from app.handlers.base import BaseHandler
+from app.handlers.error_handling import handle_inference_errors
 from app.handlers.hf_handler import _require_hf
 
 try:
@@ -62,21 +63,19 @@ class BLIPCaptionHandler(BaseHandler):
         inputs = processor(pil_image, return_tensors="pt")
         inputs = self._to_device(inputs)
 
-        try:
-            with torch_module.no_grad():
-                out = model.generate(**inputs, max_new_tokens=settings.blip_max_tokens)
-        except RuntimeError as e:
-            if "out of memory" in str(e).lower():
-                logger.error("BLIP Caption GPU 内存不足: %s", e)
-            raise
-        except Exception as e:
-            logger.exception("BLIP Caption 推理失败: %s", e)
-            raise
+        out = self._call_model_blip_caption(torch_module, model, inputs)
 
         caption = processor.decode(out[0], skip_special_tokens=True)
         elapsed = (time.time() - t0) * 1000.0
 
         return self.make_result(image, inference_time=elapsed, task="caption", caption=caption)
+
+    @staticmethod
+    @handle_inference_errors("BLIP Caption")
+    def _call_model_blip_caption(torch_module: Any, model: Any, inputs: dict[str, Any]) -> Any:
+        """调用 BLIP Caption 模型推理（带统一错误处理）"""
+        with torch_module.no_grad():
+            return model.generate(**inputs, max_new_tokens=settings.blip_max_tokens)
 
 
 class BLIPVQAHandler(BaseHandler):
@@ -114,16 +113,7 @@ class BLIPVQAHandler(BaseHandler):
         inputs = processor(pil_image, q, return_tensors="pt")
         inputs = self._to_device(inputs)
 
-        try:
-            with torch_module.no_grad():
-                out = model.generate(**inputs, max_new_tokens=settings.blip_max_tokens)
-        except RuntimeError as e:
-            if "out of memory" in str(e).lower():
-                logger.error("BLIP VQA GPU 内存不足: %s", e)
-            raise
-        except Exception as e:
-            logger.exception("BLIP VQA 推理失败: %s", e)
-            raise
+        out = self._call_model_blip_vqa(torch_module, model, inputs)
 
         answer = processor.decode(out[0], skip_special_tokens=True)
         elapsed = (time.time() - t0) * 1000.0
@@ -131,3 +121,10 @@ class BLIPVQAHandler(BaseHandler):
         return self.make_result(
             image, inference_time=elapsed, task="vqa", question=q, answer=answer
         )
+
+    @staticmethod
+    @handle_inference_errors("BLIP VQA")
+    def _call_model_blip_vqa(torch_module: Any, model: Any, inputs: dict[str, Any]) -> Any:
+        """调用 BLIP VQA 模型推理（带统一错误处理）"""
+        with torch_module.no_grad():
+            return model.generate(**inputs, max_new_tokens=settings.blip_max_tokens)
