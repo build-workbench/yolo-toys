@@ -1,0 +1,137 @@
+# REST API 参考
+
+YOLO-Toys HTTP API 端点完整参考。
+
+---
+
+## 📋 概述
+
+基础 URL：`http://localhost:8000`
+
+所有 API 响应为 JSON 格式。错误遵循标准 HTTP 状态码约定。
+
+---
+
+## 🔍 端点
+
+### 健康检查
+
+检查服务器状态和系统信息。
+
+```http
+GET /health
+```
+
+**响应：**
+```json
+{
+  "status": "ok",
+  "version": "3.1.0",
+  "device": "cuda:0",
+  "default_model": "yolov8n.pt"
+}
+```
+
+---
+
+### 列出模型
+
+获取所有可用模型，按类别分组。
+
+```http
+GET /models
+```
+
+---
+
+### 单图推理
+
+对单张图像执行推理。
+
+```http
+POST /infer
+```
+
+**Content-Type:** `multipart/form-data`
+
+**参数：**
+| 名称 | 类型 | 必需 | 默认值 | 描述 |
+|------|------|----------|---------|-------------|
+| `file` | 文件 | 是 | - | 图像文件（JPEG、PNG、WEBP） |
+| `model` | 字符串 | 否 | `yolov8n.pt` | 模型标识符 |
+| `conf` | 浮点 | 否 | 0.25 | 置信度阈值（0.0-1.0） |
+| `iou` | 浮点 | 否 | 0.45 | NMS 的 IoU 阈值 |
+
+**响应（200 OK）：**
+```json
+{
+  "width": 640,
+  "height": 480,
+  "task": "detect",
+  "detections": [
+    {
+      "bbox": [100.5, 200.3, 250.8, 450.2],
+      "score": 0.89,
+      "label": "person"
+    }
+  ],
+  "inference_time": 12.5,
+  "model": "yolov8n.pt"
+}
+```
+
+---
+
+### 图像描述
+
+为图像生成自动描述。
+
+```http
+POST /caption
+```
+
+**响应：**
+```json
+{
+  "caption": "a person riding a skateboard on a street",
+  "inference_time": 120.5
+}
+```
+
+---
+
+### 视觉问答
+
+回答关于图像的问题。
+
+```http
+POST /vqa
+```
+
+**响应：**
+```json
+{
+  "answer": "blue",
+  "inference_time": 95.2,
+  "question": "What color is the car?"
+}
+```
+
+---
+
+## 🚦 错误码
+
+| 状态码 | 含义 | 描述 |
+|-------------|---------|-------------|
+| 200 | OK | 请求成功 |
+| 400 | Bad Request | 输入参数无效 |
+| 404 | Not Found | 模型或资源未找到 |
+| 500 | Internal Server Error | 服务器处理错误 |
+
+---
+
+## 🔗 下一步
+
+- [WebSocket 协议](./websocket) — 实时流式 API
+- [架构](../architecture/overview) — 系统设计概述
+- [模型](../reference/models) — 支持的模型参考
