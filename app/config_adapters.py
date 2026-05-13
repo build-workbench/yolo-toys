@@ -12,6 +12,29 @@ if TYPE_CHECKING:
     from app.config import AppSettings
 
 
+def _resolve_device(device_setting: str) -> str:
+    """解析设备设置，返回实际设备"""
+    if device_setting:
+        return device_setting
+
+    # 自动选择设备
+    try:
+        import torch
+
+        if hasattr(torch, "cuda") and torch.cuda.is_available():
+            return "cuda:0"
+        if (
+            hasattr(torch, "backends")
+            and hasattr(torch.backends, "mps")
+            and torch.backends.mps.is_available()
+        ):
+            return "mps"
+    except ImportError:
+        pass
+
+    return "cpu"
+
+
 class SettingsHandlerConfig:
     """
     从 AppSettings 适配 Handler 配置。
@@ -25,7 +48,7 @@ class SettingsHandlerConfig:
     @property
     def device(self) -> str:
         """推理设备"""
-        return self._settings.device or "auto"
+        return _resolve_device(self._settings.device)
 
     @property
     def blip_max_tokens(self) -> int:
@@ -69,4 +92,4 @@ class SettingsModelManagerConfig:
     @property
     def device(self) -> str:
         """推理设备"""
-        return self._settings.device or "auto"
+        return _resolve_device(self._settings.device)

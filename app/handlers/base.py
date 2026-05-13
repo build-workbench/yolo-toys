@@ -12,6 +12,7 @@ from app.handlers.utils import bgr_to_pil, make_result
 if TYPE_CHECKING:
     import numpy as np
 
+    from app.config_protocols import HandlerConfig
     from app.params import InferenceParams
 
 
@@ -69,12 +70,46 @@ class LoadedModel:
 class BaseHandler(ABC):
     """所有模型处理器的基类"""
 
-    def __init__(self, device: str):
-        self._device = device
+    def __init__(
+        self,
+        config: HandlerConfig | str | None = None,
+        *,
+        device: str | None = None,
+    ):
+        """
+        初始化 Handler。
+
+        Args:
+            config: Handler 配置对象或设备字符串（向后兼容）
+            device: 设备字符串（向后兼容关键字参数）
+
+        支持以下调用方式：
+            - Handler(config_obj)
+            - Handler("cuda:0")
+            - Handler(device="cuda:0")
+        """
+        # 向后兼容：支持 device 关键字参数
+        if config is None and device is not None:
+            config = device
+        elif config is None:
+            config = "cpu"
+
+        if isinstance(config, str):
+            # 向后兼容：直接传入设备字符串
+            self._device = config
+            self._config = None  # type: ignore[assignment]
+        else:
+            self._config = config
+            self._device = config.device
 
     @property
     def device(self) -> str:
         return self._device
+
+    @property
+    def config(self) -> HandlerConfig | None:
+        """获取配置对象"""
+        return self._config
 
     # ------------------------------------------------------------------
     # 公开接口

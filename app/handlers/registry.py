@@ -29,8 +29,14 @@ _CATEGORY_HANDLER_MAP = {
 class HandlerRegistry:
     """处理器注册表 - 根据模型 ID 获取对应 Handler"""
 
-    def __init__(self, device: str):
-        self._device = device
+    def __init__(self, config_or_device: Any):
+        """
+        初始化注册表。
+
+        Args:
+            config_or_device: HandlerConfig 对象或设备字符串（向后兼容）
+        """
+        self._config_or_device = config_or_device
         self._handler_cache: dict[str, BaseHandler] = {}
 
     def get_handler(self, model_id: str) -> BaseHandler:
@@ -42,7 +48,8 @@ class HandlerRegistry:
 
         cls_name = handler_cls.__name__
         if cls_name not in self._handler_cache:
-            self._handler_cache[cls_name] = handler_cls(self._device)
+            # 传递 config 或 device 给 Handler（向后兼容）
+            self._handler_cache[cls_name] = handler_cls(self._config_or_device)
         return self._handler_cache[cls_name]
 
     def _resolve_category(self, model_id: str) -> ModelCategory:

@@ -18,6 +18,8 @@ from typing import Any
 import numpy as np
 from cachetools import TTLCache
 
+from app.config_adapters import SettingsModelManagerConfig
+from app.config_protocols import ModelManagerConfig
 from app.handlers.base import LoadedModel
 from app.handlers.registry import HandlerRegistry
 from app.params import InferenceParams
@@ -120,11 +122,24 @@ class ModelCache(TTLCache):
 class ModelManager:
     """统一模型管理器 - 委托 HandlerRegistry 完成加载和推理"""
 
-    def __init__(self):
-        self._device = get_device()
-        self._registry = HandlerRegistry(self._device)
+    def __init__(self, config: ModelManagerConfig | None = None):
+        """
+        初始化 ModelManager。
+
+        Args:
+            config: ModelManager 配置对象。如果为 None，从 AppSettings 自动构建。
+        """
+        if config is None:
+            from app.config import get_settings
+
+            settings = get_settings()
+            config = SettingsModelManagerConfig(settings)
+
+        self._config = config
+        self._device = config.device
+        self._registry = HandlerRegistry(config.device)  # 向后兼容：传递设备字符串
         # 使用 LRU + TTL 混合缓存
-        self._cache = ModelCache(maxsize=CACHE_MAXSIZE, ttl=CACHE_TTL)
+        self._cache = ModelCache(maxsize=config.cache_maxsize, ttl=config.cache_ttl)
         self._load_times: dict[str, float] = {}
         self._access_count: dict[str, int] = {}
 
