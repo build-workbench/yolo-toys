@@ -15,6 +15,30 @@ export default withMermaid(defineConfig({
   description: 'YOLO-Toys Documentation',
   ignoreDeadLinks: true,
 
+  head: [
+    [
+      'script',
+      { id: 'lang-redirect' },
+      `((() => {
+  // 已在语言路径下，跳过
+  if (location.pathname.match(/\\/(zh|en)(\\/|$)/)) return;
+
+  const STORAGE_KEY = 'yolo-toys-lang-preference';
+  const saved = localStorage.getItem(STORAGE_KEY);
+
+  if (saved === 'zh' || saved === 'en') {
+    window.location.replace(saved + '/');
+    return;
+  }
+
+  const lang = navigator.language || navigator.userLanguage || '';
+  const target = lang.startsWith('zh') ? 'zh' : 'en';
+  localStorage.setItem(STORAGE_KEY, target);
+  window.location.replace(target + '/');
+})())`
+    ]
+  ],
+
   locales: {
     zh: {
       label: '简体中文',
