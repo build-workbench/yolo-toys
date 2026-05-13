@@ -2,13 +2,16 @@
 模型注册表 - 管理模型处理器映射
 """
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from app.handlers.base import BaseHandler
 from app.handlers.blip_handler import BLIPCaptionHandler, BLIPVQAHandler
 from app.handlers.hf_handler import DETRHandler, GroundingDINOHandler, OWLViTHandler
 from app.handlers.yolo_handler import YOLOHandler
 from app.models_metadata import MODEL_REGISTRY, ModelCategory
+
+if TYPE_CHECKING:
+    from app.config_protocols import HandlerConfig
 
 # 类别 → 处理器类映射
 _CATEGORY_HANDLER_MAP = {
@@ -29,7 +32,7 @@ _CATEGORY_HANDLER_MAP = {
 class HandlerRegistry:
     """处理器注册表 - 根据模型 ID 获取对应 Handler"""
 
-    def __init__(self, config_or_device: Any):
+    def __init__(self, config_or_device: "HandlerConfig | str"):
         """
         初始化注册表。
 

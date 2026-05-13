@@ -12,8 +12,15 @@ if TYPE_CHECKING:
     from app.config import AppSettings
 
 
-def _resolve_device(device_setting: str) -> str:
-    """解析设备设置，返回实际设备"""
+def _resolve_device(device_setting: str | None) -> str:
+    """解析设备设置，返回实际设备
+
+    Args:
+        device_setting: 设备设置字符串，可为 None 表示自动选择
+
+    Returns:
+        实际设备字符串（cuda:0/mps/cpu）
+    """
     if device_setting:
         return device_setting
 
