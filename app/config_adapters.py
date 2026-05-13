@@ -8,6 +8,8 @@
 import os
 from typing import TYPE_CHECKING
 
+from app.handlers.base import _auto_detect_device
+
 if TYPE_CHECKING:
     from app.config import AppSettings
 
@@ -23,23 +25,7 @@ def _resolve_device(device_setting: str | None) -> str:
     """
     if device_setting:
         return device_setting
-
-    # 自动选择设备
-    try:
-        import torch
-
-        if hasattr(torch, "cuda") and torch.cuda.is_available():
-            return "cuda:0"
-        if (
-            hasattr(torch, "backends")
-            and hasattr(torch.backends, "mps")
-            and torch.backends.mps.is_available()
-        ):
-            return "mps"
-    except ImportError:
-        pass
-
-    return "cpu"
+    return _auto_detect_device()
 
 
 class SettingsHandlerConfig:

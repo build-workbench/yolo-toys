@@ -37,23 +37,6 @@ CACHE_TTL = int(os.getenv("MODEL_CACHE_TTL", "3600"))  # 1 hour default
 MEMORY_THRESHOLD = float(os.getenv("MODEL_MEMORY_THRESHOLD", "0.85"))  # 85% memory threshold
 
 
-def get_device() -> str:
-    """自动选择最佳设备"""
-    device_env = os.getenv("DEVICE", "").strip()
-    if device_env:
-        return device_env
-    if torch is not None:
-        if hasattr(torch, "cuda") and torch.cuda.is_available():
-            return "cuda:0"
-        if (
-            hasattr(torch, "backends")
-            and hasattr(torch.backends, "mps")
-            and torch.backends.mps.is_available()
-        ):
-            return "mps"
-    return "cpu"
-
-
 def get_memory_usage() -> float:
     """获取当前内存使用比例，用于缓存清理决策"""
     try:

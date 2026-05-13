@@ -16,6 +16,24 @@ if TYPE_CHECKING:
     from app.params import InferenceParams
 
 
+def _auto_detect_device() -> str:
+    """自动检测最佳设备（cuda/mps/cpu）"""
+    try:
+        import torch
+
+        if hasattr(torch, "cuda") and torch.cuda.is_available():
+            return "cuda:0"
+        if (
+            hasattr(torch, "backends")
+            and hasattr(torch.backends, "mps")
+            and torch.backends.mps.is_available()
+        ):
+            return "mps"
+    except ImportError:
+        pass
+    return "cpu"
+
+
 class LoadedModel:
     """
     封装已加载的模型，隐藏 processor 细节。
@@ -92,7 +110,7 @@ class BaseHandler(ABC):
         if config is None and device is not None:
             config = device
         elif config is None:
-            config = "cpu"
+            config = _auto_detect_device()
 
         if isinstance(config, str):
             # 向后兼容：直接传入设备字符串
