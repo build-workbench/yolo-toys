@@ -14,6 +14,7 @@ import numpy as np
 import pytest
 
 from app.handlers.yolo_handler import YOLOHandler
+from app.params import InferenceParams
 
 # ------------------------------------------------------------------
 # Fixtures
@@ -105,10 +106,10 @@ def test_load_success(handler: YOLOHandler):
     mock_model = MagicMock()
 
     with patch("ultralytics.YOLO", return_value=mock_model) as mock_yolo:
-        model, processor = handler.load("yolov8n.pt")
+        loaded = handler.load("yolov8n.pt")
 
-    assert model is mock_model
-    assert processor is None
+    assert loaded.model is mock_model
+    assert loaded.processor is None
     mock_yolo.assert_called_once_with("yolov8n.pt")
 
 
@@ -117,10 +118,10 @@ def test_load_with_custom_model_id(handler: YOLOHandler):
     mock_model = MagicMock()
 
     with patch("ultralytics.YOLO", return_value=mock_model) as mock_yolo:
-        model, processor = handler.load("yolov8s.pt")
+        loaded = handler.load("yolov8s.pt")
 
-    assert model is mock_model
-    assert processor is None
+    assert loaded.model is mock_model
+    assert loaded.processor is None
     mock_yolo.assert_called_once_with("yolov8s.pt")
 
 
@@ -142,11 +143,6 @@ def test_load_import_error(handler: YOLOHandler):
         handler.load("yolov8n.pt")
 
 
-# ------------------------------------------------------------------
-# Infer Tests - Detection
-# ------------------------------------------------------------------
-
-
 def test_infer_detection(
     handler: YOLOHandler,
     mock_yolo_model: MagicMock,
@@ -155,8 +151,9 @@ def test_infer_detection(
 ):
     """测试检测任务推理"""
     mock_yolo_model.return_value = [mock_detection_result]
+    params = InferenceParams()
 
-    result = handler.infer(mock_yolo_model, None, test_image)
+    result = handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     assert result["task"] == "detect"
     assert result["width"] == 640
@@ -184,8 +181,9 @@ def test_infer_empty_detections(
     empty_result.names = {}
 
     mock_yolo_model.return_value = [empty_result]
+    params = InferenceParams()
 
-    result = handler.infer(mock_yolo_model, None, test_image)
+    result = handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     assert result["task"] == "detect"
     assert result["detections"] == []
@@ -203,8 +201,9 @@ def test_infer_none_boxes(
     empty_result.keypoints = None
 
     mock_yolo_model.return_value = [empty_result]
+    params = InferenceParams()
 
-    result = handler.infer(mock_yolo_model, None, test_image)
+    result = handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     assert result["detections"] == []
 
@@ -223,8 +222,9 @@ def test_infer_segmentation(
     """测试分割任务推理"""
     mock_yolo_model.model.task = "segment"
     mock_yolo_model.return_value = [mock_segmentation_result]
+    params = InferenceParams()
 
-    result = handler.infer(mock_yolo_model, None, test_image)
+    result = handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     assert result["task"] == "segment"
     assert "polygons" in result["detections"][0]
@@ -239,8 +239,9 @@ def test_infer_segmentation_from_result_masks(
     """测试从 result.masks 推断分割任务"""
     mock_yolo_model.model.task = None  # 未设置 task
     mock_yolo_model.return_value = [mock_segmentation_result]
+    params = InferenceParams()
 
-    result = handler.infer(mock_yolo_model, None, test_image)
+    result = handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     # 应该从 masks 推断为分割任务
     assert result["task"] == "segment"
@@ -260,8 +261,9 @@ def test_infer_pose(
     """测试姿态估计任务推理"""
     mock_yolo_model.model.task = "pose"
     mock_yolo_model.return_value = [mock_pose_result]
+    params = InferenceParams()
 
-    result = handler.infer(mock_yolo_model, None, test_image)
+    result = handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     assert result["task"] == "pose"
     assert "keypoints" in result["detections"][0]
@@ -278,8 +280,9 @@ def test_infer_pose_from_result_keypoints(
     """测试从 result.keypoints 推断姿态任务"""
     mock_yolo_model.model.task = None
     mock_yolo_model.return_value = [mock_pose_result]
+    params = InferenceParams()
 
-    result = handler.infer(mock_yolo_model, None, test_image)
+    result = handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     assert result["task"] == "pose"
 
@@ -297,8 +300,9 @@ def test_infer_passes_conf_parameter(
 ):
     """测试 conf 参数传递"""
     mock_yolo_model.return_value = [mock_detection_result]
+    params = InferenceParams(conf=0.5)
 
-    handler.infer(mock_yolo_model, None, test_image, conf=0.5)
+    handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     call_kwargs = mock_yolo_model.call_args[1]
     assert call_kwargs["conf"] == 0.5
@@ -312,8 +316,9 @@ def test_infer_passes_iou_parameter(
 ):
     """测试 iou 参数传递"""
     mock_yolo_model.return_value = [mock_detection_result]
+    params = InferenceParams(iou=0.3)
 
-    handler.infer(mock_yolo_model, None, test_image, iou=0.3)
+    handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     call_kwargs = mock_yolo_model.call_args[1]
     assert call_kwargs["iou"] == 0.3
@@ -327,8 +332,9 @@ def test_infer_passes_max_det_parameter(
 ):
     """测试 max_det 参数传递"""
     mock_yolo_model.return_value = [mock_detection_result]
+    params = InferenceParams(max_det=50)
 
-    handler.infer(mock_yolo_model, None, test_image, max_det=50)
+    handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     call_kwargs = mock_yolo_model.call_args[1]
     assert call_kwargs["max_det"] == 50
@@ -342,8 +348,9 @@ def test_infer_passes_imgsz_parameter(
 ):
     """测试 imgsz 参数传递"""
     mock_yolo_model.return_value = [mock_detection_result]
+    params = InferenceParams(imgsz=320)
 
-    handler.infer(mock_yolo_model, None, test_image, imgsz=320)
+    handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     call_kwargs = mock_yolo_model.call_args[1]
     assert call_kwargs["imgsz"] == 320
@@ -357,8 +364,9 @@ def test_infer_ignores_imgsz_when_none(
 ):
     """测试 imgsz 为 None 时不传递"""
     mock_yolo_model.return_value = [mock_detection_result]
+    params = InferenceParams(imgsz=None)
 
-    handler.infer(mock_yolo_model, None, test_image, imgsz=None)
+    handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     call_kwargs = mock_yolo_model.call_args[1]
     assert "imgsz" not in call_kwargs
@@ -378,7 +386,8 @@ def test_infer_half_on_cuda(handler: YOLOHandler):
     mock_model.return_value = [mock_result]
 
     test_image = np.zeros((100, 100, 3), dtype=np.uint8)
-    cuda_handler.infer(mock_model, None, test_image, half=True)
+    params = InferenceParams(half=True, device="cuda:0")
+    cuda_handler._infer_impl(mock_model, None, test_image, params)
 
     call_kwargs = mock_model.call_args[1]
     assert call_kwargs["half"] is True
@@ -392,8 +401,9 @@ def test_infer_half_ignored_on_cpu(
 ):
     """测试 CPU 设备上忽略 half 参数"""
     mock_yolo_model.return_value = [mock_detection_result]
+    params = InferenceParams(half=True, device="cpu")
 
-    handler.infer(mock_yolo_model, None, test_image, half=True)
+    handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     call_kwargs = mock_yolo_model.call_args[1]
     assert "half" not in call_kwargs
@@ -407,8 +417,9 @@ def test_infer_custom_device(
 ):
     """测试自定义设备参数"""
     mock_yolo_model.return_value = [mock_detection_result]
+    params = InferenceParams(device="cuda:1")
 
-    handler.infer(mock_yolo_model, None, test_image, device="cuda:1")
+    handler._infer_impl(mock_yolo_model, None, test_image, params)
 
     call_kwargs = mock_yolo_model.call_args[1]
     assert call_kwargs["device"] == "cuda:1"
@@ -514,6 +525,7 @@ def test_infer_model_raises_exception(
 ):
     """测试模型推理异常时的处理"""
     mock_yolo_model.side_effect = RuntimeError("CUDA out of memory")
+    params = InferenceParams()
 
     with pytest.raises(RuntimeError, match="CUDA out of memory"):
-        handler.infer(mock_yolo_model, None, test_image)
+        handler._infer_impl(mock_yolo_model, None, test_image, params)

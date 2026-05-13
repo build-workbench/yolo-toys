@@ -22,17 +22,8 @@ _CATEGORY_HANDLER_MAP = {
     ModelCategory.MULTIMODAL_VQA: BLIPVQAHandler,
 }
 
-# 类别显示名称
-_CATEGORY_DISPLAY_NAMES = {
-    ModelCategory.YOLO_DETECT: "YOLO 检测",
-    ModelCategory.YOLO_SEGMENT: "YOLO 分割",
-    ModelCategory.YOLO_POSE: "YOLO 姿态",
-    ModelCategory.HF_DETR: "DETR 检测",
-    ModelCategory.HF_OWLVIT: "开放词汇检测",
-    ModelCategory.HF_GROUNDING_DINO: "Grounding DINO",
-    ModelCategory.MULTIMODAL_CAPTION: "图像描述",
-    ModelCategory.MULTIMODAL_VQA: "视觉问答",
-}
+# 类别显示名称（使用枚举的 display_name 属性）
+# 保留此映射用于向后兼容，但优先使用 ModelCategory.display_name
 
 
 class HandlerRegistry:
@@ -54,50 +45,19 @@ class HandlerRegistry:
             self._handler_cache[cls_name] = handler_cls(self._device)
         return self._handler_cache[cls_name]
 
-    @staticmethod
-    def _resolve_category(model_id: str) -> str:
+    def _resolve_category(self, model_id: str) -> ModelCategory:
         """推断模型类别"""
-        info = MODEL_REGISTRY.get(model_id)
-        if info:
-            return info["category"]
-
-        # 未注册的 .pt 文件按 YOLO 处理
-        if model_id.endswith(".pt"):
-            lower = model_id.lower()
-            if "seg" in lower:
-                return ModelCategory.YOLO_SEGMENT
-            if "pose" in lower:
-                return ModelCategory.YOLO_POSE
-            return ModelCategory.YOLO_DETECT
-
-        # 按名称模式猜测 HuggingFace 模型
-        lower = model_id.lower()
-        if "detr" in lower:
-            return ModelCategory.HF_DETR
-        if "owlvit" in lower:
-            return ModelCategory.HF_OWLVIT
-        if "grounding" in lower or "dino" in lower:
-            return ModelCategory.HF_GROUNDING_DINO
-        if "blip" in lower and "vqa" in lower:
-            return ModelCategory.MULTIMODAL_VQA
-        if "blip" in lower and ("caption" in lower or "captioning" in lower):
-            return ModelCategory.MULTIMODAL_CAPTION
-
-        # 含 / 的尝试作为 DETR 兜底
-        if "/" in model_id:
-            return ModelCategory.HF_DETR
-
-        raise ValueError(f"Unknown model: {model_id}")
+        return ModelCategory.infer_from_id(model_id, MODEL_REGISTRY)
 
 
 def get_available_models() -> dict[str, dict[str, Any]]:
     """获取可用模型列表，按类别分组"""
-    categories: dict[str, dict[str, Any]] = {}
-    for cat_key, display_name in _CATEGORY_DISPLAY_NAMES.items():
-        categories[cat_key] = {"name": display_name, "models": []}
+    categories: dict[ModelCategory, dict[str, Any]] = {}
+    for cat in ModelCategory:
+        categories[cat] = {"name": cat.display_name, "models": []}
 
     for model_id, info in MODEL_REGISTRY.items():
-        cat = info.get("category", "")
+        cat = info.get("category")
         if cat in categories:
             categories[cat]["models"].append(
                 {
@@ -109,7 +69,8 @@ def get_available_models() -> dict[str, dict[str, Any]]:
                 }
             )
 
-    return {k: v for k, v in categories.items() if v["models"]}
+    # 返回时使用枚举的 value_str 作为键（向后兼容）
+    return {cat.value_str: data for cat, data in categories.items() if data["models"]}
 
 
 def get_model_info(model_id: str) -> dict[str, Any] | None:

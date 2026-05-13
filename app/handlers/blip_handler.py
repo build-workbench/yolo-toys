@@ -12,6 +12,7 @@ from app.config import get_settings
 from app.handlers.base import BaseHandler
 from app.handlers.error_handling import handle_inference_errors
 from app.handlers.hf_handler import _require_hf
+from app.params import InferenceParams
 
 try:
     import torch
@@ -32,7 +33,7 @@ def _require_torch() -> Any:
 class BLIPCaptionHandler(BaseHandler):
     """BLIP 图像描述生成"""
 
-    def load(self, model_id: str) -> tuple[Any, Any]:
+    def _do_load(self, model_id: str) -> tuple[Any, Any]:
         _require_hf()
         from transformers import BlipForConditionalGeneration, BlipProcessor
 
@@ -41,20 +42,12 @@ class BLIPCaptionHandler(BaseHandler):
         model = self._model_to_device(model)
         return model, processor
 
-    def infer(
+    def _infer_impl(
         self,
         model: Any,
         processor: Any,
         image: np.ndarray,
-        *,
-        conf: float = 0.25,
-        iou: float = 0.45,
-        max_det: int = 300,
-        device: str | None = None,
-        imgsz: int | None = None,
-        half: bool = False,
-        text_queries: list[str] | None = None,
-        question: str | None = None,
+        params: InferenceParams,
     ) -> dict[str, Any]:
         t0 = time.time()
         torch_module = _require_torch()
@@ -81,7 +74,7 @@ class BLIPCaptionHandler(BaseHandler):
 class BLIPVQAHandler(BaseHandler):
     """BLIP 视觉问答"""
 
-    def load(self, model_id: str) -> tuple[Any, Any]:
+    def _do_load(self, model_id: str) -> tuple[Any, Any]:
         _require_hf()
         from transformers import BlipForQuestionAnswering, BlipProcessor
 
@@ -90,24 +83,17 @@ class BLIPVQAHandler(BaseHandler):
         model = self._model_to_device(model)
         return model, processor
 
-    def infer(
+    def _infer_impl(
         self,
         model: Any,
         processor: Any,
         image: np.ndarray,
-        *,
-        conf: float = 0.25,
-        iou: float = 0.45,
-        max_det: int = 300,
-        device: str | None = None,
-        imgsz: int | None = None,
-        half: bool = False,
-        text_queries: list[str] | None = None,
-        question: str | None = None,
+        params: InferenceParams,
     ) -> dict[str, Any]:
         t0 = time.time()
         torch_module = _require_torch()
-        q = question or "What is in this image?"
+        vqa_params = params.for_blip_vqa()
+        q = vqa_params["question"]
         pil_image = self.bgr_to_pil(image)
 
         inputs = processor(pil_image, q, return_tensors="pt")

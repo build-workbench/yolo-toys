@@ -18,7 +18,9 @@ from typing import Any
 import numpy as np
 from cachetools import TTLCache
 
+from app.handlers.base import LoadedModel
 from app.handlers.registry import HandlerRegistry
+from app.params import InferenceParams
 
 logger = logging.getLogger(__name__)
 
@@ -156,14 +158,14 @@ class ModelManager:
             torch.cuda.empty_cache()
         logger.info("模型缓存已清空: %d 个模型", cleared)
 
-    def load_model(self, model_id: str) -> Any:
-        """加载模型（带缓存），返回模型对象
+    def load_model(self, model_id: str) -> LoadedModel:
+        """加载模型（带缓存），返回封装对象
 
         Args:
             model_id: 模型标识符
 
         Returns:
-            加载的模型对象
+            LoadedModel 封装对象
 
         Raises:
             ValueError: 模型 ID 包含非法字符
@@ -181,15 +183,15 @@ class ModelManager:
 
         if model_id in self._cache:
             self._access_count[model_id] = self._access_count.get(model_id, 0) + 1
-            return self._cache[model_id][0]
+            return self._cache[model_id]
 
         # 记录加载时间
         start_time = time.time()
         handler = self._registry.get_handler(model_id)
-        model, processor = handler.load(model_id)
+        loaded = handler.load(model_id)
         load_time = time.time() - start_time
 
-        self._cache[model_id] = (model, processor)
+        self._cache[model_id] = loaded
         self._load_times[model_id] = load_time
         self._access_count[model_id] = 1
 
@@ -199,13 +201,15 @@ class ModelManager:
             type(handler).__name__,
             load_time,
         )
-        return model
+        return loaded
 
     def infer(
         self,
         *,
         model_id: str,
         image: np.ndarray,
+        params: InferenceParams | None = None,
+        # 向后兼容：支持 flat 参数
         conf: float = 0.25,
         iou: float = 0.45,
         max_det: int = 300,
@@ -215,29 +219,40 @@ class ModelManager:
         text_queries: list[str] | None = None,
         question: str | None = None,
     ) -> dict[str, Any]:
-        """统一推理接口 - 自动路由到对应 Handler"""
-        # 确保模型已加载
-        self.load_model(model_id)
+        """统一推理接口 - 自动路由到对应 Handler
 
-        handler = self._registry.get_handler(model_id)
-        model, processor = self._cache[model_id]
+        Args:
+            model_id: 模型标识符
+            image: 输入图像（BGR 格式）
+            params: 推理参数对象（推荐使用）
+            conf: 置信度阈值（向后兼容）
+            iou: IoU 阈值（向后兼容）
+            max_det: 最大检测数量（向后兼容）
+            device: 推理设备（向后兼容）
+            imgsz: 输入图像尺寸（向后兼容）
+            half: 是否使用半精度（向后兼容）
+            text_queries: 文本查询列表（向后兼容）
+            question: 问题文本（向后兼容）
 
-        # 使用用户指定的设备或默认设备
-        target_device = device or self._device
+        Returns:
+            推理结果字典
+        """
+        # 向后兼容：如果未提供 params，从 flat 参数构建
+        if params is None:
+            params = InferenceParams(
+                conf=conf,
+                iou=iou,
+                max_det=max_det,
+                device=device,
+                imgsz=imgsz,
+                half=half,
+                text_queries=text_queries,
+                question=question,
+            )
 
-        return handler.infer(
-            model,
-            processor,
-            image,
-            conf=conf,
-            iou=iou,
-            max_det=max_det,
-            device=target_device,
-            imgsz=imgsz,
-            half=half,
-            text_queries=text_queries,
-            question=question,
-        )
+        # 加载模型并执行推理
+        loaded = self.load_model(model_id)
+        return loaded.infer(image, params)
 
     def get_stats(self) -> dict[str, Any]:
         """获取管理器统计信息"""

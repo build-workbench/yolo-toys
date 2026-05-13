@@ -349,32 +349,39 @@ def test_base_handler_result():
 
 def test_handler_registry_get_category():
     """测试 HandlerRegistry 获取类别"""
-    from app.handlers.registry import MODEL_REGISTRY
+    from app.models_metadata import MODEL_REGISTRY, ModelCategory
 
     # 从注册表获取类别信息
     info = MODEL_REGISTRY.get("yolov8n.pt")
     assert info is not None
-    assert info["category"] == "yolo_detect"
+    assert info["category"] == ModelCategory.YOLO_DETECT
 
 
 def test_handler_registry_get_info():
     """测试 HandlerRegistry 获取模型信息"""
-    from app.handlers.registry import MODEL_REGISTRY
+    from app.models_metadata import MODEL_REGISTRY, ModelCategory
 
     info = MODEL_REGISTRY.get("yolov8n.pt")
     assert info is not None
-    assert info["category"] == "yolo_detect"
+    assert info["category"] == ModelCategory.YOLO_DETECT
 
 
 def test_model_category_enum():
     """测试 ModelCategory 枚举"""
-    from app.handlers.registry import ModelCategory
+    from app.models_metadata import ModelCategory
 
-    assert ModelCategory.YOLO_DETECT == "yolo_detect"
-    assert ModelCategory.YOLO_SEGMENT == "yolo_segment"
-    assert ModelCategory.YOLO_POSE == "yolo_pose"
-    assert ModelCategory.HF_DETR == "hf_detr"
-    assert ModelCategory.HF_OWLVIT == "hf_owlvit"
+    # 测试枚举值存在
+    assert ModelCategory.YOLO_DETECT is not None
+    assert ModelCategory.YOLO_SEGMENT is not None
+    assert ModelCategory.YOLO_POSE is not None
+    assert ModelCategory.HF_DETR is not None
+    assert ModelCategory.HF_OWLVIT is not None
+
+    # 测试 display_name 属性
+    assert ModelCategory.YOLO_DETECT.display_name == "YOLO 检测"
+
+    # 测试 value_str 属性（向后兼容）
+    assert ModelCategory.YOLO_DETECT.value_str == "yolo_detect"
 
 
 def test_handler_registry_class():

@@ -12,6 +12,7 @@ import numpy as np
 from app.config import get_settings
 from app.handlers.base import BaseHandler
 from app.handlers.error_handling import handle_inference_errors
+from app.params import InferenceParams
 
 try:
     import torch
@@ -45,7 +46,7 @@ def _require_torch() -> Any:
 class DETRHandler(BaseHandler):
     """Facebook DETR 目标检测"""
 
-    def load(self, model_id: str) -> tuple[Any, Any]:
+    def _do_load(self, model_id: str) -> tuple[Any, Any]:
         _require_hf()
         from transformers import DetrForObjectDetection, DetrImageProcessor
 
@@ -54,20 +55,12 @@ class DETRHandler(BaseHandler):
         model = self._model_to_device(model)
         return model, processor
 
-    def infer(
+    def _infer_impl(
         self,
         model: Any,
         processor: Any,
         image: np.ndarray,
-        *,
-        conf: float = 0.5,
-        iou: float = 0.45,
-        max_det: int = 300,
-        device: str | None = None,
-        imgsz: int | None = None,
-        half: bool = False,
-        text_queries: list[str] | None = None,
-        question: str | None = None,
+        params: InferenceParams,
     ) -> dict[str, Any]:
         t0 = time.time()
         torch_module = _require_torch()
@@ -83,7 +76,7 @@ class DETRHandler(BaseHandler):
             target_sizes = target_sizes.to(self._device)
 
         results = processor.post_process_object_detection(
-            outputs, target_sizes=target_sizes, threshold=conf
+            outputs, target_sizes=target_sizes, threshold=params.conf
         )[0]
 
         elapsed = (time.time() - t0) * 1000.0
@@ -121,7 +114,7 @@ class DETRHandler(BaseHandler):
 class OWLViTHandler(BaseHandler):
     """Google OWL-ViT 开放词汇检测"""
 
-    def load(self, model_id: str) -> tuple[Any, Any]:
+    def _do_load(self, model_id: str) -> tuple[Any, Any]:
         _require_hf()
         from transformers import AutoModelForZeroShotObjectDetection, AutoProcessor
 
@@ -130,24 +123,17 @@ class OWLViTHandler(BaseHandler):
         model = self._model_to_device(model)
         return model, processor
 
-    def infer(
+    def _infer_impl(
         self,
         model: Any,
         processor: Any,
         image: np.ndarray,
-        *,
-        conf: float = 0.1,
-        iou: float = 0.45,
-        max_det: int = 300,
-        device: str | None = None,
-        imgsz: int | None = None,
-        half: bool = False,
-        text_queries: list[str] | None = None,
-        question: str | None = None,
+        params: InferenceParams,
     ) -> dict[str, Any]:
         t0 = time.time()
         torch_module = _require_torch()
-        queries = text_queries or ["object"]
+        owlvit_params = params.for_owlvit()
+        queries = owlvit_params["text_queries"]
         pil_image = self.bgr_to_pil(image)
 
         inputs = processor(text=queries, images=pil_image, return_tensors="pt")
@@ -159,7 +145,7 @@ class OWLViTHandler(BaseHandler):
         if self._device != "cpu":
             target_sizes = target_sizes.to(self._device)
         results = processor.post_process_object_detection(
-            outputs, target_sizes=target_sizes, threshold=conf
+            outputs, target_sizes=target_sizes, threshold=owlvit_params["conf"]
         )[0]
 
         elapsed = (time.time() - t0) * 1000.0
@@ -199,7 +185,7 @@ class OWLViTHandler(BaseHandler):
 class GroundingDINOHandler(BaseHandler):
     """IDEA-Research Grounding DINO 开放集检测"""
 
-    def load(self, model_id: str) -> tuple[Any, Any]:
+    def _do_load(self, model_id: str) -> tuple[Any, Any]:
         _require_hf()
         from transformers import AutoModelForZeroShotObjectDetection, AutoProcessor
 
@@ -208,24 +194,17 @@ class GroundingDINOHandler(BaseHandler):
         model = self._model_to_device(model)
         return model, processor
 
-    def infer(
+    def _infer_impl(
         self,
         model: Any,
         processor: Any,
         image: np.ndarray,
-        *,
-        conf: float = 0.25,
-        iou: float = 0.45,
-        max_det: int = 300,
-        device: str | None = None,
-        imgsz: int | None = None,
-        half: bool = False,
-        text_queries: list[str] | None = None,
-        question: str | None = None,
+        params: InferenceParams,
     ) -> dict[str, Any]:
         t0 = time.time()
         torch_module = _require_torch()
-        queries = text_queries or ["object"]
+        gdino_params = params.for_grounding_dino()
+        queries = gdino_params["text_queries"]
         pil_image = self.bgr_to_pil(image)
 
         labels = self._prepare_labels(queries)
@@ -249,7 +228,7 @@ class GroundingDINOHandler(BaseHandler):
         results = processor.post_process_grounded_object_detection(
             outputs=outputs,
             input_ids=inputs.get("input_ids"),
-            threshold=float(conf),
+            threshold=float(params.conf),
             text_threshold=settings.grounding_text_threshold,
             target_sizes=[pil_image.size[::-1]],
             text_labels=[labels],

@@ -10,6 +10,7 @@ import numpy as np
 
 from app.handlers.base import BaseHandler
 from app.handlers.error_handling import handle_inference_errors
+from app.params import InferenceParams
 
 try:
     import torch
@@ -22,44 +23,28 @@ logger = logging.getLogger(__name__)
 class YOLOHandler(BaseHandler):
     """处理所有 YOLO 系列模型（detect / segment / pose）"""
 
-    def load(self, model_id: str) -> tuple[Any, None]:
+    def _do_load(self, model_id: str) -> tuple[Any, None]:
         try:
             from ultralytics import YOLO
         except ImportError as exc:
             raise RuntimeError("ultralytics not installed") from exc
         return YOLO(model_id), None
 
-    def infer(
+    def _infer_impl(
         self,
         model: Any,
         processor: Any | None,
         image: np.ndarray,
-        *,
-        conf: float = 0.25,
-        iou: float = 0.45,
-        max_det: int = 300,
-        device: str | None = None,
-        imgsz: int | None = None,
-        half: bool = False,
-        text_queries: list[str] | None = None,
-        question: str | None = None,
+        params: InferenceParams,
     ) -> dict[str, Any]:
         t0 = time.time()
-        dev = device or self._device
+        dev = params.device or self._device
 
-        kwargs: dict[str, Any] = {
-            "conf": conf,
-            "iou": iou,
-            "max_det": max_det,
-            "verbose": False,
-            "device": dev,
-        }
-        if imgsz:
-            kwargs["imgsz"] = int(imgsz)
-        if half and dev.startswith("cuda"):
-            kwargs["half"] = True
+        # 从参数对象获取 YOLO 特定参数
+        yolo_kwargs = params.for_yolo()
+        yolo_kwargs["device"] = dev
 
-        results = self._call_model(model, image, kwargs)
+        results = self._call_model(model, image, yolo_kwargs)
         elapsed = (time.time() - t0) * 1000.0
 
         r = results[0]

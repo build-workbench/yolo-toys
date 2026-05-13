@@ -13,6 +13,7 @@ import numpy as np
 import pytest
 
 from app.handlers.blip_handler import BLIPCaptionHandler, BLIPVQAHandler
+from app.params import InferenceParams
 
 # ------------------------------------------------------------------
 # Fixtures
@@ -85,10 +86,10 @@ class TestBLIPCaptionHandler:
             ),
             patch.object(handler, "_model_to_device", return_value=mock_model) as mock_to_device,
         ):
-            model, processor = handler.load("Salesforce/blip-image-captioning-base")
+            loaded = handler.load("Salesforce/blip-image-captioning-base")
 
-        assert model is mock_model
-        assert processor is mock_processor
+        assert loaded.model is mock_model
+        assert loaded.processor is mock_processor
         mock_to_device.assert_called_once_with(mock_model)
 
     def test_infer_caption(
@@ -99,10 +100,12 @@ class TestBLIPCaptionHandler:
         mock_blip_caption_processor: MagicMock,
     ):
         """测试图像描述生成"""
-        result = handler.infer(
+        params = InferenceParams()
+        result = handler._infer_impl(
             mock_blip_caption_model,
             mock_blip_caption_processor,
             test_image,
+            params,
         )
 
         assert result["task"] == "caption"
@@ -120,7 +123,10 @@ class TestBLIPCaptionHandler:
         mock_blip_caption_processor: MagicMock,
     ):
         """测试 processor 被正确调用"""
-        handler.infer(mock_blip_caption_model, mock_blip_caption_processor, test_image)
+        params = InferenceParams()
+        handler._infer_impl(
+            mock_blip_caption_model, mock_blip_caption_processor, test_image, params
+        )
 
         # 验证 processor 被调用
         mock_blip_caption_processor.assert_called_once()
@@ -133,7 +139,10 @@ class TestBLIPCaptionHandler:
         mock_blip_caption_processor: MagicMock,
     ):
         """测试模型 generate 被调用"""
-        handler.infer(mock_blip_caption_model, mock_blip_caption_processor, test_image)
+        params = InferenceParams()
+        handler._infer_impl(
+            mock_blip_caption_model, mock_blip_caption_processor, test_image, params
+        )
 
         # 验证 generate 被调用
         mock_blip_caption_model.generate.assert_called_once()
@@ -146,7 +155,10 @@ class TestBLIPCaptionHandler:
         mock_blip_caption_processor: MagicMock,
     ):
         """测试 decode 被正确调用"""
-        handler.infer(mock_blip_caption_model, mock_blip_caption_processor, test_image)
+        params = InferenceParams()
+        handler._infer_impl(
+            mock_blip_caption_model, mock_blip_caption_processor, test_image, params
+        )
 
         # 验证 decode 被调用
         mock_blip_caption_processor.decode.assert_called_once_with(
@@ -162,9 +174,10 @@ class TestBLIPCaptionHandler:
         mock_model = MagicMock()
         mock_model.generate.side_effect = RuntimeError("CUDA error")
         mock_processor = MagicMock()
+        params = InferenceParams()
 
         with pytest.raises(RuntimeError, match="CUDA error"):
-            handler.infer(mock_model, mock_processor, test_image)
+            handler._infer_impl(mock_model, mock_processor, test_image, params)
 
 
 # ------------------------------------------------------------------
@@ -193,10 +206,10 @@ class TestBLIPVQAHandler:
             ),
             patch.object(handler, "_model_to_device", return_value=mock_model) as mock_to_device,
         ):
-            model, processor = handler.load("Salesforce/blip-vqa-base")
+            loaded = handler.load("Salesforce/blip-vqa-base")
 
-        assert model is mock_model
-        assert processor is mock_processor
+        assert loaded.model is mock_model
+        assert loaded.processor is mock_processor
         mock_to_device.assert_called_once_with(mock_model)
 
     def test_infer_vqa(
@@ -207,11 +220,12 @@ class TestBLIPVQAHandler:
         mock_blip_vqa_processor: MagicMock,
     ):
         """测试视觉问答"""
-        result = handler.infer(
+        params = InferenceParams(question="What color is the cat?")
+        result = handler._infer_impl(
             mock_blip_vqa_model,
             mock_blip_vqa_processor,
             test_image,
-            question="What color is the cat?",
+            params,
         )
 
         assert result["task"] == "vqa"
@@ -230,10 +244,12 @@ class TestBLIPVQAHandler:
         mock_blip_vqa_processor: MagicMock,
     ):
         """测试默认问题"""
-        result = handler.infer(
+        params = InferenceParams()
+        result = handler._infer_impl(
             mock_blip_vqa_model,
             mock_blip_vqa_processor,
             test_image,
+            params,
         )
 
         assert result["question"] == "What is in this image?"
@@ -246,11 +262,12 @@ class TestBLIPVQAHandler:
         mock_blip_vqa_processor: MagicMock,
     ):
         """测试 processor 接收到问题"""
-        handler.infer(
+        params = InferenceParams(question="How many cats?")
+        handler._infer_impl(
             mock_blip_vqa_model,
             mock_blip_vqa_processor,
             test_image,
-            question="How many cats?",
+            params,
         )
 
         # 验证 processor 被调用且包含问题
@@ -266,9 +283,10 @@ class TestBLIPVQAHandler:
         mock_model = MagicMock()
         mock_model.generate.side_effect = RuntimeError("Model error")
         mock_processor = MagicMock()
+        params = InferenceParams(question="test?")
 
         with pytest.raises(RuntimeError, match="Model error"):
-            handler.infer(mock_model, mock_processor, test_image, question="test?")
+            handler._infer_impl(mock_model, mock_processor, test_image, params)
 
 
 # ------------------------------------------------------------------

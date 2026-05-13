@@ -14,6 +14,16 @@ from unittest.mock import MagicMock
 import numpy as np
 import pytest
 
+from app.handlers.base import LoadedModel
+from app.params import InferenceParams
+
+
+def create_mock_loaded_model(
+    mock_model: MagicMock, mock_handler: MagicMock, model_id: str = "yolov8n.pt"
+) -> LoadedModel:
+    """创建 mock LoadedModel 对象"""
+    return LoadedModel(mock_model, None, mock_handler, model_id)
+
 
 class TestModelManagerCache:
     """ModelManager 缓存测试"""
@@ -27,17 +37,18 @@ class TestModelManagerCache:
         # Mock handler 和 registry
         mock_model = MagicMock()
         mock_handler = MagicMock()
-        mock_handler.load.return_value = (mock_model, None)
+        mock_loaded = create_mock_loaded_model(mock_model, mock_handler)
+        mock_handler.load.return_value = mock_loaded
 
         monkeypatch.setattr(manager._registry, "get_handler", lambda _: mock_handler)
 
         # 第一次加载
-        model1 = manager.load_model("yolov8n.pt")
-        assert model1 is mock_model
+        loaded1 = manager.load_model("yolov8n.pt")
+        assert loaded1.model is mock_model
 
         # 第二次应该命中缓存
-        model2 = manager.load_model("yolov8n.pt")
-        assert model1 is model2
+        loaded2 = manager.load_model("yolov8n.pt")
+        assert loaded1 is loaded2
         # load 只应该被调用一次
         mock_handler.load.assert_called_once()
 
@@ -53,15 +64,16 @@ class TestModelManagerCache:
 
         def mock_get_handler(model_id):
             handler = MagicMock()
-            handler.load.return_value = (models[model_id], None)
+            loaded = create_mock_loaded_model(models[model_id], handler, model_id)
+            handler.load.return_value = loaded
             return handler
 
         monkeypatch.setattr(manager._registry, "get_handler", mock_get_handler)
 
-        model1 = manager.load_model("yolov8n.pt")
-        model2 = manager.load_model("yolov8s.pt")
+        loaded1 = manager.load_model("yolov8n.pt")
+        loaded2 = manager.load_model("yolov8s.pt")
 
-        assert model1 is not model2
+        assert loaded1 is not loaded2
         assert len(manager.cache) == 2
 
     def test_cache_clear(self, monkeypatch):
@@ -71,7 +83,8 @@ class TestModelManagerCache:
         manager = ModelManager()
 
         mock_handler = MagicMock()
-        mock_handler.load.return_value = (MagicMock(), None)
+        mock_loaded = create_mock_loaded_model(MagicMock(), mock_handler)
+        mock_handler.load.return_value = mock_loaded
         monkeypatch.setattr(manager._registry, "get_handler", lambda _: mock_handler)
 
         # 加载模型
@@ -89,7 +102,8 @@ class TestModelManagerCache:
         manager = ModelManager()
 
         mock_handler = MagicMock()
-        mock_handler.load.return_value = (MagicMock(), None)
+        mock_loaded = create_mock_loaded_model(MagicMock(), mock_handler)
+        mock_handler.load.return_value = mock_loaded
         monkeypatch.setattr(manager._registry, "get_handler", lambda _: mock_handler)
 
         manager.load_model("yolov8n.pt")
@@ -126,13 +140,12 @@ class TestModelManagerCache:
 
         mock_model = MagicMock()
         mock_handler = MagicMock()
-        mock_handler.load.return_value = (mock_model, None)
 
         call_count = [0]
 
         def track_load(model_id):
             call_count[0] += 1
-            return (mock_model, None)
+            return create_mock_loaded_model(mock_model, mock_handler, model_id)
 
         mock_handler.load.side_effect = track_load
         monkeypatch.setattr(manager._registry, "get_handler", lambda _: mock_handler)
@@ -142,8 +155,8 @@ class TestModelManagerCache:
 
         def load_model():
             try:
-                model = manager.load_model("yolov8n.pt")
-                results.append(model)
+                loaded = manager.load_model("yolov8n.pt")
+                results.append(loaded)
             except Exception as e:
                 errors.append(e)
 
@@ -170,8 +183,11 @@ class TestModelManagerInfer:
 
         mock_model = MagicMock()
         mock_handler = MagicMock()
-        mock_handler.load.return_value = (mock_model, None)
-        mock_handler.infer.return_value = {
+        mock_loaded = create_mock_loaded_model(mock_model, mock_handler)
+        mock_handler.load.return_value = mock_loaded
+
+        # 设置 _infer_impl 的返回值
+        mock_handler._infer_impl.return_value = {
             "width": 640,
             "height": 480,
             "detections": [],
@@ -195,8 +211,10 @@ class TestModelManagerInfer:
 
         mock_model = MagicMock()
         mock_handler = MagicMock()
-        mock_handler.load.return_value = (mock_model, None)
-        mock_handler.infer.return_value = {
+        mock_loaded = create_mock_loaded_model(mock_model, mock_handler)
+        mock_handler.load.return_value = mock_loaded
+
+        mock_handler._infer_impl.return_value = {
             "width": 100,
             "height": 100,
             "detections": [],
@@ -215,11 +233,15 @@ class TestModelManagerInfer:
             max_det=100,
         )
 
-        # 验证参数被传递给 handler
-        call_kwargs = mock_handler.infer.call_args[1]
-        assert call_kwargs["conf"] == 0.5
-        assert call_kwargs["iou"] == 0.3
-        assert call_kwargs["max_det"] == 100
+        # 验证 _infer_impl 被调用，参数通过 InferenceParams 传递
+        assert mock_handler._infer_impl.called
+        call_args = mock_handler._infer_impl.call_args
+        # 第4个参数应该是 InferenceParams
+        params = call_args[0][3]  # (model, processor, image, params)
+        assert isinstance(params, InferenceParams)
+        assert params.conf == 0.5
+        assert params.iou == 0.3
+        assert params.max_det == 100
 
 
 class TestModelManagerStats:
@@ -232,7 +254,8 @@ class TestModelManagerStats:
         manager = ModelManager()
 
         mock_handler = MagicMock()
-        mock_handler.load.return_value = (MagicMock(), None)
+        mock_loaded = create_mock_loaded_model(MagicMock(), mock_handler)
+        mock_handler.load.return_value = mock_loaded
         monkeypatch.setattr(manager._registry, "get_handler", lambda _: mock_handler)
 
         stats = manager.get_stats()

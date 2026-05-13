@@ -5,20 +5,130 @@
 用于 API 端点展示和模型选择。
 """
 
+from enum import Enum, auto
 from typing import Any
 
 
-class ModelCategory:
-    """模型类别常量"""
+class ModelCategory(Enum):
+    """
+    模型类别枚举 - 封装类别推断逻辑。
 
-    YOLO_DETECT = "yolo_detect"
-    YOLO_SEGMENT = "yolo_segment"
-    YOLO_POSE = "yolo_pose"
-    HF_DETR = "hf_detr"
-    HF_OWLVIT = "hf_owlvit"
-    HF_GROUNDING_DINO = "hf_grounding_dino"
-    MULTIMODAL_CAPTION = "multimodal_caption"
-    MULTIMODAL_VQA = "multimodal_vqa"
+    Deep Module 设计：
+    - Interface: 枚举值 + infer_from_id() 方法
+    - Implementation: 封装所有推断规则和回退逻辑
+    - Depth: 调用者无需了解推断细节
+    """
+
+    YOLO_DETECT = auto()
+    YOLO_SEGMENT = auto()
+    YOLO_POSE = auto()
+    HF_DETR = auto()
+    HF_OWLVIT = auto()
+    HF_GROUNDING_DINO = auto()
+    MULTIMODAL_CAPTION = auto()
+    MULTIMODAL_VQA = auto()
+
+    @classmethod
+    def infer_from_id(cls, model_id: str, registry: dict | None = None) -> "ModelCategory":
+        """
+        从模型 ID 推断类别。
+
+        Args:
+            model_id: 模型标识符
+            registry: 可选的模型注册表，用于查找已注册模型的类别
+
+        Returns:
+            推断的 ModelCategory 枚举值
+
+        Raises:
+            ValueError: 无法推断模型类别
+        """
+        # 如果提供了注册表，优先使用
+        if registry and model_id in registry:
+            cat = registry[model_id].get("category")
+            # 处理枚举类型
+            if isinstance(cat, cls):
+                return cat
+            # 处理旧的字符串类别（向后兼容）
+            if isinstance(cat, str):
+                return cls._from_string(cat)
+            return cat
+
+        # 未注册的 .pt 文件按 YOLO 处理
+        if model_id.endswith(".pt"):
+            lower = model_id.lower()
+            if "seg" in lower:
+                return cls.YOLO_SEGMENT
+            if "pose" in lower:
+                return cls.YOLO_POSE
+            return cls.YOLO_DETECT
+
+        # HuggingFace 模型推断
+        lower = model_id.lower()
+        if "detr" in lower:
+            return cls.HF_DETR
+        if "owlvit" in lower:
+            return cls.HF_OWLVIT
+        if "grounding" in lower or "dino" in lower:
+            return cls.HF_GROUNDING_DINO
+        if "blip" in lower and "vqa" in lower:
+            return cls.MULTIMODAL_VQA
+        if "blip" in lower and ("caption" in lower or "captioning" in lower):
+            return cls.MULTIMODAL_CAPTION
+
+        # 含 / 的尝试作为 DETR 兜底
+        if "/" in model_id:
+            return cls.HF_DETR
+
+        raise ValueError(f"Unknown model: {model_id}")
+
+    @classmethod
+    def _from_string(cls, s: str) -> "ModelCategory":
+        """从旧字符串格式转换（向后兼容）"""
+        mapping = {
+            "yolo_detect": cls.YOLO_DETECT,
+            "yolo_segment": cls.YOLO_SEGMENT,
+            "yolo_pose": cls.YOLO_POSE,
+            "hf_detr": cls.HF_DETR,
+            "hf_owlvit": cls.HF_OWLVIT,
+            "hf_grounding_dino": cls.HF_GROUNDING_DINO,
+            "multimodal_caption": cls.MULTIMODAL_CAPTION,
+            "multimodal_vqa": cls.MULTIMODAL_VQA,
+        }
+        if s not in mapping:
+            raise ValueError(f"Unknown category: {s}")
+        return mapping[s]
+
+    @property
+    def display_name(self) -> str:
+        """获取显示名称"""
+        names = {
+            self.YOLO_DETECT: "YOLO 检测",
+            self.YOLO_SEGMENT: "YOLO 分割",
+            self.YOLO_POSE: "YOLO 姿态",
+            self.HF_DETR: "DETR 检测",
+            self.HF_OWLVIT: "开放词汇检测",
+            self.HF_GROUNDING_DINO: "Grounding DINO",
+            self.MULTIMODAL_CAPTION: "图像描述",
+            self.MULTIMODAL_VQA: "视觉问答",
+        }
+        return names.get(self, str(self))
+
+    # 向后兼容：提供字符串值属性
+    @property
+    def value_str(self) -> str:
+        """获取字符串值（向后兼容）"""
+        mapping = {
+            self.YOLO_DETECT: "yolo_detect",
+            self.YOLO_SEGMENT: "yolo_segment",
+            self.YOLO_POSE: "yolo_pose",
+            self.HF_DETR: "hf_detr",
+            self.HF_OWLVIT: "hf_owlvit",
+            self.HF_GROUNDING_DINO: "hf_grounding_dino",
+            self.MULTIMODAL_CAPTION: "multimodal_caption",
+            self.MULTIMODAL_VQA: "multimodal_vqa",
+        }
+        return mapping.get(self, str(self))
 
 
 # 模型注册表：模型 ID → 元数据

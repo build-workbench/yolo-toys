@@ -2,12 +2,68 @@
 模型处理器基类 - 定义统一接口
 """
 
-from abc import ABC, abstractmethod
-from typing import Any
+from __future__ import annotations
 
-import numpy as np
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Any
 
 from app.handlers.utils import bgr_to_pil, make_result
+
+if TYPE_CHECKING:
+    import numpy as np
+
+    from app.params import InferenceParams
+
+
+class LoadedModel:
+    """
+    封装已加载的模型，隐藏 processor 细节。
+
+    Deep Module 设计：
+    - Interface: 单一 infer() 方法
+    - Implementation: 隐藏 model、processor、handler 的协调
+    - Depth: 调用者无需了解 processor 的存在
+    """
+
+    def __init__(
+        self,
+        model: Any,
+        processor: Any | None,
+        handler: BaseHandler,
+        model_id: str,
+    ):
+        self._model = model
+        self._processor = processor
+        self._handler = handler
+        self._model_id = model_id
+
+    def infer(self, image: np.ndarray, params: InferenceParams) -> dict[str, Any]:
+        """
+        执行推理。
+
+        Args:
+            image: 输入图像（BGR 格式）
+            params: 推理参数
+
+        Returns:
+            推理结果字典
+        """
+        return self._handler._infer_impl(self._model, self._processor, image, params)
+
+    @property
+    def model_id(self) -> str:
+        """获取模型 ID"""
+        return self._model_id
+
+    @property
+    def model(self) -> Any:
+        """获取底层模型对象（用于高级用途）"""
+        return self._model
+
+    @property
+    def processor(self) -> Any | None:
+        """获取底层 processor 对象（用于高级用途）"""
+        return self._processor
 
 
 class BaseHandler(ABC):
@@ -21,33 +77,76 @@ class BaseHandler(ABC):
         return self._device
 
     # ------------------------------------------------------------------
+    # 公开接口
+    # ------------------------------------------------------------------
+
+    def load(self, model_id: str) -> LoadedModel:
+        """
+        加载模型，返回封装对象。
+
+        Args:
+            model_id: 模型标识符
+
+        Returns:
+            LoadedModel 封装对象
+        """
+        model, processor = self._do_load(model_id)
+        return LoadedModel(model, processor, self, model_id)
+
+    # ------------------------------------------------------------------
     # 子类必须实现
     # ------------------------------------------------------------------
 
     @abstractmethod
-    def load(self, model_id: str) -> tuple[Any, Any | None]:
+    def _do_load(self, model_id: str) -> tuple[Any, Any | None]:
         """
-        加载模型，返回 (model, processor)。
-        processor 可为 None（如 YOLO 不需要独立 processor）。
+        执行实际的模型加载。
+
+        Args:
+            model_id: 模型标识符
+
+        Returns:
+            (model, processor) 元组，processor 可为 None
         """
 
     @abstractmethod
+    def _infer_impl(
+        self,
+        model: Any,
+        processor: Any | None,
+        image: np.ndarray,
+        params: InferenceParams,
+    ) -> dict[str, Any]:
+        """
+        执行实际的推理。
+
+        Args:
+            model: 模型对象
+            processor: 处理器对象（可为 None）
+            image: 输入图像
+            params: 推理参数
+
+        Returns:
+            推理结果字典
+        """
+
+    # ------------------------------------------------------------------
+    # 向后兼容：保留旧的抽象方法签名作为别名
+    # ------------------------------------------------------------------
+
     def infer(
         self,
         model: Any,
         processor: Any | None,
         image: np.ndarray,
-        *,
-        conf: float = 0.25,
-        iou: float = 0.45,
-        max_det: int = 300,
-        device: str | None = None,
-        imgsz: int | None = None,
-        half: bool = False,
-        text_queries: list[str] | None = None,
-        question: str | None = None,
+        params: InferenceParams,
     ) -> dict[str, Any]:
-        """执行推理，返回标准结果字典"""
+        """
+        执行推理（向后兼容别名）。
+
+        新代码应使用 LoadedModel.infer() 方法。
+        """
+        return self._infer_impl(model, processor, image, params)
 
     # ------------------------------------------------------------------
     # 工具方法（向后兼容别名）

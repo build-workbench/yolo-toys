@@ -18,6 +18,7 @@ from app.handlers.hf_handler import (
     GroundingDINOHandler,
     OWLViTHandler,
 )
+from app.params import InferenceParams
 
 # ------------------------------------------------------------------
 # Fixtures
@@ -99,9 +100,9 @@ class TestDETRHandler:
                 return_value=mock_processor,
             ),
         ):
-            model, processor = handler.load("facebook/detr-resnet-50")
-            assert model is mock_model
-            assert processor is mock_processor
+            loaded = handler.load("facebook/detr-resnet-50")
+            assert loaded.model is mock_model
+            assert loaded.processor is mock_processor
 
     def test_infer_detection(
         self,
@@ -121,8 +122,8 @@ class TestDETRHandler:
         # Mock BGR to PIL conversion
         with patch.object(handler, "bgr_to_pil") as mock_bgr_to_pil:
             mock_bgr_to_pil.return_value = MagicMock(size=(640, 480))
-
-            result = handler.infer(mock_model, mock_processor, test_image, conf=0.5)
+            params = InferenceParams(conf=0.5)
+            result = handler._infer_impl(mock_model, mock_processor, test_image, params)
 
         assert result["task"] == "detect"
         assert result["width"] == 640
@@ -144,7 +145,8 @@ class TestDETRHandler:
         ]
 
         with patch.object(handler, "bgr_to_pil"):
-            handler.infer(mock_model, mock_processor, test_image, conf=0.8)
+            params = InferenceParams(conf=0.8)
+            handler._infer_impl(mock_model, mock_processor, test_image, params)
 
         # 验证 conf 被传递给后处理
         call_kwargs = mock_processor.post_process_object_detection.call_args[1]
@@ -178,9 +180,9 @@ class TestOWLViTHandler:
                 return_value=mock_processor,
             ),
         ):
-            model, processor = handler.load("google/owlvit-base-patch32")
-            assert model is mock_model
-            assert processor is mock_processor
+            loaded = handler.load("google/owlvit-base-patch32")
+            assert loaded.model is mock_model
+            assert loaded.processor is mock_processor
 
     def test_infer_with_text_queries(
         self,
@@ -196,13 +198,8 @@ class TestOWLViTHandler:
         mock_processor.post_process_object_detection.return_value = [mock_owlvit_outputs]
 
         with patch.object(handler, "bgr_to_pil"):
-            result = handler.infer(
-                mock_model,
-                mock_processor,
-                test_image,
-                conf=0.1,
-                text_queries=["cat", "dog"],
-            )
+            params = InferenceParams(conf=0.1, text_queries=["cat", "dog"])
+            result = handler._infer_impl(mock_model, mock_processor, test_image, params)
 
         assert result["task"] == "detect"
         assert result["text_queries"] == ["cat", "dog"]
@@ -221,7 +218,8 @@ class TestOWLViTHandler:
         mock_processor.post_process_object_detection.return_value = [mock_owlvit_outputs]
 
         with patch.object(handler, "bgr_to_pil"):
-            result = handler.infer(mock_model, mock_processor, test_image)
+            params = InferenceParams()
+            result = handler._infer_impl(mock_model, mock_processor, test_image, params)
 
         assert result["text_queries"] == ["object"]
 
@@ -239,12 +237,8 @@ class TestOWLViTHandler:
         mock_processor.post_process_object_detection.return_value = [mock_owlvit_outputs]
 
         with patch.object(handler, "bgr_to_pil"):
-            result = handler.infer(
-                mock_model,
-                mock_processor,
-                test_image,
-                text_queries=["cat", "dog", "bird"],
-            )
+            params = InferenceParams(text_queries=["cat", "dog", "bird"])
+            result = handler._infer_impl(mock_model, mock_processor, test_image, params)
 
         # label index 1 should map to "dog"
         assert result["detections"][0]["label"] == "dog"
@@ -277,9 +271,9 @@ class TestGroundingDINOHandler:
                 return_value=mock_processor,
             ),
         ):
-            model, processor = handler.load("IDEA-Research/grounding-dino-tiny")
-            assert model is mock_model
-            assert processor is mock_processor
+            loaded = handler.load("IDEA-Research/grounding-dino-tiny")
+            assert loaded.model is mock_model
+            assert loaded.processor is mock_processor
 
     def test_infer_with_text_queries(
         self,
@@ -309,13 +303,8 @@ class TestGroundingDINOHandler:
         ].detach.return_value.cpu.return_value.numpy.return_value = np.array([0.9])
 
         with patch.object(handler, "bgr_to_pil"):
-            result = handler.infer(
-                mock_model,
-                mock_processor,
-                test_image,
-                conf=0.25,
-                text_queries=["cat"],
-            )
+            params = InferenceParams(conf=0.25, text_queries=["cat"])
+            result = handler._infer_impl(mock_model, mock_processor, test_image, params)
 
         assert result["task"] == "detect"
         assert result["text_queries"] == ["cat"]
@@ -365,7 +354,8 @@ class TestGroundingDINOHandler:
         ].detach.return_value.cpu.return_value.numpy.return_value = np.zeros((0,))
 
         with patch.object(handler, "bgr_to_pil"):
-            result = handler.infer(mock_model, mock_processor, test_image)
+            params = InferenceParams()
+            result = handler._infer_impl(mock_model, mock_processor, test_image, params)
 
         assert result["detections"] == []
 
@@ -389,7 +379,8 @@ class TestHFHandlerErrors:
             patch.object(handler, "bgr_to_pil"),
             pytest.raises(RuntimeError, match="Model error"),
         ):
-            handler.infer(mock_model, mock_processor, test_image)
+            params = InferenceParams()
+            handler._infer_impl(mock_model, mock_processor, test_image, params)
 
     def test_owlvit_infer_error(self, test_image: np.ndarray):
         """测试 OWL-ViT 推理异常"""
@@ -402,7 +393,8 @@ class TestHFHandlerErrors:
             patch.object(handler, "bgr_to_pil"),
             pytest.raises(RuntimeError, match="Inference failed"),
         ):
-            handler.infer(mock_model, mock_processor, test_image)
+            params = InferenceParams()
+            handler._infer_impl(mock_model, mock_processor, test_image, params)
 
     def test_grounding_dino_missing_post_process(self, test_image: np.ndarray):
         """测试 Grounding DINO 缺少后处理方法"""
@@ -417,4 +409,5 @@ class TestHFHandlerErrors:
             patch.object(handler, "bgr_to_pil"),
             pytest.raises(RuntimeError, match="transformers 版本过低"),
         ):
-            handler.infer(mock_model, mock_processor, test_image)
+            params = InferenceParams()
+            handler._infer_impl(mock_model, mock_processor, test_image, params)
