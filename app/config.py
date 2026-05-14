@@ -56,6 +56,12 @@ class AppSettings(BaseSettings):
     # 限制
     max_upload_mb: int = Field(default=10, alias="MAX_UPLOAD_MB")
     max_concurrency: int = Field(default=4, alias="MAX_CONCURRENCY")
+    # 模型缓存配置
+    model_cache_maxsize: int = Field(default=10, alias="MODEL_CACHE_MAXSIZE")
+    model_cache_ttl: int = Field(default=3600, alias="MODEL_CACHE_TTL")  # 1 hour default
+    model_memory_threshold: float = Field(
+        default=0.85, alias="MODEL_MEMORY_THRESHOLD"
+    )  # 85% memory threshold
 
     @field_validator("log_level", mode="before")
     @classmethod

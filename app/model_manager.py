@@ -8,7 +8,6 @@
 
 import gc
 import logging
-import os
 import threading
 import time
 import urllib.parse
@@ -31,11 +30,6 @@ try:
 except ImportError:
     torch = None
 
-# Model cache configuration
-CACHE_MAXSIZE = int(os.getenv("MODEL_CACHE_MAXSIZE", "10"))
-CACHE_TTL = int(os.getenv("MODEL_CACHE_TTL", "3600"))  # 1 hour default
-MEMORY_THRESHOLD = float(os.getenv("MODEL_MEMORY_THRESHOLD", "0.85"))  # 85% memory threshold
-
 
 def get_memory_usage() -> float:
     """获取当前内存使用比例，用于缓存清理决策"""
@@ -50,10 +44,11 @@ def get_memory_usage() -> float:
 class ModelCache(TTLCache):
     """带内存监控和线程安全的 TTL 缓存"""
 
-    def __init__(self, maxsize: int, ttl: float):
+    def __init__(self, maxsize: int, ttl: float, memory_threshold: float = 0.85):
         super().__init__(maxsize=maxsize, ttl=ttl)
         self._access_times: dict[str, float] = {}
         self._lock = threading.Lock()
+        self._memory_threshold = memory_threshold
 
     @contextmanager
     def _threadsafe(self):
@@ -73,7 +68,7 @@ class ModelCache(TTLCache):
     def __setitem__(self, key: str, value: Any) -> None:
         with self._lock:
             # 内存压力检查
-            if len(self) >= self.maxsize or get_memory_usage() > MEMORY_THRESHOLD:
+            if len(self) >= self.maxsize or get_memory_usage() > self._memory_threshold:
                 self._evict_lru_unsafe()
             super().__setitem__(key, value)
             self._access_times[key] = time.time()
@@ -122,7 +117,11 @@ class ModelManager:
         self._device = config.device
         self._registry = HandlerRegistry(config.device)  # 向后兼容：传递设备字符串
         # 使用 LRU + TTL 混合缓存
-        self._cache = ModelCache(maxsize=config.cache_maxsize, ttl=config.cache_ttl)
+        self._cache = ModelCache(
+            maxsize=config.cache_maxsize,
+            ttl=config.cache_ttl,
+            memory_threshold=config.memory_threshold,
+        )
         self._load_times: dict[str, float] = {}
         self._access_count: dict[str, int] = {}
 

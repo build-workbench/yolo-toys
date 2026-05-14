@@ -590,8 +590,11 @@ def test_schemas_all_exports():
 
 
 def test_api_init():
-    """测试 api 包初始化"""
-    from app.api import inference_router, models_router, system_router, ws_router
+    """测试 api 包初始化 - 验证路由器可直接导入"""
+    from app.api.inference import router as inference_router
+    from app.api.models import router as models_router
+    from app.api.system import router as system_router
+    from app.api.websocket import router as ws_router
 
     assert system_router is not None
     assert models_router is not None
@@ -600,15 +603,9 @@ def test_api_init():
 
 
 def test_routes_all():
-    """测试 routes 模块导出"""
-    from app.routes import (
-        parse_text_queries,
-        read_upload_image,
-        router,
-        validate_image_mime,
-    )
+    """测试路由器模块导出 - 验证工具函数可直接导入"""
+    from app.api.utils import parse_text_queries, read_upload_image, validate_image_mime
 
-    assert router is not None
     assert read_upload_image is not None
     assert validate_image_mime is not None
     assert parse_text_queries is not None

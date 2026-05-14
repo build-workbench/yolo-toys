@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 import numpy as np
 import uvicorn
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import PlainTextResponse
@@ -15,6 +15,10 @@ from fastapi.staticfiles import StaticFiles
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 
 from app import __version__ as VERSION
+from app.api.inference import router as inference_router
+from app.api.models import router as models_router
+from app.api.system import router as system_router
+from app.api.websocket import router as ws_router
 from app.config import get_settings
 from app.metrics import update_memory_metric, update_model_cache_metric
 from app.middleware import (
@@ -24,7 +28,6 @@ from app.middleware import (
     TimeoutMiddleware,
 )
 from app.model_manager import get_memory_usage, model_manager
-from app.routes import router
 
 settings = get_settings()
 
@@ -113,7 +116,12 @@ async def metrics():
 
 
 # 注册路由（保持向后兼容的根路径）
-app.include_router(router)
+main_router = APIRouter()
+main_router.include_router(system_router)
+main_router.include_router(models_router)
+main_router.include_router(inference_router)
+main_router.include_router(ws_router)
+app.include_router(main_router)
 
 # 挂载静态文件（放在路由之后，确保 API 优先）
 app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
