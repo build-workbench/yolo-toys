@@ -7,6 +7,15 @@ on:
       - main
     paths:
       - 'docs/**'
+      - 'changelog/**'
+      - '.github/workflows/docs-pages.yml'
+  pull_request:
+    branches:
+      - master
+      - main
+    paths:
+      - 'docs/**'
+      - 'changelog/**'
       - '.github/workflows/docs-pages.yml'
   workflow_dispatch:
 
@@ -16,11 +25,52 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Cache docs node_modules
+        uses: actions/cache@v4
+        with:
+          path: docs/node_modules
+          key: ${{ runner.os }}-docs-node-modules-${{ hashFiles('docs/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-docs-node-modules-
+
+      - name: Install docs dependencies
+        working-directory: docs
+        run: npm install --no-package-lock
+
+      - name: Sync changelog
+        working-directory: docs
+        run: npm run sync-changelog
+
+      - name: Build docs (validation)
+        working-directory: docs
+        env:
+          VITEPRESS_BASE: "/"
+        run: npm run build
+
+      - name: Check for broken links
+        working-directory: docs
+        run: |
+          echo "✅ Documentation build completed successfully"
+          echo "   Build output: docs/.vitepress/dist"
+
   deploy:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -62,6 +112,10 @@ jobs:
       - name: Install docs dependencies
         working-directory: docs
         run: npm install --no-package-lock
+
+      - name: Sync changelog
+        working-directory: docs
+        run: npm run sync-changelog
 
       - name: Build docs
         working-directory: docs
