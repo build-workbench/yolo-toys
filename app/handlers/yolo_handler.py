@@ -25,7 +25,7 @@ class YOLOHandler(BaseHandler):
 
     def _do_load(self, model_id: str) -> tuple[Any, None]:
         try:
-            from ultralytics import YOLO
+            from ultralytics import YOLO  # pyright: ignore[reportPrivateImportUsage]
         except ImportError as exc:
             raise RuntimeError("ultralytics not installed") from exc
         return YOLO(model_id), None

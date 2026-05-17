@@ -41,7 +41,7 @@ def get_memory_usage() -> float:
         return 0.0
 
 
-class ModelCache(TTLCache):
+class ModelCache(TTLCache[str, LoadedModel]):
     """带内存监控和线程安全的 TTL 缓存"""
 
     def __init__(self, maxsize: int, ttl: float, memory_threshold: float = 0.85):

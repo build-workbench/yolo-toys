@@ -493,7 +493,7 @@ def test_config_skip_warmup_invalid_value():
     from app.config import AppSettings
 
     with pytest.raises(ValueError, match="SKIP_WARMUP must be a boolean value"):
-        AppSettings(SKIP_WARMUP="not-a-bool")
+        AppSettings(SKIP_WARMUP="not-a-bool")  # pyright: ignore[reportArgumentType]
 
 
 def test_parse_bool_string_invalid_value():
@@ -644,7 +644,7 @@ def test_base_handler_bgr_to_pil():
     assert pil_image.size == (100, 100)
     assert pil_image.mode == "RGB"
     # BGR 的蓝色转换为 RGB 的红色
-    pixel = pil_image.getpixel((50, 50))
+    pixel: tuple[int, int, int] = pil_image.getpixel((50, 50))  # pyright: ignore[reportAssignmentType]
     assert pixel[0] == 0  # R
     assert pixel[1] == 0  # G
     assert pixel[2] == 255  # B
@@ -764,7 +764,7 @@ def test_model_manager_invalid_model_id_none():
 
     manager = ModelManager()
     with pytest.raises(ValueError, match="non-empty string"):
-        manager.load_model(None)  # type: ignore
+        manager.load_model(None)  # pyright: ignore[reportArgumentType]
 
 
 # ------------------------------------------------------------------

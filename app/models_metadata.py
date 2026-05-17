@@ -29,7 +29,9 @@ class ModelCategory(Enum):
     MULTIMODAL_VQA = auto()
 
     @classmethod
-    def infer_from_id(cls, model_id: str, registry: dict | None = None) -> "ModelCategory":
+    def infer_from_id(
+        cls, model_id: str, registry: dict[str, Any] | None = None
+    ) -> "ModelCategory":
         """
         从模型 ID 推断类别。
 

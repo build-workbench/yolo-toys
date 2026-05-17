@@ -5,7 +5,7 @@ FastAPI 中间件 - 速率限制、超时控制、指标收集
 import logging
 import threading
 import time
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -25,7 +25,9 @@ class TimeoutMiddleware(BaseHTTPMiddleware):
         super().__init__(app)
         self.timeout = timeout_seconds
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
+    ) -> Response:
         # Note: Python's asyncio doesn't support true per-request cancellation
         # This is a simplified implementation
         start_time = time.time()
@@ -48,7 +50,9 @@ class TimeoutMiddleware(BaseHTTPMiddleware):
 class MetricsMiddleware(BaseHTTPMiddleware):
     """Prometheus 指标收集中间件"""
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
+    ) -> Response:
         start_time = time.time()
         status_code = 500
 
@@ -74,7 +78,9 @@ class MetricsMiddleware(BaseHTTPMiddleware):
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     """安全响应头中间件"""
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
+    ) -> Response:
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
@@ -134,7 +140,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 len(expired_ips),
             )
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
+    ) -> Response:
         client_ip = request.client.host if request.client else "unknown"
         current_time = time.time()
 

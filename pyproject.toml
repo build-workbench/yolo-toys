@@ -117,3 +117,22 @@ exclude_lines = [
     "if TYPE_CHECKING:",
 ]
 fail_under = 15  # Minimum coverage threshold (matches current coverage)
+
+# Basedpyright 类型检查配置
+# 参考: https://docs.basedpyright.com/latest/configuration/config-files/
+[tool.basedpyright]
+# 基础类型检查模式
+typeCheckingMode = "standard"
+# 排除虚拟环境和缓存目录
+exclude = [".venv", "**/__pycache__", "**/node_modules"]
+# 将常见警告降级为警告（不阻止 CI）
+reportExplicitAny = "warning"
+reportUnknownParameterType = "warning"
+reportUnknownArgumentType = "warning"
+reportUnknownMemberType = "warning"
+reportUnknownVariableType = "warning"
+reportPrivateUsage = "warning"
+reportMissingParameterType = "warning"
+reportMissingTypeArgument = "warning"
+reportUnusedCallResult = "none"
+reportUnknownLambdaType = "none"

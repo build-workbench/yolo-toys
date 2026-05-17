@@ -7,12 +7,15 @@
 import logging
 from collections.abc import Callable
 from functools import wraps
-from typing import Any
+from typing import Any, ParamSpec, TypeVar
 
 logger = logging.getLogger(__name__)
 
+P = ParamSpec("P")
+R = TypeVar("R")
 
-def handle_inference_errors(model_name: str) -> Callable:
+
+def handle_inference_errors(model_name: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
     """
     推理错误处理装饰器
 
@@ -30,7 +33,7 @@ def handle_inference_errors(model_name: str) -> Callable:
             return results
     """
 
-    def decorator(func: Callable) -> Callable:
+    def decorator(func: Callable[P, R]) -> Callable[P, R]:
         @wraps(func)
         def wrapper(*args, **kwargs) -> Any:
             try:

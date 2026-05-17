@@ -284,7 +284,7 @@ class TestModelManagerValidation:
         manager = ModelManager()
 
         with pytest.raises(ValueError, match="non-empty string"):
-            manager.load_model(None)  # type: ignore
+            manager.load_model(None)  # pyright: ignore[reportArgumentType]
 
     def test_invalid_model_id_path_traversal(self):
         """测试路径遍历攻击"""

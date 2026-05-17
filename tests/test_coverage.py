@@ -217,13 +217,13 @@ def test_config_skip_warmup():
     """测试 skip_warmup 配置"""
     from app.config import AppSettings
 
-    s = AppSettings(SKIP_WARMUP="true")
+    s = AppSettings(SKIP_WARMUP="true")  # pyright: ignore[reportArgumentType]
     assert s.skip_warmup is True
 
-    s2 = AppSettings(SKIP_WARMUP="false")
+    s2 = AppSettings(SKIP_WARMUP="false")  # pyright: ignore[reportArgumentType]
     assert s2.skip_warmup is False
 
-    s3 = AppSettings(SKIP_WARMUP="1")
+    s3 = AppSettings(SKIP_WARMUP="1")  # pyright: ignore[reportArgumentType]
     assert s3.skip_warmup is True
 
 
@@ -231,7 +231,7 @@ def test_config_max_upload_bytes():
     """测试 max_upload_bytes 配置"""
     from app.config import AppSettings
 
-    s = AppSettings(MAX_UPLOAD_MB="10")
+    s = AppSettings(MAX_UPLOAD_MB="10")  # pyright: ignore[reportArgumentType]
     assert s.max_upload_bytes == 10 * 1024 * 1024
 
     s2 = AppSettings(MAX_UPLOAD_MB=5)
@@ -267,7 +267,7 @@ def test_inference_response():
     response = InferenceResponse(
         width=100,
         height=100,
-        detections=[{"bbox": [0, 0, 10, 10], "score": 0.9, "label": "test"}],
+        detections=[{"bbox": [0, 0, 10, 10], "score": 0.9, "label": "test"}],  # pyright: ignore[reportArgumentType]
         inference_time=1.0,
         task="detect",
     )

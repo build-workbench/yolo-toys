@@ -8,6 +8,7 @@ HFHandler 单元测试 - 测试 HuggingFace 模型处理器的加载和推理逻
 - 文本查询参数处理
 """
 
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import numpy as np
@@ -108,7 +109,7 @@ class TestDETRHandler:
         self,
         handler: DETRHandler,
         test_image: np.ndarray,
-        mock_detr_outputs: dict,
+        mock_detr_outputs: dict[str, Any],
     ):
         """测试 DETR 推理"""
         mock_model = MagicMock()
@@ -188,7 +189,7 @@ class TestOWLViTHandler:
         self,
         handler: OWLViTHandler,
         test_image: np.ndarray,
-        mock_owlvit_outputs: dict,
+        mock_owlvit_outputs: dict[str, Any],
     ):
         """测试使用文本查询的 OWL-ViT 推理"""
         mock_model = MagicMock()
@@ -209,7 +210,7 @@ class TestOWLViTHandler:
         self,
         handler: OWLViTHandler,
         test_image: np.ndarray,
-        mock_owlvit_outputs: dict,
+        mock_owlvit_outputs: dict[str, Any],
     ):
         """测试默认查询词"""
         mock_model = MagicMock()
@@ -227,7 +228,7 @@ class TestOWLViTHandler:
         self,
         handler: OWLViTHandler,
         test_image: np.ndarray,
-        mock_owlvit_outputs: dict,
+        mock_owlvit_outputs: dict[str, Any],
     ):
         """测试从查询词获取标签"""
         mock_owlvit_outputs["labels"].cpu.return_value.numpy.return_value = np.array([1])
@@ -295,12 +296,12 @@ class TestGroundingDINOHandler:
         # Mock detach for numpy conversion
         mock_processor.post_process_grounded_object_detection.return_value[0][
             "boxes"
-        ].detach.return_value.cpu.return_value.numpy.return_value = np.array(
-            [[10.0, 20.0, 100.0, 200.0]]
+        ].detach.return_value.cpu.return_value.numpy.return_value = (  # pyright: ignore[reportAttributeAccessIssue]
+            np.array([[10.0, 20.0, 100.0, 200.0]])
         )
         mock_processor.post_process_grounded_object_detection.return_value[0][
             "scores"
-        ].detach.return_value.cpu.return_value.numpy.return_value = np.array([0.9])
+        ].detach.return_value.cpu.return_value.numpy.return_value = np.array([0.9])  # pyright: ignore[reportAttributeAccessIssue]
 
         with patch.object(handler, "bgr_to_pil"):
             params = InferenceParams(conf=0.25, text_queries=["cat"])
@@ -348,10 +349,10 @@ class TestGroundingDINOHandler:
         ]
         mock_processor.post_process_grounded_object_detection.return_value[0][
             "boxes"
-        ].detach.return_value.cpu.return_value.numpy.return_value = np.zeros((0, 4))
+        ].detach.return_value.cpu.return_value.numpy.return_value = np.zeros((0, 4))  # pyright: ignore[reportAttributeAccessIssue]
         mock_processor.post_process_grounded_object_detection.return_value[0][
             "scores"
-        ].detach.return_value.cpu.return_value.numpy.return_value = np.zeros((0,))
+        ].detach.return_value.cpu.return_value.numpy.return_value = np.zeros((0,))  # pyright: ignore[reportAttributeAccessIssue]
 
         with patch.object(handler, "bgr_to_pil"):
             params = InferenceParams()

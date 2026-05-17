@@ -345,7 +345,7 @@ class TestBgrToPil:
         pil_image = bgr_to_pil(bgr_image)
 
         # BGR 的蓝色在 RGB 中应该是 (R=0, G=0, B=255)
-        pixel = pil_image.getpixel((50, 50))
+        pixel: tuple[int, int, int] = pil_image.getpixel((50, 50))  # pyright: ignore[reportAssignmentType]
         assert pixel[0] == 0  # R
         assert pixel[1] == 0  # G
         assert pixel[2] == 255  # B
