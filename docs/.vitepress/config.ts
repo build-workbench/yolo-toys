@@ -12,6 +12,13 @@ const base = rawBase
 const sharedHead = [
   ['meta', { name: 'theme-color', content: '#ff6b35' }],
   ['meta', { name: 'og:type', content: 'website' }],
+  ['meta', { property: 'og:title', content: 'YOLO-Toys Whitepaper' }],
+  ['meta', { property: 'og:description', content: 'A whitepaper-grade architecture and research guide for the YOLO-Toys multi-model vision serving stack.' }],
+  ['meta', { property: 'og:image', content: 'https://lessup.github.io/yolo-toys/assets/images/og-image.svg' }],
+  ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+  ['meta', { name: 'twitter:title', content: 'YOLO-Toys Whitepaper' }],
+  ['meta', { name: 'twitter:description', content: 'Architecture atlas, academy, reference, and research guide for YOLO-Toys.' }],
+  ['meta', { name: 'twitter:image', content: 'https://lessup.github.io/yolo-toys/assets/images/og-image.svg' }],
   [
     'script',
     { id: 'lang-redirect' },

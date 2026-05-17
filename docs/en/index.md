@@ -1,75 +1,68 @@
 ---
 layout: home
-
-hero:
-  name: "YOLO-Toys"
-  text: "Multi-Model Vision Inference Platform"
-  tagline: "Unified FastAPI + WebSocket interface for YOLO, DETR, OWL-ViT, Grounding DINO, and BLIP models"
-  image:
-    src: /images/logo.svg
-    alt: YOLO-Toys Logo
-  actions:
-    - theme: brand
-      text: Quick Start
-      link: /en/getting-started/
-    - theme: alt
-      text: Academy
-      link: /en/academy/
-    - theme: alt
-      text: GitHub
-      link: https://github.com/LessUp/yolo-toys
-
-features:
-  - icon: 🚀
-    title: Multi-Model Support
-    details: "Run 8 model families in one service: YOLO, DETR, OWL-ViT, Grounding DINO, BLIP, SAM, RT-DETR, and more."
-  - icon: ⚡
-    title: Dual Protocol
-    details: "REST for synchronous inference, WebSocket for real-time streaming. Same models, flexible access."
-  - icon: 🏗️
-    title: Handler Architecture
-    details: "Strategy pattern for extensibility. Add custom models with minimal code changes."
-  - icon: 📦
-    title: Production Ready
-    details: "Docker deployment, <50ms latency, TTL+LRU caching, FP16 inference, health checks."
 ---
 
-## Quick Start
+<WhitepaperLanding
+  eyebrow="YOLO-Toys"
+  chapter="Architecture Whitepaper"
+  title="One runtime for heterogeneous vision models, documented like a systems paper."
+  abstract="YOLO-Toys unifies YOLOv8, DETR, OWL-ViT, Grounding DINO, and BLIP behind a single FastAPI plus WebSocket service boundary. The site treats the repository as a technical artifact first: architecture atlas, design essays, operational references, and research context."
+  primary-label="Start with the Primer"
+  primary-href="/en/primer/"
+  secondary-label="Open the Architecture Atlas"
+  secondary-href="/en/architecture/"
+  tertiary-label="Inspect the API Surface"
+  tertiary-href="/en/api/"
+  github-href="https://github.com/LessUp/yolo-toys"
+>
+  <template #signals>
+    <span>5 model families</span>
+    <span>REST + WebSocket</span>
+    <span>Handler/Registry pattern</span>
+    <span>Research-aware docs</span>
+  </template>
 
-```bash
-docker run -p 8000:8000 ghcr.io/lessup/yolo-toys:latest
-```
+  <template #figure>
+    <FigureFrame
+      title="System thesis"
+      caption="YOLO-Toys is organized to normalize heterogeneous model families without flattening their differences."
+    >
+      <div class="yt-home-figure-shell">
+        <div class="yt-home-figure-step">
+          <strong>Client surfaces</strong>
+          <span>HTTP, WebSocket, observability endpoints</span>
+        </div>
+        <div class="yt-home-figure-step">
+          <strong>Runtime core</strong>
+          <span>ModelManager, cache policy, concurrency guardrails</span>
+        </div>
+        <div class="yt-home-figure-step">
+          <strong>Execution adapters</strong>
+          <span>YOLO, DETR, OWL-ViT, Grounding DINO, BLIP handlers</span>
+        </div>
+      </div>
+    </FigureFrame>
+  </template>
 
-Then open [http://localhost:8000](http://localhost:8000) for the API UI.
-
-## Architecture Overview
-
-```mermaid
-graph TB
-    subgraph Client["Client"]
-        WEB[Web UI]
-        CLI[CLI Tool]
-        SDK[SDK]
-    end
-
-    subgraph API["API Layer"]
-        REST[REST API]
-        WS[WebSocket]
-    end
-
-    subgraph Core["Core"]
-        MM[ModelManager]
-        REG[HandlerRegistry]
-        CACHE[ModelCache]
-    end
-
-    subgraph Handlers["Handlers"]
-        YOLO[YOLOHandler]
-        DETR[DETRHandler]
-        BLIP[BLIPHandler]
-    end
-
-    Client --> API
-    API --> MM
-    MM --> REG --> Handlers
-```
+  <template #tracks>
+    <ReadingTracks
+      :tracks="[
+        {
+          title: 'Interviewer / Reviewer',
+          summary: 'Read the architecture atlas first, then the comparisons page, then the citations surface.',
+          href: '/en/architecture/'
+        },
+        {
+          title: 'Integrator / Operator',
+          summary: 'Start in the primer, validate deployment assumptions, then move into API and operations pages.',
+          href: '/en/primer/'
+        },
+        {
+          title: 'Contributor / Extender',
+          summary: 'Read the academy essays to understand the handler and registry boundaries before touching code.',
+          href: '/en/academy/'
+        }
+      ]"
+    />
+  </template>
+</WhitepaperLanding>

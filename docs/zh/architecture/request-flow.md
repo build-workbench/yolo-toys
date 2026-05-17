@@ -1,110 +1,44 @@
----
-title: 请求流程
----
-
 # 请求流程
 
-本文档详细描述 YOLO-Toys 的请求处理流程。
+这一页追踪一次推理请求如何穿过运行时。理解这条生命周期很重要，因为公共 API 的质量，取决于系统把校验、缓存、执行与结果整形分别放在了哪里。
 
-## 整体流程
+<FigureFrame
+  title="图 2. 端到端生命周期"
+  caption="请求可以从 HTTP 或 WebSocket 进入，但在进入模型特定执行之前，会先汇合到同一条协调路径。"
+>
+  <img src="/images/request-lifecycle.svg" alt="YOLO-Toys 请求生命周期" />
+</FigureFrame>
 
-```mermaid
-sequenceDiagram
-    participant C as 客户端
-    participant API as FastAPI
-    participant MM as ModelManager
-    participant Cache as ModelCache
-    participant H as Handler
-    participant M as Model
+## 分步骤看整条路径
 
-    C->>API: POST /infer {file, model}
-    API->>MM: infer(model_id, image, params)
+1. **入口**：请求从 HTTP 或 WebSocket 进入
+2. **校验**：参数、文件与模型标识符在执行前先被检查
+3. **协调**：`ModelManager` 选择或复用模型实例，并解析正确的 handler
+4. **执行**：对应 handler 运行模型家族特有的推理逻辑
+5. **归一化**：原始输出被整理成稳定的响应契约
+6. **输出**：运行时返回 JSON，或按帧输出流式结果
 
-    alt 模型在缓存中
-        MM->>Cache: cache[model_id]
-        Cache-->>MM: LoadedModel
-    else 模型未缓存
-        MM->>H: load(model_id)
-        H->>M: 加载模型权重
-        M-->>H: 模型就绪
-        H-->>MM: LoadedModel
-        MM->>Cache: cache[model_id] = LoadedModel
-    end
+## 为什么归一化必须放在执行之后
 
-    MM->>H: infer(image, params)
-    H->>M: 前向传播
-    M-->>H: 原始结果
-    H-->>MM: 格式化结果
-    MM-->>API: 结果字典
-    API-->>C: JSON 响应
+不同上游模型在输出结构、标签语义、置信度行为与附加产物上都不一致。如果让路由层直接处理这些差异，传输层就会变成模型语义堆积的地方。YOLO-Toys 的做法，是保持路由层轻薄，把翻译责任交给 handlers 与 formatter helpers。
 
-    Note over Cache: TTL 自动过期<br/>内存压力时 LRU 驱逐
-```
+## 缓存与并发如何介入
 
-## REST API 流程
+这条生命周期不只是功能路径，也是运维路径。一次请求可能触发：
 
-### 1. 请求接收
+- 缓存命中，直接复用热模型
+- 首次使用时的惰性加载
+- 在并发上限被占满时进入等待
 
-```python
-@app.post("/infer")
-async def infer(
-    file: UploadFile = File(...),
-    model: str = Form(...),
-    confidence: float = Form(0.25),
-):
-    # 读取图片
-    image = await file.read()
+这些行为都会直接影响延迟、预热成本与资源压力，所以它们本身就是用户可感知的运行时特征。
 
-    # 调用 ModelManager
-    result = await model_manager.infer(model, image, params)
+## 常见故障点
 
-    return result
-```
+故障通常集中在四个位置：
 
-### 2. 模型加载
+- 非法输入或超大文件
+- 未知模型标识符
+- 模型加载失败
+- handler 内部的推理异常
 
-1. 检查缓存是否存在模型
-2. 如不存在，从 HandlerRegistry 获取 Handler
-3. 调用 Handler.load() 加载模型
-4. 将 LoadedModel 存入缓存
-
-### 3. 推理执行
-
-1. 从缓存获取 LoadedModel
-2. 调用 LoadedModel.infer()
-3. 处理结果格式化
-4. 返回 JSON 响应
-
-## WebSocket 流程
-
-```mermaid
-sequenceDiagram
-    participant C as 客户端
-    participant WS as WebSocket
-    participant MM as ModelManager
-
-    C->>WS: 连接 /ws
-    WS-->>C: 连接确认
-
-    loop 推理循环
-        C->>WS: 发送图片 + 参数
-        WS->>MM: infer()
-        MM-->>WS: 结果
-        WS-->>C: 推送结果
-    end
-
-    C->>WS: 关闭连接
-    WS-->>C: 连接关闭
-```
-
-## 性能关键路径
-
-| 阶段 | 耗时 | 优化点 |
-|------|------|--------|
-| 图片解码 | ~5ms | 使用 libjpeg-turbo |
-| 模型推理 | ~30ms | FP16、批处理 |
-| 结果序列化 | ~2ms | 使用 orjson |
-
-## 错误处理流程
-
-所有错误在 API 层统一捕获并转换为标准错误响应格式。
+当前架构的价值之一，就是每类失败都能在自然边界上被清晰暴露出来。
