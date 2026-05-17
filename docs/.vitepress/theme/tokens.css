@@ -189,7 +189,7 @@
   /* ---- Brand Colors ---- */
   --yt-brand: var(--color-brand-500);             /* Primary brand (orange) */
   --yt-brand-soft: var(--color-brand-100);        /* Brand tint */
-  --yt-brand-text: var(--color-white);            /* Text on brand */
+  --yt-brand-text: var(--color-neutral-900);            /* Text on brand */
 
   /* ---- Accent Colors ---- */
   --yt-accent: var(--color-accent-500);           /* Accent (blue) */
