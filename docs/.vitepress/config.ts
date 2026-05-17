@@ -112,9 +112,11 @@ export default withMermaid(defineConfig({
                 { text: '系统总览', link: '/zh/architecture/overview' },
                 { text: '请求流程', link: '/zh/architecture/request-flow' },
                 { text: '处理器体系', link: '/zh/architecture/handlers' },
+                { text: '模型加载', link: '/zh/architecture/model-loading' },
                 { text: '中间件栈', link: '/zh/architecture/middleware-stack' },
                 { text: '配置注入', link: '/zh/architecture/config-injection' },
                 { text: '模型缓存', link: '/zh/architecture/model-cache' },
+                { text: '安全模型', link: '/zh/architecture/security-model' },
               ],
             },
             {
@@ -131,6 +133,7 @@ export default withMermaid(defineConfig({
               text: '学院',
               items: [
                 { text: '学院首页', link: '/zh/academy/' },
+                { text: '深度模块', link: '/zh/academy/deep-modules' },
                 { text: 'Handler 模式', link: '/zh/academy/handler-pattern' },
                 { text: 'Registry 模式', link: '/zh/academy/registry-pattern' },
                 { text: '缓存策略', link: '/zh/academy/caching-strategy' },
@@ -144,6 +147,8 @@ export default withMermaid(defineConfig({
               items: [
                 { text: '参考首页', link: '/zh/reference/' },
                 { text: '模型矩阵', link: '/zh/reference/models' },
+                { text: '配置参考', link: '/zh/reference/configuration-reference' },
+                { text: 'Prometheus 指标', link: '/zh/reference/metrics-reference' },
                 { text: '性能基准', link: '/zh/reference/benchmarks' },
                 { text: '竞品对比', link: '/zh/reference/comparisons' },
                 { text: 'FAQ', link: '/zh/reference/faq' },
@@ -212,9 +217,11 @@ export default withMermaid(defineConfig({
                 { text: 'System Overview', link: '/en/architecture/overview' },
                 { text: 'Request Lifecycle', link: '/en/architecture/request-flow' },
                 { text: 'Handler Topology', link: '/en/architecture/handlers' },
+                { text: 'Model Loading', link: '/en/architecture/model-loading' },
                 { text: 'Middleware Stack', link: '/en/architecture/middleware-stack' },
                 { text: 'Config Injection', link: '/en/architecture/config-injection' },
                 { text: 'Model Cache', link: '/en/architecture/model-cache' },
+                { text: 'Security Model', link: '/en/architecture/security-model' },
               ],
             },
             {
@@ -231,6 +238,7 @@ export default withMermaid(defineConfig({
               text: 'Academy',
               items: [
                 { text: 'Academy Home', link: '/en/academy/' },
+                { text: 'Deep Modules', link: '/en/academy/deep-modules' },
                 { text: 'Handler Pattern', link: '/en/academy/handler-pattern' },
                 { text: 'Registry Pattern', link: '/en/academy/registry-pattern' },
                 { text: 'Caching Strategy', link: '/en/academy/caching-strategy' },
@@ -244,6 +252,8 @@ export default withMermaid(defineConfig({
               items: [
                 { text: 'Reference Home', link: '/en/reference/' },
                 { text: 'Model Matrix', link: '/en/reference/models' },
+                { text: 'Configuration', link: '/en/reference/configuration-reference' },
+                { text: 'Prometheus Metrics', link: '/en/reference/metrics-reference' },
                 { text: 'Benchmarks', link: '/en/reference/benchmarks' },
                 { text: 'Comparisons', link: '/en/reference/comparisons' },
                 { text: 'FAQ', link: '/en/reference/faq' },
@@ -270,12 +280,15 @@ export default withMermaid(defineConfig({
   mermaid: {
     theme: 'base',
     themeVariables: {
-      primaryColor: '#fff2ec',
-      primaryTextColor: '#1e2933',
-      primaryBorderColor: '#ffb08b',
-      lineColor: '#6f6b73',
-      secondaryColor: '#f6f1ee',
-      tertiaryColor: '#ece7e4',
+      // Aligned with design tokens from tokens.css
+      primaryColor: 'var(--svg-surface-alt, #fffdfa)',
+      primaryTextColor: 'var(--svg-ink, #1c1a22)',
+      primaryBorderColor: 'var(--svg-border, #e0dbe8)',
+      lineColor: 'var(--svg-wire, #9b96b0)',
+      secondaryColor: 'var(--svg-surface, #ffffff)',
+      tertiaryColor: 'var(--svg-canvas, #faf8f5)',
+      fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontSize: '14px',
     },
   },
   vite: {

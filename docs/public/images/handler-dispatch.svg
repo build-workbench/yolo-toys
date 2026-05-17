@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 920" role="img" aria-labelledby="title desc">
+  <title id="title">YOLO-Toys handler dispatch</title>
+  <desc id="desc">A diagram showing the Strategy pattern used for handler dispatch based on model category.</desc>
+
+  <!-- Background -->
+  <rect class="canvas" width="1280" height="920" rx="36" />
+  <rect class="surface" x="28" y="28" width="1224" height="864" rx="28" stroke-width="2" />
+
+  <!-- Title -->
+  <text class="ink" x="84" y="104" font-size="22" font-weight="700" letter-spacing="2">HANDLER DISPATCH</text>
+  <text class="muted" x="84" y="138" font-size="28" font-weight="600">Strategy pattern for model-family-specific execution.</text>
+
+  <!-- ModelManager (Context) -->
+  <g transform="translate(440 170)">
+    <rect class="surface-alt" width="400" height="100" rx="20" stroke-width="2" stroke="var(--svg-brand)" />
+    <text class="ink" x="200" y="40" text-anchor="middle" font-size="24" font-weight="760">ModelManager</text>
+    <text class="muted" x="200" y="70" text-anchor="middle" font-size="14">Context: coordinates handler selection</text>
+  </g>
+
+  <!-- Arrow to Registry -->
+  <path class="wire" d="M640 270V310" />
+  <circle class="ink" cx="640" cy="270" r="4" />
+
+  <!-- HandlerRegistry -->
+  <g transform="translate(440 310)">
+    <rect class="surface-alt" width="400" height="80" rx="16" stroke-width="2" />
+    <text class="ink" x="200" y="35" text-anchor="middle" font-size="20" font-weight="700">HandlerRegistry</text>
+    <text class="muted" x="200" y="60" text-anchor="middle" font-size="13">Maps ModelCategory → Handler class</text>
+  </g>
+
+  <!-- Category Resolution -->
+  <path class="wire" d="M640 390V420" />
+  <circle class="ink" cx="640" cy="390" r="4" />
+
+  <g transform="translate(340 420)">
+    <rect class="surface-alt" width="600" height="60" rx="12" stroke-width="2" />
+    <text class="ink" x="300" y="38" text-anchor="middle" font-size="16" font-weight="700">ModelCategory.resolve(model_id) → Category Enum</text>
+  </g>
+
+  <!-- Dispatch Arrow -->
+  <path class="wire" d="M640 480V520" />
+  <text class="muted" x="660" y="505" font-size="12">dispatch</text>
+
+  <!-- BaseHandler (Abstract Strategy) -->
+  <g transform="translate(490 520)">
+    <rect class="surface-alt" width="300" height="80" rx="16" stroke-width="2" stroke="var(--svg-accent)" />
+    <text class="ink" x="150" y="35" text-anchor="middle" font-size="18" font-weight="700" font-style="italic">BaseHandler</text>
+    <text class="muted" x="150" y="60" text-anchor="middle" font-size="13">Abstract Strategy</text>
+  </g>
+
+  <!-- Concrete Handlers -->
+  <text class="ink" x="640" y="640" text-anchor="middle" font-size="14" font-weight="700" letter-spacing="1">CONCRETE STRATEGIES</text>
+
+  <!-- YOLOHandler -->
+  <g transform="translate(84 670)">
+    <rect class="surface-alt" width="180" height="100" rx="14" stroke-width="2" />
+    <text class="brand" x="90" y="30" text-anchor="middle" font-size="16" font-weight="700">YOLOHandler</text>
+    <text class="muted" x="90" y="55" text-anchor="middle" font-size="12">Detection</text>
+    <text class="muted" x="90" y="72" text-anchor="middle" font-size="12">Segmentation</text>
+    <text class="muted" x="90" y="89" text-anchor="middle" font-size="12">Pose</text>
+  </g>
+
+  <!-- DETRHandler -->
+  <g transform="translate(284 670)">
+    <rect class="surface-alt" width="180" height="100" rx="14" stroke-width="2" />
+    <text class="brand" x="90" y="30" text-anchor="middle" font-size="16" font-weight="700">DETRHandler</text>
+    <text class="muted" x="90" y="55" text-anchor="middle" font-size="12">DETR</text>
+    <text class="muted" x="90" y="72" text-anchor="middle" font-size="12">DETR-ResNet</text>
+    <text class="muted" x="90" y="89" text-anchor="middle" font-size="12">(HF models)</text>
+  </g>
+
+  <!-- OWLViTHandler -->
+  <g transform="translate(484 670)">
+    <rect class="surface-alt" width="180" height="100" rx="14" stroke-width="2" />
+    <text class="brand" x="90" y="30" text-anchor="middle" font-size="16" font-weight="700">OWLViTHandler</text>
+    <text class="muted" x="90" y="55" text-anchor="middle" font-size="12">Open-vocab</text>
+    <text class="muted" x="90" y="72" text-anchor="middle" font-size="12">Detection</text>
+    <text class="muted" x="90" y="89" text-anchor="middle" font-size="12">Text-conditioned</text>
+  </g>
+
+  <!-- GroundingDINOHandler -->
+  <g transform="translate(684 670)">
+    <rect class="surface-alt" width="180" height="100" rx="14" stroke-width="2" />
+    <text class="brand" x="90" y="30" text-anchor="middle" font-size="14" font-weight="700">GroundingDINO</text>
+    <text class="muted" x="90" y="55" text-anchor="middle" font-size="12">Phrase-grounded</text>
+    <text class="muted" x="90" y="72" text-anchor="middle" font-size="12">Object detection</text>
+    <text class="muted" x="90" y="89" text-anchor="middle" font-size="12">Zero-shot</text>
+  </g>
+
+  <!-- BLIPCaptionHandler -->
+  <g transform="translate(884 670)">
+    <rect class="surface-alt" width="180" height="100" rx="14" stroke-width="2" />
+    <text class="brand" x="90" y="30" text-anchor="middle" font-size="15" font-weight="700">BLIPCaption</text>
+    <text class="muted" x="90" y="55" text-anchor="middle" font-size="12">Image caption</text>
+    <text class="muted" x="90" y="72" text-anchor="middle" font-size="12">VQA</text>
+    <text class="muted" x="90" y="89" text-anchor="middle" font-size="12">Multimodal</text>
+  </g>
+
+  <!-- BLIPVQAHandler -->
+  <g transform="translate(1084 670)">
+    <rect class="surface-alt" width="130" height="100" rx="14" stroke-width="2" />
+    <text class="brand" x="65" y="30" text-anchor="middle" font-size="14" font-weight="700">BLIPVQA</text>
+    <text class="muted" x="65" y="55" text-anchor="middle" font-size="12">Visual Q&amp;A</text>
+    <text class="muted" x="65" y="72" text-anchor="middle" font-size="12">Question</text>
+    <text class="muted" x="65" y="89" text-anchor="middle" font-size="12">Answer</text>
+  </g>
+
+  <!-- Connection lines from BaseHandler to Concrete -->
+  <path class="wire" d="M540 600L174 670" />
+  <path class="wire" d="M580 600L374 670" />
+  <path class="wire" d="M640 600V670" />
+  <path class="wire" d="M700 600L774 670" />
+  <path class="wire" d="M740 600L974 670" />
+  <path class="wire" d="M760 600L1149 670" />
+
+  <!-- Result Normalization -->
+  <g transform="translate(440 820)">
+    <rect class="surface-alt" width="400" height="60" rx="30" stroke-width="2" stroke="var(--svg-brand)" />
+    <text class="ink" x="200" y="38" text-anchor="middle" font-size="18" font-weight="700">Normalized Response Schema</text>
+  </g>
+
+  <!-- Arrow from handlers to result -->
+  <path class="wire" d="M174 770V800H440" />
+  <path class="wire" d="M374 770V800H440" />
+  <path class="wire" d="M574 770V800" />
+  <path class="wire" d="M774 770V800H840" />
+  <path class="wire" d="M974 770V800H840" />
+  <path class="wire" d="M1149 770V800H840" />
+
+  <!-- Pattern Badge -->
+  <g transform="translate(1000 170)">
+    <rect class="brand-soft" width="200" height="40" rx="20" />
+    <text class="brand" x="100" y="26" text-anchor="middle" font-size="14" font-weight="700">Strategy Pattern</text>
+  </g>
+
+  <!-- Footer -->
+  <text class="muted" x="84" y="880" font-size="16">Each handler encapsulates model-family-specific logic while exposing a uniform interface. New model families can be added by implementing BaseHandler and registering their category.</text>
+</svg>

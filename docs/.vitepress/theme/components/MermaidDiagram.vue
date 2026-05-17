@@ -1,4 +1,11 @@
 <script setup lang="ts">
+/**
+ * MermaidDiagram - Theme-Aware Mermaid Diagram Renderer
+ *
+ * Renders Mermaid diagrams with theme-aware styling.
+ * Colors are aligned with design tokens from tokens.css.
+ */
+
 import { ref, watch, onMounted, nextTick } from 'vue'
 import { isDark } from '../index'
 
@@ -8,6 +15,29 @@ const props = defineProps<{
 }>()
 
 const mermaidContainer = ref<HTMLDivElement | null>(null)
+
+// Theme variables aligned with tokens.css
+const lightTheme = {
+  primaryColor: '#fffdfa',
+  primaryTextColor: '#1c1a22',
+  primaryBorderColor: '#e0dbe8',
+  lineColor: '#9b96b0',
+  secondaryColor: '#ffffff',
+  tertiaryColor: '#faf8f5',
+  fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
+  fontSize: '14px',
+}
+
+const darkTheme = {
+  primaryColor: '#2a2a32',
+  primaryTextColor: '#e8e6f0',
+  primaryBorderColor: '#5a5a6a',
+  lineColor: '#6b6880',
+  secondaryColor: '#232329',
+  tertiaryColor: '#1a1a1f',
+  fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
+  fontSize: '14px',
+}
 
 async function renderMermaid() {
   if (!mermaidContainer.value) return
@@ -34,26 +64,10 @@ async function renderMermaid() {
   }
 
   // Re-initialize mermaid with theme-aware config
-  const isDarkMode = isDark.value
+  const themeVars = isDark.value ? darkTheme : lightTheme
   mermaid.initialize({
-    theme: isDarkMode ? 'dark' : 'base',
-    themeVariables: isDarkMode
-      ? {
-          primaryColor: '#2a2a35',
-          primaryTextColor: '#e8e6f0',
-          primaryBorderColor: '#5a5a6a',
-          lineColor: '#8a87a0',
-          secondaryColor: '#23232a',
-          tertiaryColor: '#1a1a20',
-        }
-      : {
-          primaryColor: '#fff2ec',
-          primaryTextColor: '#1e2933',
-          primaryBorderColor: '#ffb08b',
-          lineColor: '#6f6b73',
-          secondaryColor: '#f6f1ee',
-          tertiaryColor: '#ece7e4',
-        },
+    theme: 'base',
+    themeVariables: themeVars,
   })
 
   // Find and render the diagram
@@ -101,5 +115,11 @@ watch(isDark, () => {
 .mermaid-body :deep(svg) {
   max-width: 100%;
   height: auto;
+}
+
+/* Smooth transition for theme changes */
+.mermaid-body :deep(svg *) {
+  transition: fill var(--duration-slow, 300ms) var(--ease-in-out, ease-in-out),
+              stroke var(--duration-slow, 300ms) var(--ease-in-out, ease-in-out);
 }
 </style>

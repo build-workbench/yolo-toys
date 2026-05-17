@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 900" role="img" aria-labelledby="title desc">
+  <title id="title">YOLO-Toys model loading flow</title>
+  <desc id="desc">A flowchart showing the model loading process with cache hit and miss paths.</desc>
+
+  <!-- Background -->
+  <rect class="canvas" width="1280" height="900" rx="36" />
+  <rect class="surface" x="28" y="28" width="1224" height="844" rx="28" stroke-width="2" />
+
+  <!-- Title -->
+  <text class="ink" x="84" y="104" font-size="22" font-weight="700" letter-spacing="2">MODEL LOADING FLOW</text>
+  <text class="muted" x="84" y="138" font-size="28" font-weight="600">Cache-aware lazy loading with TTL + LRU hybrid eviction.</text>
+
+  <!-- Start: Request -->
+  <g transform="translate(540 180)">
+    <rect class="surface-alt" width="200" height="60" rx="30" stroke-width="2" />
+    <text class="ink" x="100" y="38" text-anchor="middle" font-size="18" font-weight="700">Model Request</text>
+  </g>
+
+  <!-- Decision: Cache Check -->
+  <g transform="translate(520 280)">
+    <polygon class="surface-alt" points="120,0 240,60 120,120 0,60" stroke-width="2" />
+    <text class="ink" x="120" y="55" text-anchor="middle" font-size="16" font-weight="700">Cache Hit?</text>
+    <text class="muted" x="120" y="75" text-anchor="middle" font-size="12">Check TTL + LRU</text>
+  </g>
+
+  <!-- Arrow to Cache Check -->
+  <path class="wire" d="M640 240V280" />
+  <circle class="ink" cx="640" cy="240" r="4" />
+
+  <!-- Cache Hit Path (Left) -->
+  <text class="success" x="480" y="320" font-size="14" font-weight="700">YES</text>
+  <path class="wire" d="M520 340H380V440" />
+
+  <!-- Cache Hit: Return Cached Model -->
+  <g transform="translate(220 440)">
+    <rect class="surface-alt" width="200" height="80" rx="16" stroke-width="2" stroke="var(--svg-success)" />
+    <text class="ink" x="100" y="35" text-anchor="middle" font-size="18" font-weight="700">Return Cached</text>
+    <text class="ink" x="100" y="60" text-anchor="middle" font-size="18" font-weight="700">Model</text>
+  </g>
+
+  <!-- Cache Hit Flow to Response -->
+  <path class="wire" d="M320 520V680H540" />
+
+  <!-- Cache Miss Path (Right) -->
+  <text class="warning" x="780" y="320" font-size="14" font-weight="700">NO</text>
+  <path class="wire" d="M760 340H900V400" />
+
+  <!-- Cache Miss: Security Validation -->
+  <g transform="translate(800 400)">
+    <rect class="surface-alt" width="200" height="80" rx="16" stroke-width="2" stroke="var(--svg-warning)" />
+    <text class="ink" x="100" y="35" text-anchor="middle" font-size="18" font-weight="700">Security</text>
+    <text class="ink" x="100" y="60" text-anchor="middle" font-size="18" font-weight="700">Validation</text>
+  </g>
+
+  <!-- Arrow -->
+  <path class="wire" d="M900 480V510" />
+
+  <!-- Decision: Memory Check -->
+  <g transform="translate(780 510)">
+    <polygon class="surface-alt" points="120,0 240,60 120,120 0,60" stroke-width="2" />
+    <text class="ink" x="120" y="55" text-anchor="middle" font-size="16" font-weight="700">Memory OK?</text>
+    <text class="muted" x="120" y="75" text-anchor="middle" font-size="12">Check threshold</text>
+  </g>
+
+  <!-- Memory OK Path -->
+  <text class="success" x="1010" y="540" font-size="14" font-weight="700">YES</text>
+  <path class="wire" d="M1020 570H1100V660" />
+
+  <!-- Load Model -->
+  <g transform="translate(1000 660)">
+    <rect class="surface-alt" width="200" height="80" rx="16" stroke-width="2" />
+    <text class="ink" x="100" y="35" text-anchor="middle" font-size="18" font-weight="700">Load Model</text>
+    <text class="muted" x="100" y="60" text-anchor="middle" font-size="14">Handler-specific</text>
+  </g>
+
+  <!-- Memory Not OK: Evict LRU -->
+  <text class="danger" x="680" y="540" font-size="14" font-weight="700">NO</text>
+  <path class="wire" d="M780 570H680V660" />
+
+  <g transform="translate(580 660)">
+    <rect class="surface-alt" width="200" height="80" rx="16" stroke-width="2" stroke="var(--svg-danger)" />
+    <text class="ink" x="100" y="35" text-anchor="middle" font-size="18" font-weight="700">Evict LRU</text>
+    <text class="muted" x="100" y="60" text-anchor="middle" font-size="14">+ Clear CUDA cache</text>
+  </g>
+
+  <!-- Evict to Load -->
+  <path class="wire" d="M780 700H900V700H1000" />
+
+  <!-- Load to Cache -->
+  <path class="wire" d="M1100 740V780H700" />
+
+  <!-- Cache Model -->
+  <g transform="translate(500 740)">
+    <rect class="surface-alt" width="200" height="80" rx="16" stroke-width="2" />
+    <text class="ink" x="100" y="35" text-anchor="middle" font-size="18" font-weight="700">Cache Model</text>
+    <text class="muted" x="100" y="60" text-anchor="middle" font-size="14">Set TTL + access time</text>
+  </g>
+
+  <!-- Cache to Response -->
+  <path class="wire" d="M600 780H540V680" />
+
+  <!-- Final Response -->
+  <g transform="translate(440 800)">
+    <rect class="surface-alt" width="200" height="60" rx="30" stroke-width="2" stroke="var(--svg-brand)" />
+    <text class="ink" x="100" y="38" text-anchor="middle" font-size="18" font-weight="700">Return Model</text>
+  </g>
+
+  <!-- Arrow from middle to final -->
+  <path class="wire" d="M540 740V800" />
+
+  <!-- Legend -->
+  <g transform="translate(84 180)">
+    <rect class="surface-alt" width="140" height="100" rx="12" stroke-width="1" />
+    <text class="ink" x="70" y="24" text-anchor="middle" font-size="12" font-weight="700" letter-spacing="1">LEGEND</text>
+    <circle class="success" cx="24" cy="44" r="6" />
+    <text class="muted" x="40" y="48" font-size="11">Cache Hit</text>
+    <circle class="warning" cx="24" cy="66" r="6" />
+    <text class="muted" x="40" y="70" font-size="11">Cache Miss</text>
+    <circle class="danger" cx="24" cy="88" r="6" />
+    <text class="muted" x="40" y="92" font-size="11">Eviction</text>
+  </g>
+
+  <!-- Footer -->
+  <text class="muted" x="84" y="852" font-size="16">The hybrid TTL + LRU cache ensures both freshness and memory efficiency. CUDA cache is cleared on eviction to prevent GPU memory leaks.</text>
+</svg>

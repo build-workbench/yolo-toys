@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 860" role="img" aria-labelledby="title desc">
+  <title id="title">YOLO-Toys security boundary</title>
+  <desc id="desc">A layered defense diagram showing the security middleware stack and validation boundaries.</desc>
+
+  <!-- Background -->
+  <rect class="canvas" width="1280" height="860" rx="36" />
+  <rect class="surface" x="28" y="28" width="1224" height="804" rx="28" stroke-width="2" />
+
+  <!-- Title -->
+  <text class="ink" x="84" y="104" font-size="22" font-weight="700" letter-spacing="2">SECURITY BOUNDARY</text>
+  <text class="muted" x="84" y="138" font-size="28" font-weight="600">Defense-in-depth from ingress to execution.</text>
+
+  <!-- Layer 1: Transport Security -->
+  <g transform="translate(84 170)">
+    <rect class="surface-alt" width="1112" height="90" rx="16" stroke-width="2" stroke="var(--svg-danger)" />
+    <rect class="brand-soft" x="16" y="16" width="160" height="28" rx="14" />
+    <text class="ink" x="96" y="36" text-anchor="middle" font-size="12" font-weight="700" letter-spacing="1">LAYER 1: TRANSPORT</text>
+    <text class="ink" x="196" y="52" font-size="20" font-weight="760">Security Headers</text>
+    <text class="muted" x="196" y="76" font-size="14">X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy</text>
+  </g>
+
+  <!-- Layer 2: Traffic Control -->
+  <g transform="translate(84 280)">
+    <rect class="surface-alt" width="1112" height="90" rx="16" stroke-width="2" stroke="var(--svg-warning)" />
+    <rect class="brand-soft" x="16" y="16" width="140" height="28" rx="14" />
+    <text class="ink" x="86" y="36" text-anchor="middle" font-size="12" font-weight="700" letter-spacing="1">LAYER 2: TRAFFIC</text>
+    <text class="ink" x="176" y="52" font-size="20" font-weight="760">Rate Limiting + Timeout</text>
+    <text class="muted" x="176" y="76" font-size="14">Per-IP token bucket with auto-cleanup, request timeout (60s default), max concurrency guardrails</text>
+  </g>
+
+  <!-- Layer 3: Compression + CORS -->
+  <g transform="translate(84 390)">
+    <rect class="surface-alt" width="1112" height="90" rx="16" stroke-width="2" stroke="var(--svg-accent)" />
+    <rect class="brand-soft" x="16" y="16" width="130" height="28" rx="14" />
+    <text class="ink" x="81" y="36" text-anchor="middle" font-size="12" font-weight="700" letter-spacing="1">LAYER 3: PROXY</text>
+    <text class="ink" x="166" y="52" font-size="20" font-weight="760">GZip + CORS</text>
+    <text class="muted" x="166" y="76" font-size="14">Response compression, configurable CORS origins with credential-awareness</text>
+  </g>
+
+  <!-- Layer 4: Input Validation -->
+  <g transform="translate(84 500)">
+    <rect class="surface-alt" width="1112" height="130" rx="16" stroke-width="2" stroke="var(--svg-success)" />
+    <rect class="brand-soft" x="16" y="16" width="130" height="28" rx="14" />
+    <text class="ink" x="81" y="36" text-anchor="middle" font-size="12" font-weight="700" letter-spacing="1">LAYER 4: INPUT</text>
+
+    <text class="ink" x="166" y="52" font-size="20" font-weight="760">Input Validation</text>
+
+    <!-- Three validation cards -->
+    <g transform="translate(166 72)">
+      <rect class="surface" width="320" height="40" rx="10" stroke-width="1" />
+      <text class="ink" x="16" y="26" font-size="14" font-weight="600">Path Traversal Protection</text>
+    </g>
+    <g transform="translate(506 72)">
+      <rect class="surface" width="320" height="40" rx="10" stroke-width="1" />
+      <text class="ink" x="16" y="26" font-size="14" font-weight="600">Magic Number Validation</text>
+    </g>
+    <g transform="translate(846 72)">
+      <rect class="surface" width="220" height="40" rx="10" stroke-width="1" />
+      <text class="ink" x="16" y="26" font-size="14" font-weight="600">File Size Limits</text>
+    </g>
+  </g>
+
+  <!-- Layer 5: Execution Sandbox -->
+  <g transform="translate(84 650)">
+    <rect class="surface-alt" width="1112" height="100" rx="16" stroke-width="2" stroke="var(--svg-brand)" />
+    <rect class="brand-soft" x="16" y="16" width="150" height="28" rx="14" />
+    <text class="ink" x="91" y="36" text-anchor="middle" font-size="12" font-weight="700" letter-spacing="1">LAYER 5: EXECUTION</text>
+    <text class="ink" x="186" y="52" font-size="20" font-weight="760">Handler Isolation</text>
+    <text class="muted" x="186" y="76" font-size="14">Each handler validates its own parameters, memory-aware cache prevents OOM, CUDA cache clearing on eviction</text>
+  </g>
+
+  <!-- Flow arrows between layers -->
+  <path class="wire" d="M640 260V280" />
+  <path class="wire" d="M640 370V390" />
+  <path class="wire" d="M640 480V500" />
+  <path class="wire" d="M640 630V650" />
+
+  <!-- Request flow label -->
+  <g transform="translate(1140 390)">
+    <text class="muted" x="0" y="0" font-size="12" font-weight="600" letter-spacing="1" transform="rotate(90)">REQUEST FLOW →</text>
+  </g>
+
+  <!-- Badge -->
+  <g transform="translate(1000 170)">
+    <rect class="brand-soft" width="200" height="40" rx="20" />
+    <text class="brand" x="100" y="26" text-anchor="middle" font-size="14" font-weight="700">Defense in Depth</text>
+  </g>
+
+  <!-- Footer -->
+  <text class="muted" x="84" y="804" font-size="16">Each layer independently guarantees a security property. If one layer is bypassed, the next continues to enforce its constraint. No single point of failure in the trust boundary.</text>
+</svg>

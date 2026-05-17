@@ -1,71 +1,66 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 820" role="img" aria-labelledby="title desc">
   <title id="title">YOLO-Toys runtime topology</title>
   <desc id="desc">A layered diagram showing client surfaces, runtime coordination, dispatch, and execution adapters.</desc>
-  <style>
-    .bg { fill: var(--svg-bg, #faf8f5); }
-    .panel { fill: var(--svg-panel, #ffffff); stroke: var(--svg-border, #e0dbe8); stroke-width: 2; }
-    .card { fill: var(--svg-card, #fffdfa); stroke: var(--svg-border, #e0dbe8); stroke-width: 2; rx: 28; }
-    .ink { fill: var(--svg-ink, #1c1a22); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    .muted { fill: var(--svg-muted, #6b6680); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    .accent { fill: var(--svg-accent, #e85524); }
-    .accent-soft { fill: var(--svg-accent-soft, rgba(232,85,36,0.10)); }
-    .wire { stroke: var(--svg-wire, #9b96b0); stroke-width: 3; fill: none; }
-    .dot { fill: var(--svg-ink, #1c1a22); }
-  </style>
 
-  <rect class="bg" width="1280" height="820" rx="36" />
-  <rect class="panel" x="28" y="28" width="1224" height="764" rx="28" />
+  <!-- Background -->
+  <rect class="canvas" width="1280" height="820" rx="36" />
+  <rect class="surface" x="28" y="28" width="1224" height="764" rx="28" stroke-width="2" />
 
   <!-- Title -->
   <text class="ink" x="84" y="104" font-size="22" font-weight="700" letter-spacing="2">YOLO-TOYS RUNTIME TOPOLOGY</text>
   <text class="muted" x="84" y="138" font-size="28" font-weight="600">One service boundary, explicit execution adapters, and a readable control plane.</text>
 
   <!-- Client Surfaces -->
-  <rect class="card" x="84" y="198" width="264" height="152" rx="28" />
-  <rect class="accent-soft" x="108" y="224" width="112" height="28" rx="14" />
+  <rect class="surface-alt" x="84" y="198" width="264" height="152" rx="28" stroke-width="2" />
+  <rect class="brand-soft" x="108" y="224" width="148" height="28" rx="14" />
   <text class="ink" x="118" y="244" font-size="13" font-weight="700" letter-spacing="1.4">CLIENT SURFACES</text>
   <text class="ink" x="108" y="288" font-size="24" font-weight="700">HTTP, WebSocket,</text>
   <text class="ink" x="108" y="320" font-size="24" font-weight="700">observability</text>
   <text class="muted" x="108" y="346" font-size="16">Routes stay thin, transport-specific, and replaceable.</text>
 
   <!-- Runtime Coordination -->
-  <rect class="card" x="400" y="198" width="470" height="220" rx="28" />
-  <rect class="accent-soft" x="424" y="224" width="148" height="28" rx="14" />
+  <rect class="surface-alt" x="400" y="198" width="470" height="220" rx="28" stroke-width="2" />
+  <rect class="brand-soft" x="424" y="224" width="192" height="28" rx="14" />
   <text class="ink" x="434" y="244" font-size="13" font-weight="700" letter-spacing="1.4">RUNTIME COORDINATION</text>
   <text class="ink" x="424" y="286" font-size="28" font-weight="760">ModelManager, concurrency guardrails,</text>
   <text class="ink" x="424" y="322" font-size="28" font-weight="760">cache policy, and lifecycle control</text>
   <text class="muted" x="424" y="360" font-size="17">This layer absorbs warm-model reuse, lazy loads, and operational constraints so they do not leak into every route.</text>
 
   <!-- Dispatch -->
-  <rect class="card" x="922" y="198" width="274" height="220" rx="28" />
-  <rect class="accent-soft" x="946" y="224" width="114" height="28" rx="14" />
+  <rect class="surface-alt" x="922" y="198" width="274" height="220" rx="28" stroke-width="2" />
+  <rect class="brand-soft" x="946" y="224" width="114" height="28" rx="14" />
   <text class="ink" x="956" y="244" font-size="13" font-weight="700" letter-spacing="1.4">DISPATCH</text>
   <text class="ink" x="946" y="286" font-size="25" font-weight="760">Registry-backed</text>
   <text class="ink" x="946" y="320" font-size="25" font-weight="760">model resolution</text>
   <text class="muted" x="946" y="360" font-size="16">Model identity, task type, and handler mapping stay explicit.</text>
 
   <!-- Execution Adapters -->
-  <rect class="card" x="168" y="496" width="944" height="212" rx="32" />
-  <rect class="accent-soft" x="196" y="522" width="160" height="28" rx="14" />
+  <rect class="surface-alt" x="168" y="496" width="944" height="212" rx="32" stroke-width="2" />
+  <rect class="brand-soft" x="196" y="522" width="192" height="28" rx="14" />
   <text class="ink" x="206" y="542" font-size="13" font-weight="700" letter-spacing="1.4">EXECUTION ADAPTERS</text>
 
-  <rect class="card" x="206" y="572" width="170" height="94" rx="22" />
+  <!-- YOLO -->
+  <rect class="surface-alt" x="206" y="572" width="170" height="94" rx="22" stroke-width="2" />
   <text class="ink" x="228" y="610" font-size="24" font-weight="760">YOLO</text>
   <text class="muted" x="228" y="636" font-size="15">detection, segment, pose</text>
 
-  <rect class="card" x="392" y="572" width="170" height="94" rx="22" />
+  <!-- DETR -->
+  <rect class="surface-alt" x="392" y="572" width="170" height="94" rx="22" stroke-width="2" />
   <text class="ink" x="414" y="610" font-size="24" font-weight="760">DETR</text>
   <text class="muted" x="414" y="636" font-size="15">transformer detection</text>
 
-  <rect class="card" x="578" y="572" width="170" height="94" rx="22" />
+  <!-- OWL-ViT -->
+  <rect class="surface-alt" x="578" y="572" width="170" height="94" rx="22" stroke-width="2" />
   <text class="ink" x="600" y="610" font-size="24" font-weight="760">OWL-ViT</text>
   <text class="muted" x="600" y="636" font-size="15">text-conditioned detection</text>
 
-  <rect class="card" x="764" y="572" width="170" height="94" rx="22" />
+  <!-- Grounding DINO -->
+  <rect class="surface-alt" x="764" y="572" width="170" height="94" rx="22" stroke-width="2" />
   <text class="ink" x="786" y="610" font-size="24" font-weight="760">Grounding DINO</text>
   <text class="muted" x="786" y="636" font-size="15">grounded object localization</text>
 
-  <rect class="card" x="950" y="572" width="130" height="94" rx="22" />
+  <!-- BLIP -->
+  <rect class="surface-alt" x="950" y="572" width="130" height="94" rx="22" stroke-width="2" />
   <text class="ink" x="972" y="610" font-size="24" font-weight="760">BLIP</text>
   <text class="muted" x="972" y="636" font-size="15">caption and VQA</text>
 
@@ -75,12 +70,12 @@
   <path class="wire" d="M640 418V472" />
   <path class="wire" d="M640 472H640" />
   <path class="wire" d="M640 472V496" />
-  <circle class="dot" cx="348" cy="274" r="6" />
-  <circle class="dot" cx="400" cy="274" r="6" />
-  <circle class="dot" cx="870" cy="308" r="6" />
-  <circle class="dot" cx="922" cy="308" r="6" />
-  <circle class="dot" cx="640" cy="418" r="6" />
-  <circle class="dot" cx="640" cy="496" r="6" />
+  <circle class="ink" cx="348" cy="274" r="6" />
+  <circle class="ink" cx="400" cy="274" r="6" />
+  <circle class="ink" cx="870" cy="308" r="6" />
+  <circle class="ink" cx="922" cy="308" r="6" />
+  <circle class="ink" cx="640" cy="418" r="6" />
+  <circle class="ink" cx="640" cy="496" r="6" />
 
   <!-- Footer -->
   <text class="muted" x="84" y="748" font-size="16">Control stays centralized, execution stays specialized, public contracts stay normalized.</text>

@@ -1,0 +1,437 @@
+/* ================================================================
+   YOLO-Toys Design Tokens
+
+   This file is the SINGLE SOURCE OF TRUTH for all design variables.
+   All other CSS files should import and use these tokens.
+
+   DO NOT duplicate these values elsewhere.
+   DO NOT use hardcoded color values in components.
+
+   Architecture:
+   - Core tokens: Raw values (colors, sizes, fonts)
+   - Semantic tokens: Purpose-based aliases
+   - Component tokens: Component-specific values
+   ================================================================ */
+
+/* ================================================================
+   CORE TOKENS: Raw Values
+   ================================================================ */
+
+:root {
+  /* ---- Color Palette (OKLch perceptually-uniform) ---- */
+
+  /* Neutrals - Purple-tinted grayscale */
+  --color-white: oklch(1.0 0 0);
+  --color-black: oklch(0 0 0);
+  --color-neutral-50: oklch(0.984 0.003 280);
+  --color-neutral-100: oklch(0.965 0.007 280);
+  --color-neutral-200: oklch(0.94 0.012 280);
+  --color-neutral-300: oklch(0.86 0.012 280);
+  --color-neutral-400: oklch(0.72 0.028 280);
+  --color-neutral-500: oklch(0.58 0.01 280);
+  --color-neutral-600: oklch(0.44 0.015 280);
+  --color-neutral-700: oklch(0.27 0.02 280);
+  --color-neutral-800: oklch(0.22 0.018 280);
+  --color-neutral-900: oklch(0.17 0.012 280);
+  --color-neutral-950: oklch(0.14 0.008 280);
+
+  /* Brand - Orange */
+  --color-brand-50: oklch(0.97 0.02 45);
+  --color-brand-100: oklch(0.95 0.04 45);
+  --color-brand-200: oklch(0.90 0.08 45);
+  --color-brand-300: oklch(0.82 0.12 45);
+  --color-brand-400: oklch(0.74 0.14 55);
+  --color-brand-500: oklch(0.65 0.18 45);  /* Primary brand */
+  --color-brand-600: oklch(0.58 0.20 42);
+  --color-brand-700: oklch(0.50 0.18 40);
+
+  /* Accent - Blue */
+  --color-accent-50: oklch(0.96 0.01 260);
+  --color-accent-100: oklch(0.94 0.03 260);
+  --color-accent-200: oklch(0.88 0.05 260);
+  --color-accent-300: oklch(0.78 0.06 260);
+  --color-accent-400: oklch(0.68 0.08 260);
+  --color-accent-500: oklch(0.55 0.08 260);  /* Primary accent */
+  --color-accent-600: oklch(0.48 0.10 260);
+  --color-accent-700: oklch(0.42 0.08 260);
+
+  /* Semantic - Success, Warning, Danger */
+  --color-success-500: oklch(0.65 0.18 145);
+  --color-warning-500: oklch(0.75 0.15 85);
+  --color-danger-500: oklch(0.60 0.20 25);
+
+  /* ---- Typography ---- */
+  --font-sans: 'Inter', 'Noto Sans SC', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Type Scale (modular scale 1.25) */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 2rem;        /* 32px */
+  --text-4xl: 2.5rem;      /* 40px */
+  --text-5xl: 3rem;        /* 48px */
+  --text-6xl: 4rem;        /* 64px */
+
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.2;
+  --leading-snug: 1.4;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+  --leading-loose: 2;
+
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+
+  /* Letter Spacing */
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  /* ---- Spacing (8px base) ---- */
+  --space-0: 0;
+  --space-1: 0.25rem;     /* 4px */
+  --space-2: 0.5rem;      /* 8px */
+  --space-3: 0.75rem;     /* 12px */
+  --space-4: 1rem;        /* 16px */
+  --space-5: 1.5rem;      /* 24px */
+  --space-6: 2rem;        /* 32px */
+  --space-7: 3rem;        /* 48px */
+  --space-8: 4rem;        /* 64px */
+  --space-9: 6rem;        /* 96px */
+  --space-10: 8rem;       /* 128px */
+
+  /* ---- Border Radius ---- */
+  --radius-none: 0;
+  --radius-sm: 0.5rem;    /* 8px */
+  --radius-md: 0.75rem;   /* 12px */
+  --radius-lg: 1rem;      /* 16px */
+  --radius-xl: 1.5rem;    /* 24px */
+  --radius-2xl: 1.75rem;  /* 28px */
+  --radius-3xl: 2.25rem;  /* 36px */
+  --radius-full: 9999px;
+
+  /* ---- Shadows ---- */
+  --shadow-xs: 0 1px 2px oklch(0 0 0 / 0.05);
+  --shadow-sm: 0 2px 4px oklch(0 0 0 / 0.05), 0 1px 2px oklch(0 0 0 / 0.03);
+  --shadow-md: 0 4px 12px oklch(0 0 0 / 0.08), 0 2px 4px oklch(0 0 0 / 0.04);
+  --shadow-lg: 0 12px 32px oklch(0 0 0 / 0.12), 0 4px 8px oklch(0 0 0 / 0.06);
+  --shadow-xl: 0 24px 48px oklch(0 0 0 / 0.16), 0 8px 16px oklch(0 0 0 / 0.08);
+  --shadow-2xl: 0 32px 64px oklch(0 0 0 / 0.24), 0 16px 32px oklch(0 0 0 / 0.12);
+
+  /* Glow effects */
+  --glow-brand: 0 0 24px oklch(0.65 0.18 45 / 0.25);
+  --glow-accent: 0 0 24px oklch(0.55 0.08 260 / 0.25);
+
+  /* ---- Transitions ---- */
+  --duration-instant: 0ms;
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 400ms;
+  --duration-slowest: 500ms;
+
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---- Z-Index Scale ---- */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+
+  /* ---- Layout ---- */
+  --content-max-width: 76ch;
+  --sidebar-width: 280px;
+  --navbar-height: 56px;
+}
+
+/* ================================================================
+   SEMANTIC TOKENS: Light Mode (Default)
+   ================================================================ */
+
+:root {
+  /* ---- Canvas & Surfaces ---- */
+  --yt-canvas: var(--color-neutral-50);           /* Page background */
+  --yt-canvas-soft: var(--color-neutral-100);     /* Alternate background */
+  --yt-canvas-muted: var(--color-neutral-200);    /* Subtle background */
+  --yt-surface: oklch(0.996 0.002 280);           /* Card/panel background */
+  --yt-surface-strong: var(--color-neutral-300);  /* Elevated surface */
+
+  /* ---- Text ---- */
+  --yt-text: var(--color-neutral-800);            /* Primary text */
+  --yt-text-soft: var(--color-neutral-600);       /* Secondary text */
+  --yt-text-muted: var(--color-neutral-500);      /* Tertiary text */
+  --yt-text-inverted: var(--color-neutral-50);    /* Text on dark */
+
+  /* ---- Borders ---- */
+  --yt-border: var(--color-neutral-300);
+  --yt-border-soft: color-mix(in oklab, var(--color-neutral-300) 50%, transparent);
+  --yt-border-strong: var(--color-neutral-400);
+
+  /* ---- Brand Colors ---- */
+  --yt-brand: var(--color-brand-500);             /* Primary brand (orange) */
+  --yt-brand-soft: var(--color-brand-100);        /* Brand tint */
+  --yt-brand-text: var(--color-white);            /* Text on brand */
+
+  /* ---- Accent Colors ---- */
+  --yt-accent: var(--color-accent-500);           /* Accent (blue) */
+  --yt-accent-soft: var(--color-accent-100);      /* Accent tint */
+
+  /* ---- Semantic Colors ---- */
+  --yt-success: var(--color-success-500);
+  --yt-warning: var(--color-warning-500);
+  --yt-danger: var(--color-danger-500);
+
+  /* ---- Shadows ---- */
+  --yt-shadow: var(--shadow-lg);
+  --yt-shadow-sm: var(--shadow-sm);
+  --yt-shadow-glow: var(--glow-brand);
+
+  /* ---- Interactive States ---- */
+  --yt-hover-overlay: oklch(0 0 0 / 0.04);
+  --yt-active-overlay: oklch(0 0 0 / 0.08);
+  --yt-focus-ring: var(--yt-brand);
+}
+
+/* ================================================================
+   SEMANTIC TOKENS: Dark Mode
+   ================================================================ */
+
+.dark {
+  /* ---- Canvas & Surfaces ---- */
+  --yt-canvas: var(--color-neutral-900);
+  --yt-canvas-soft: var(--color-neutral-800);
+  --yt-canvas-muted: var(--color-neutral-700);
+  --yt-surface: oklch(0.2 0.014 280);
+  --yt-surface-strong: oklch(0.3 0.022 280);
+
+  /* ---- Text ---- */
+  --yt-text: oklch(0.94 0.008 280);
+  --yt-text-soft: oklch(0.78 0.014 280);
+  --yt-text-muted: oklch(0.62 0.01 280);
+  --yt-text-inverted: var(--color-neutral-900);
+
+  /* ---- Borders ---- */
+  --yt-border: oklch(0.36 0.018 280);
+  --yt-border-soft: color-mix(in oklab, oklch(0.36 0.018 280) 50%, transparent);
+  --yt-border-strong: oklch(0.48 0.03 280);
+
+  /* ---- Brand Colors ---- */
+  --yt-brand: oklch(0.78 0.16 48);                /* Lighter orange for dark mode */
+  --yt-brand-soft: color-mix(in oklab, oklch(0.78 0.16 48) 16%, var(--yt-canvas));
+  --yt-brand-text: var(--color-neutral-900);
+
+  /* ---- Accent Colors ---- */
+  --yt-accent: oklch(0.72 0.08 260);
+  --yt-accent-soft: oklch(0.28 0.03 260);
+
+  /* ---- Shadows ---- */
+  --yt-shadow:
+    0 22px 64px color-mix(in oklab, oklch(0.04 0.008 280) 72%, transparent),
+    0 8px 16px color-mix(in oklab, oklch(0.04 0.008 280) 48%, transparent);
+  --yt-shadow-sm: 0 4px 12px color-mix(in oklab, oklch(0.04 0.008 280) 20%, transparent);
+  --yt-shadow-glow: 0 0 24px color-mix(in oklab, var(--yt-brand) 25%, transparent);
+
+  /* ---- Interactive States ---- */
+  --yt-hover-overlay: oklch(1 0 0 / 0.04);
+  --yt-active-overlay: oklch(1 0 0 / 0.08);
+}
+
+/* ================================================================
+   SVG TOKENS: Light Mode (Default)
+
+   These tokens are used by ALL SVG files.
+   SVGs should reference these via var(--svg-*) without fallbacks.
+   ================================================================ */
+
+:root {
+  /* Canvas & Surfaces */
+  --svg-canvas: #faf8f5;
+  --svg-surface: #ffffff;
+  --svg-surface-alt: #fffdfa;
+
+  /* Text */
+  --svg-ink: #1c1a22;
+  --svg-ink-soft: #3d3a48;
+  --svg-muted: #6b6680;
+  --svg-muted-soft: #9b96b0;
+
+  /* Brand & Accent */
+  --svg-brand: #e85524;
+  --svg-brand-soft: rgba(232, 85, 36, 0.10);
+  --svg-accent: #4f6cf5;
+  --svg-accent-soft: rgba(79, 108, 245, 0.10);
+
+  /* Structure */
+  --svg-wire: #9b96b0;
+  --svg-wire-alt: #6b6880;
+  --svg-border: #e0dbe8;
+  --svg-border-strong: #c4bfd0;
+
+  /* Effects */
+  --svg-shadow: rgba(28, 26, 34, 0.06);
+  --svg-shadow-strong: rgba(28, 26, 34, 0.12);
+
+  /* Semantic */
+  --svg-success: #22c55e;
+  --svg-warning: #f59e0b;
+  --svg-danger: #ef4444;
+}
+
+/* ================================================================
+   SVG TOKENS: Dark Mode
+   ================================================================ */
+
+.dark {
+  /* Canvas & Surfaces */
+  --svg-canvas: #1a1a1f;
+  --svg-surface: #232329;
+  --svg-surface-alt: #2a2a32;
+
+  /* Text */
+  --svg-ink: #e8e6f0;
+  --svg-ink-soft: #c8c6d4;
+  --svg-muted: #a09eb8;
+  --svg-muted-soft: #78768f;
+
+  /* Brand & Accent */
+  --svg-brand: #ff8c5a;
+  --svg-brand-soft: rgba(255, 140, 90, 0.15);
+  --svg-accent: #8ba3ff;
+  --svg-accent-soft: rgba(139, 163, 255, 0.15);
+
+  /* Structure */
+  --svg-wire: #6b6880;
+  --svg-wire-alt: #4a4860;
+  --svg-border: #3d3d4a;
+  --svg-border-strong: #5a5a6a;
+
+  /* Effects */
+  --svg-shadow: rgba(0, 0, 0, 0.40);
+  --svg-shadow-strong: rgba(0, 0, 0, 0.60);
+
+  /* Semantic */
+  --svg-success: #4ade80;
+  --svg-warning: #fbbf24;
+  --svg-danger: #f87171;
+}
+
+/* ================================================================
+   VITEPRESS THEME OVERRIDES
+
+   Map our tokens to VitePress default theme variables.
+   ================================================================ */
+
+:root {
+  --vp-c-bg: var(--yt-canvas);
+  --vp-c-bg-alt: var(--yt-canvas-soft);
+  --vp-c-bg-elv: var(--yt-surface);
+  --vp-c-bg-soft: var(--yt-canvas-soft);
+
+  --vp-c-border: var(--yt-border);
+  --vp-c-divider: var(--yt-border);
+  --vp-c-gutter: var(--yt-border);
+
+  --vp-c-text-1: var(--yt-text);
+  --vp-c-text-2: var(--yt-text-soft);
+  --vp-c-text-3: var(--yt-text-muted);
+
+  --vp-c-brand-1: var(--yt-brand);
+  --vp-c-brand-2: oklch(0.6 0.2 42);
+  --vp-c-brand-3: var(--yt-brand);
+  --vp-c-brand-soft: color-mix(in oklab, var(--yt-brand) 12%, var(--yt-canvas));
+
+  --vp-home-hero-name-color: var(--yt-brand);
+  --vp-home-hero-name-background: none;
+  --vp-home-hero-image-background-image: none;
+  --vp-home-hero-image-filter: none;
+}
+
+/* ================================================================
+   COMPONENT TOKENS: Specific to Components
+
+   These are derived from semantic tokens but scoped to components.
+   ================================================================ */
+
+:root {
+  /* Radius Scale */
+  --yt-radius-sm: var(--radius-sm);
+  --yt-radius-md: var(--radius-md);
+  --yt-radius-lg: var(--radius-lg);
+  --yt-radius-xl: var(--radius-xl);
+  --yt-radius-2xl: var(--radius-2xl);
+  --yt-radius-3xl: var(--radius-3xl);
+
+  /* Content Width */
+  --yt-content: var(--content-max-width);
+
+  /* Button Tokens */
+  --yt-button-height: 44px;
+  --yt-button-padding-x: var(--space-5);
+  --yt-button-radius: var(--radius-full);
+  --yt-button-shadow: var(--shadow-sm);
+  --yt-button-shadow-hover: var(--shadow-md);
+
+  /* Card Tokens */
+  --yt-card-padding: var(--space-5);
+  --yt-card-radius: var(--radius-lg);
+  --yt-card-shadow: var(--shadow-md);
+  --yt-card-shadow-hover: var(--shadow-lg);
+
+  /* Badge Tokens */
+  --yt-badge-height: 28px;
+  --yt-badge-padding-x: var(--space-3);
+  --yt-badge-radius: var(--radius-full);
+  --yt-badge-font-size: var(--text-xs);
+  --yt-badge-font-weight: var(--font-bold);
+  --yt-badge-letter-spacing: var(--tracking-wider);
+
+  /* Figure Tokens */
+  --yt-figure-padding: var(--space-5);
+  --yt-figure-radius: var(--radius-xl);
+  --yt-figure-border-width: 1px;
+
+  /* Navigation Tokens */
+  --yt-nav-height: var(--navbar-height);
+  --yt-nav-padding-x: var(--space-6);
+  --yt-nav-font-size: var(--text-sm);
+  --yt-nav-font-weight: var(--font-semibold);
+  --yt-nav-letter-spacing: var(--tracking-wide);
+}
+
+/* ================================================================
+   TRANSITION UTILITIES
+   ================================================================ */
+
+:root {
+  --transition-colors: color var(--duration-normal) var(--ease-in-out),
+                       background-color var(--duration-normal) var(--ease-in-out),
+                       border-color var(--duration-normal) var(--ease-in-out);
+
+  --transition-transform: transform var(--duration-slow) var(--ease-bounce);
+
+  --transition-shadow: box-shadow var(--duration-normal) var(--ease-in-out);
+
+  --transition-all: all var(--duration-slow) var(--ease-in-out);
+
+  --transition-theme: background-color var(--duration-slow) var(--ease-in-out),
+                      color var(--duration-slow) var(--ease-in-out);
+}

@@ -1,136 +1,78 @@
 /* ================================================================
    YOLO-Toys Whitepaper Theme
-   Production-ready, OKLch-based, dark-mode-aware design system.
+
+   Architecture:
+   - tokens.css: Design tokens (single source of truth)
+   - style.css: Component styles (this file)
+
+   All colors, sizes, and spacing should use tokens from tokens.css.
+   DO NOT use hardcoded values here.
    ================================================================ */
 
-/* ---- CSS Custom Properties ---- */
-:root {
-  /* Semantic color tokens (OKLch perceptually-uniform) */
-  --yt-bg: oklch(0.984 0.003 280);
-  --yt-bg-soft: oklch(0.965 0.007 280);
-  --yt-bg-muted: oklch(0.94 0.012 280);
-  --yt-surface: oklch(0.996 0.002 280);
-  --yt-surface-strong: oklch(0.955 0.008 280);
-  --yt-border: oklch(0.86 0.012 280);
-  --yt-border-strong: oklch(0.72 0.028 280);
-  --yt-text-1: oklch(0.22 0.018 280);
-  --yt-text-2: oklch(0.44 0.015 280);
-  --yt-text-3: oklch(0.58 0.01 280);
-  --yt-brand-1: oklch(0.65 0.18 45);
-  --yt-brand-2: oklch(0.74 0.14 55);
-  --yt-brand-soft: oklch(0.95 0.04 45);
-  --yt-accent: oklch(0.55 0.08 260);
-  --yt-accent-soft: oklch(0.94 0.03 260);
-  --yt-shadow: 0 18px 54px color-mix(in oklab, var(--yt-text-1) 8%, transparent);
-  --yt-shadow-sm: 0 4px 12px color-mix(in oklab, var(--yt-text-1) 5%, transparent);
-  --yt-glow: 0 0 24px color-mix(in oklab, var(--yt-brand-1) 20%, transparent);
-  --yt-radius-sm: 10px;
-  --yt-radius-md: 16px;
-  --yt-radius-lg: 24px;
-  --yt-content: 76ch;
+@import './tokens.css';
 
-  /* VitePress overrides */
-  --vp-c-bg: var(--yt-bg);
-  --vp-c-bg-alt: var(--yt-bg-soft);
-  --vp-c-bg-elv: var(--yt-surface);
-  --vp-c-bg-soft: var(--yt-bg-soft);
-  --vp-c-border: var(--yt-border);
-  --vp-c-divider: var(--yt-border);
-  --vp-c-gutter: var(--yt-border);
-  --vp-c-text-1: var(--yt-text-1);
-  --vp-c-text-2: var(--yt-text-2);
-  --vp-c-text-3: var(--yt-text-3);
-  --vp-c-brand-1: var(--yt-brand-1);
-  --vp-c-brand-2: oklch(0.6 0.2 42);
-  --vp-c-brand-3: var(--yt-brand-2);
-  --vp-c-brand-soft: color-mix(in oklab, var(--yt-brand-1) 12%, var(--yt-bg));
-  --vp-home-hero-name-color: var(--yt-brand-1);
-  --vp-home-hero-name-background: none;
-  --vp-home-hero-image-background-image: none;
-  --vp-home-hero-image-filter: none;
-
-  /* SVG theme-aware variables (populated by JS) */
-  --svg-bg: #faf8f5;
-  --svg-panel: #ffffff;
-  --svg-card: #fffdfa;
-  --svg-ink: #1c1a22;
-  --svg-muted: #6b6680;
-  --svg-accent: #e85524;
-  --svg-accent-soft: rgba(232,85,36,0.10);
-  --svg-wire: #9b96b0;
-  --svg-border: #e0dbe8;
-  --svg-shadow: rgba(28,26,34,0.06);
-}
-
-.dark {
-  --yt-bg: oklch(0.17 0.012 280);
-  --yt-bg-soft: oklch(0.22 0.016 280);
-  --yt-bg-muted: oklch(0.27 0.02 280);
-  --yt-surface: oklch(0.2 0.014 280);
-  --yt-surface-strong: oklch(0.3 0.022 280);
-  --yt-border: oklch(0.36 0.018 280);
-  --yt-border-strong: oklch(0.58 0.045 42);
-  --yt-text-1: oklch(0.94 0.008 280);
-  --yt-text-2: oklch(0.78 0.014 280);
-  --yt-text-3: oklch(0.62 0.01 280);
-  --yt-brand-1: oklch(0.78 0.16 48);
-  --yt-brand-2: oklch(0.85 0.1 58);
-  --yt-brand-soft: color-mix(in oklab, var(--yt-brand-1) 16%, var(--yt-bg));
-  --yt-accent: oklch(0.72 0.08 260);
-  --yt-accent-soft: oklch(0.28 0.03 260);
-  --yt-shadow: 0 22px 64px color-mix(in oklab, oklch(0.04 0.008 280) 72%, transparent);
-  --yt-shadow-sm: 0 4px 12px color-mix(in oklab, oklch(0.04 0.008 280) 20%, transparent);
-  --yt-glow: 0 0 24px color-mix(in oklab, var(--yt-brand-1) 25%, transparent);
-}
+/* ================================================================
+   BASE STYLES
+   ================================================================ */
 
 html,
 body {
-  background: var(--yt-bg);
-  transition: background 0.3s ease;
+  background: var(--yt-canvas);
+  transition: var(--transition-theme);
 }
 
 body {
-  color: var(--yt-text-1);
+  color: var(--yt-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ---- Navigation ---- */
+/* ================================================================
+   NAVIGATION
+   ================================================================ */
+
 .VPNav {
-  background: color-mix(in oklab, var(--yt-bg) 92%, var(--yt-surface));
+  background: color-mix(in oklab, var(--yt-canvas) 92%, var(--yt-surface));
   border-bottom: 1px solid var(--yt-border);
   backdrop-filter: blur(12px);
 }
 
 .VPNavBar {
-  padding-inline: 24px;
+  padding-inline: var(--yt-nav-padding-x);
 }
 
 .VPNavBarMenuLink,
 .VPNavBarMenuGroup .button {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  transition: color 0.2s ease;
+  font-size: var(--yt-nav-font-size);
+  font-weight: var(--yt-nav-font-weight);
+  letter-spacing: var(--yt-nav-letter-spacing);
+  transition: color var(--duration-fast) var(--ease-out);
 }
 
 .VPNavBarMenuLink:hover,
 .VPNavBarMenuGroup .button:hover {
-  color: var(--yt-brand-1);
+  color: var(--yt-brand);
 }
 
 .VPNavBarMenuLink.active,
 .VPNavBarMenuGroup.open .button {
-  color: var(--yt-brand-1);
+  color: var(--yt-brand);
 }
 
-/* ---- Hero / Home ---- */
+/* ================================================================
+   HERO / HOME LAYOUT
+   ================================================================ */
+
 .VPContent.is-home {
-  padding-bottom: 96px;
+  padding-bottom: var(--space-9);
 }
 
 .VPHome {
   max-width: none;
 }
 
+/* ---- Whitepaper Container ---- */
 .yt-whitepaper {
   padding: clamp(28px, 4vw, 64px) clamp(18px, 5vw, 56px) 0;
 }
@@ -146,12 +88,13 @@ body {
   max-width: 760px;
 }
 
+/* ---- Kicker (Eyebrow + Chapter) ---- */
 .yt-kicker {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--space-2);
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: var(--space-4);
 }
 
 .yt-kicker__eyebrow,
@@ -159,108 +102,114 @@ body {
 .yt-section-label {
   display: inline-flex;
   align-items: center;
-  border-radius: 999px;
-  padding: 8px 14px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  border-radius: var(--yt-badge-radius);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--yt-badge-font-size);
+  font-weight: var(--yt-badge-font-weight);
+  letter-spacing: var(--yt-badge-letter-spacing);
   text-transform: uppercase;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: var(--transition-colors);
 }
 
 .yt-kicker__eyebrow {
   background: var(--yt-brand-soft);
-  color: var(--yt-brand-1);
+  color: var(--yt-brand);
 }
 
 .yt-kicker__chapter,
 .yt-section-label {
   background: var(--yt-surface-strong);
-  color: var(--yt-text-2);
+  color: var(--yt-text-soft);
 }
 
+/* ---- Title ---- */
 .yt-whitepaper__title {
   margin: 0;
   max-width: 14ch;
-  font-size: clamp(3rem, 7vw, 6rem);
-  line-height: 0.98;
+  font-size: clamp(3rem, 7vw, var(--text-6xl));
+  line-height: var(--leading-none);
   letter-spacing: -0.05em;
-  font-weight: 800;
+  font-weight: var(--font-extrabold);
   text-wrap: balance;
-  background: linear-gradient(135deg, var(--yt-text-1) 0%, var(--yt-brand-1) 100%);
+  background: linear-gradient(135deg, var(--yt-text) 0%, var(--yt-brand) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .dark .yt-whitepaper__title {
-  background: linear-gradient(135deg, var(--yt-text-1) 0%, var(--yt-brand-1) 60%);
+  background: linear-gradient(135deg, var(--yt-text) 0%, var(--yt-brand) 60%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
+/* ---- Abstract ---- */
 .yt-whitepaper__abstract {
   max-width: 60ch;
-  margin: 22px 0 0;
-  font-size: clamp(1.02rem, 1.8vw, 1.28rem);
-  line-height: 1.72;
-  color: var(--yt-text-2);
+  margin: var(--space-5) 0 0;
+  font-size: clamp(1.02rem, 1.8vw, var(--text-lg));
+  line-height: var(--leading-loose);
+  color: var(--yt-text-soft);
 }
 
+/* ---- Actions ---- */
 .yt-whitepaper__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 26px;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
 }
 
+/* ---- Button ---- */
 .yt-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  padding: 0 20px;
+  min-height: var(--yt-button-height);
+  padding: 0 var(--yt-button-padding-x);
   border: 1px solid var(--yt-border);
-  border-radius: 999px;
+  border-radius: var(--yt-button-radius);
   background: var(--yt-surface);
-  color: var(--yt-text-1);
-  font-size: 14px;
-  font-weight: 700;
+  color: var(--yt-text);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
   text-decoration: none;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  transition: var(--transition-transform), var(--transition-colors), var(--transition-shadow);
 }
 
 .yt-button:hover {
   transform: translateY(-2px);
   border-color: var(--yt-border-strong);
-  box-shadow: var(--yt-shadow-sm);
+  box-shadow: var(--yt-button-shadow-hover);
 }
 
 .yt-button--primary {
-  background: var(--yt-brand-1);
-  border-color: color-mix(in oklab, var(--yt-brand-1) 72%, var(--yt-brand-2));
-  color: oklch(0.98 0.01 60);
-  box-shadow: 0 4px 16px color-mix(in oklab, var(--yt-brand-1) 25%, transparent);
+  background: var(--yt-brand);
+  border-color: color-mix(in oklab, var(--yt-brand) 72%, var(--color-brand-400));
+  color: var(--yt-brand-text);
+  box-shadow: 0 4px 16px color-mix(in oklab, var(--yt-brand) 25%, transparent);
 }
 
 .yt-button--primary:hover {
-  box-shadow: var(--yt-glow);
+  box-shadow: var(--yt-shadow-glow);
 }
 
 .yt-button--ghost {
   background: transparent;
 }
 
+/* ---- Figure ---- */
 .yt-whitepaper__figure {
-  padding-top: 4px;
+  padding-top: var(--space-1);
 }
 
+/* ---- Signal Strip ---- */
 .yt-signal-strip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 30px;
+  gap: var(--space-2);
+  margin-top: var(--space-7);
 }
 
 .yt-signal-strip > span {
@@ -268,16 +217,16 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 54px;
-  padding: 0 16px;
+  padding: 0 var(--space-4);
   border-radius: var(--yt-radius-sm);
   background: color-mix(in oklab, var(--yt-surface) 88%, var(--yt-brand-soft));
   border: 1px solid var(--yt-border);
-  color: var(--yt-text-2);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
+  color: var(--yt-text-soft);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  letter-spacing: var(--tracking-wide);
   text-align: center;
-  transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+  transition: var(--transition-colors), transform var(--duration-fast) var(--ease-out);
 }
 
 .yt-signal-strip > span:hover {
@@ -285,14 +234,15 @@ body {
   transform: translateY(-1px);
 }
 
+/* ---- Reading Tracks ---- */
 .yt-whitepaper__tracks {
   margin-top: clamp(42px, 7vw, 84px);
 }
 
 .yt-section-heading {
   max-width: 18ch;
-  margin-top: 18px;
-  font-size: clamp(1.8rem, 3.8vw, 3rem);
+  margin-top: var(--space-4);
+  font-size: clamp(1.8rem, 3.8vw, var(--text-5xl));
   line-height: 1.06;
   letter-spacing: -0.04em;
   font-weight: 760;
@@ -300,102 +250,106 @@ body {
 
 .yt-section-body {
   max-width: 62ch;
-  margin-top: 14px;
-  color: var(--yt-text-2);
-  font-size: 1rem;
-  line-height: 1.76;
+  margin-top: var(--space-3);
+  color: var(--yt-text-soft);
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
 }
 
 .yt-reading-tracks {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-  margin-top: 28px;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
 }
 
 .yt-reading-track {
   display: grid;
-  gap: 18px;
+  gap: var(--space-4);
   align-content: space-between;
   min-height: 220px;
-  padding: 24px;
-  border-radius: var(--yt-radius-md);
+  padding: var(--yt-card-padding);
+  border-radius: var(--yt-card-radius);
   background: linear-gradient(
     180deg,
     color-mix(in oklab, var(--yt-surface) 82%, var(--yt-brand-soft)) 0%,
     var(--yt-surface) 100%
   );
   border: 1px solid var(--yt-border);
-  box-shadow: var(--yt-shadow);
+  box-shadow: var(--yt-card-shadow);
   color: inherit;
   text-decoration: none;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: var(--transition-transform), var(--transition-colors), var(--transition-shadow);
 }
 
 .yt-reading-track:hover {
   transform: translateY(-4px);
   border-color: var(--yt-border-strong);
-  box-shadow: var(--yt-glow);
+  box-shadow: var(--yt-shadow-glow);
 }
 
 .yt-reading-track__title {
-  font-size: 1.2rem;
+  font-size: var(--text-xl);
   font-weight: 760;
   letter-spacing: -0.02em;
 }
 
 .yt-reading-track__summary {
   margin: 0;
-  color: var(--yt-text-2);
-  line-height: 1.7;
+  color: var(--yt-text-soft);
+  line-height: var(--leading-relaxed);
 }
 
 .yt-reading-track__cta {
-  color: var(--yt-brand-1);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  color: var(--yt-brand);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
 }
 
+/* ================================================================
+   FIGURE COMPONENT
+   ================================================================ */
+
 .yt-figure {
   display: grid;
-  gap: 14px;
+  gap: var(--space-3);
   margin: 0;
-  padding: 20px;
-  border-radius: var(--yt-radius-lg);
+  padding: var(--yt-figure-padding);
+  border-radius: var(--yt-figure-radius);
   background:
     radial-gradient(circle at top right, color-mix(in oklab, var(--yt-brand-soft) 60%, transparent), transparent 48%),
     var(--yt-surface);
-  border: 1px solid var(--yt-border);
-  box-shadow: var(--yt-shadow);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  border: var(--yt-figure-border-width) solid var(--yt-border);
+  box-shadow: var(--yt-card-shadow);
+  transition: var(--transition-colors), var(--transition-shadow);
 }
 
 .yt-figure:hover {
   border-color: var(--yt-border-strong);
-  box-shadow: var(--yt-glow);
+  box-shadow: var(--yt-shadow-glow);
 }
 
 .yt-figure__title {
-  color: var(--yt-text-1);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  color: var(--yt-text);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
 }
 
 .yt-figure__body {
-  border-radius: calc(var(--yt-radius-md) - 4px);
-  background: color-mix(in oklab, var(--yt-bg-soft) 74%, var(--yt-surface));
+  border-radius: calc(var(--yt-card-radius) - 4px);
+  background: color-mix(in oklab, var(--yt-canvas-soft) 74%, var(--yt-surface));
   border: 1px solid color-mix(in oklab, var(--yt-border) 72%, transparent);
   overflow: hidden;
-  transition: background 0.3s ease;
+  transition: var(--transition-colors);
 }
 
 .yt-figure__caption {
   margin: 0;
-  color: var(--yt-text-3);
+  color: var(--yt-text-muted);
   font-size: 0.92rem;
   line-height: 1.65;
 }
@@ -418,46 +372,49 @@ body {
 .yt-home-figure-step {
   display: grid;
   gap: 6px;
-  padding: 18px 20px;
-  background: color-mix(in oklab, var(--yt-surface) 88%, var(--yt-bg-soft));
-  transition: background 0.3s ease;
+  padding: var(--space-4) var(--space-5);
+  background: color-mix(in oklab, var(--yt-surface) 88%, var(--yt-canvas-soft));
+  transition: var(--transition-colors);
 }
 
 .yt-home-figure-step strong {
-  font-size: 1rem;
+  font-size: var(--text-base);
   font-weight: 760;
   letter-spacing: -0.02em;
 }
 
 .yt-home-figure-step span {
-  color: var(--yt-text-2);
+  color: var(--yt-text-soft);
   line-height: 1.65;
 }
 
-/* ---- Chapter Components ---- */
+/* ================================================================
+   CHAPTER COMPONENTS
+   ================================================================ */
+
 .yt-chapter-intro {
   display: grid;
-  gap: 18px;
-  margin: 8px 0 30px;
+  gap: var(--space-4);
+  margin: var(--space-2) 0 var(--space-7);
 }
 
 .yt-chapter-intro__lead {
   max-width: 62ch;
   margin: 0;
   font-size: 1.08rem;
-  line-height: 1.82;
-  color: var(--yt-text-2);
+  line-height: var(--leading-loose);
+  color: var(--yt-text-soft);
 }
 
 .yt-chapter-callout {
   max-width: 58ch;
-  padding: 18px 22px;
-  border-radius: var(--yt-radius-md);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--yt-card-radius);
   background: color-mix(in oklab, var(--yt-surface) 80%, var(--yt-brand-soft));
   border: 1px solid var(--yt-border);
-  color: var(--yt-text-2);
-  line-height: 1.7;
-  transition: border-color 0.3s ease;
+  color: var(--yt-text-soft);
+  line-height: var(--leading-relaxed);
+  transition: var(--transition-colors);
 }
 
 .yt-chapter-callout:hover {
@@ -465,27 +422,27 @@ body {
 }
 
 .yt-chapter-callout strong {
-  color: var(--yt-text-1);
+  color: var(--yt-text);
 }
 
 .yt-chapter-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin: 30px 0 34px;
+  gap: var(--space-4);
+  margin: var(--space-7) 0 calc(var(--space-7) + 4px);
 }
 
 .yt-chapter-card {
   display: grid;
-  gap: 10px;
+  gap: var(--space-2);
   min-height: 180px;
-  padding: 22px;
-  border-radius: var(--yt-radius-md);
+  padding: var(--space-5);
+  border-radius: var(--yt-card-radius);
   background: var(--yt-surface);
   border: 1px solid var(--yt-border);
   color: inherit;
   text-decoration: none;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: var(--transition-transform), var(--transition-colors), var(--transition-shadow);
 }
 
 .yt-chapter-card:hover {
@@ -501,13 +458,16 @@ body {
 }
 
 .yt-chapter-card span {
-  color: var(--yt-text-2);
-  line-height: 1.7;
+  color: var(--yt-text-soft);
+  line-height: var(--leading-relaxed);
 }
 
-/* ---- Document Content ---- */
+/* ================================================================
+   DOCUMENT CONTENT
+   ================================================================ */
+
 .VPDoc {
-  padding: clamp(28px, 4vw, 48px) clamp(18px, 4vw, 42px) 96px;
+  padding: clamp(28px, 4vw, 48px) clamp(18px, 4vw, 42px) var(--space-9);
 }
 
 .VPDoc .content {
@@ -517,10 +477,10 @@ body {
 .VPDoc h1,
 .vp-doc h1 {
   margin-top: 0;
-  font-size: clamp(2.6rem, 5vw, 4.2rem);
+  font-size: clamp(2.6rem, 5vw, var(--text-4xl));
   line-height: 1.04;
   letter-spacing: -0.045em;
-  font-weight: 800;
+  font-weight: var(--font-extrabold);
 }
 
 .VPDoc h2,
@@ -528,52 +488,55 @@ body {
   margin-top: 54px;
   padding-bottom: 0;
   border-bottom: none;
-  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  font-size: clamp(1.7rem, 3vw, var(--text-3xl));
   line-height: 1.12;
   letter-spacing: -0.035em;
-  font-weight: 700;
+  font-weight: var(--font-bold);
 }
 
 .VPDoc h3,
 .vp-doc h3 {
-  margin-top: 32px;
-  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  margin-top: var(--space-7);
+  font-size: clamp(1.2rem, 2vw, var(--text-2xl));
   line-height: 1.2;
   letter-spacing: -0.025em;
-  font-weight: 700;
+  font-weight: var(--font-bold);
 }
 
 .VPDoc p,
 .VPDoc li,
 .vp-doc p,
 .vp-doc li {
-  font-size: 1rem;
+  font-size: var(--text-base);
   line-height: 1.78;
 }
 
 .VPDoc a,
 .vp-doc a {
-  color: var(--yt-brand-1);
+  color: var(--yt-brand);
   text-decoration: none;
   border-bottom: 1px solid transparent;
-  transition: border-color 0.2s ease;
+  transition: border-color var(--duration-fast) var(--ease-out);
 }
 
 .VPDoc a:hover,
 .vp-doc a:hover {
-  border-bottom-color: var(--yt-brand-1);
+  border-bottom-color: var(--yt-brand);
 }
 
-/* ---- Tables ---- */
+/* ================================================================
+   TABLES
+   ================================================================ */
+
 .VPDoc table,
 .vp-doc table {
   display: table;
   width: 100%;
-  margin: 28px 0;
+  margin: var(--space-7) 0;
   border-collapse: separate;
   border-spacing: 0;
   overflow: hidden;
-  border-radius: var(--yt-radius-md);
+  border-radius: var(--yt-card-radius);
   border: 1px solid var(--yt-border);
 }
 
@@ -583,7 +546,7 @@ body {
 .vp-doc td {
   border: none;
   border-bottom: 1px solid var(--yt-border);
-  transition: background 0.2s ease;
+  transition: var(--transition-colors);
 }
 
 .VPDoc tr:last-child td,
@@ -594,23 +557,27 @@ body {
 .VPDoc th,
 .vp-doc th {
   background: color-mix(in oklab, var(--yt-surface) 72%, var(--yt-brand-soft));
-  color: var(--yt-text-1);
-  font-weight: 700;
+  color: var(--yt-text);
+  font-weight: var(--font-bold);
 }
 
 .VPDoc tr:hover td,
 .vp-doc tr:hover td {
-  background: color-mix(in oklab, var(--yt-bg-soft) 60%, var(--yt-surface));
+  background: color-mix(in oklab, var(--yt-canvas-soft) 60%, var(--yt-surface));
 }
 
-/* ---- Inline Code ---- */
+/* ================================================================
+   CODE
+   ================================================================ */
+
+/* Inline Code */
 .VPDoc code,
 .vp-doc code {
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 0.18em 0.42em;
-  background: color-mix(in oklab, var(--yt-bg-soft) 76%, var(--yt-brand-soft));
-  color: var(--yt-text-1);
-  transition: background 0.3s ease;
+  background: color-mix(in oklab, var(--yt-canvas-soft) 76%, var(--yt-brand-soft));
+  color: var(--yt-text);
+  transition: var(--transition-colors);
 }
 
 .VPDoc pre code,
@@ -619,13 +586,13 @@ body {
   background: transparent;
 }
 
-/* ---- Code Blocks ---- */
+/* Code Blocks */
 .VPDoc div[class*='language-'],
 .vp-doc div[class*='language-'] {
-  border-radius: var(--yt-radius-md);
+  border-radius: var(--yt-card-radius);
   border: 1px solid var(--yt-border);
   box-shadow: none;
-  transition: border-color 0.3s ease;
+  transition: var(--transition-colors);
 }
 
 .VPDoc div[class*='language-']:hover,
@@ -633,23 +600,29 @@ body {
   border-color: var(--yt-border-strong);
 }
 
-/* ---- Mermaid ---- */
+/* ================================================================
+   MERMAID
+   ================================================================ */
+
 .vp-doc div[class*='language-mermaid'],
 .vp-doc .mermaid {
-  border-radius: var(--yt-radius-md);
+  border-radius: var(--yt-card-radius);
 }
 
 .vp-doc div[class*='language-mermaid'] {
   background: color-mix(in oklab, var(--yt-surface) 80%, var(--yt-brand-soft));
-  padding: 18px;
-  transition: background 0.3s ease;
+  padding: var(--space-4);
+  transition: var(--transition-colors);
 }
 
-/* ---- Custom Blocks ---- */
+/* ================================================================
+   CUSTOM BLOCKS (Tip/Warning/Danger)
+   ================================================================ */
+
 .custom-block {
-  border-radius: var(--yt-radius-md) !important;
+  border-radius: var(--yt-card-radius) !important;
   border: 1px solid var(--yt-border) !important;
-  transition: border-color 0.3s ease, background 0.3s ease;
+  transition: var(--transition-colors);
 }
 
 .custom-block:hover {
@@ -657,49 +630,58 @@ body {
 }
 
 .custom-block.info {
-  background: color-mix(in oklab, var(--yt-bg-soft) 70%, var(--yt-accent-soft)) !important;
+  background: color-mix(in oklab, var(--yt-canvas-soft) 70%, var(--yt-accent-soft)) !important;
   border-left: 4px solid var(--yt-accent) !important;
 }
 
 .custom-block.tip {
-  background: color-mix(in oklab, var(--yt-bg-soft) 70%, var(--yt-brand-soft)) !important;
-  border-left: 4px solid var(--yt-brand-1) !important;
+  background: color-mix(in oklab, var(--yt-canvas-soft) 70%, var(--yt-brand-soft)) !important;
+  border-left: 4px solid var(--yt-brand) !important;
 }
 
 .custom-block.warning {
-  background: color-mix(in oklab, var(--yt-bg-soft) 80%, oklch(0.9 0.05 85)) !important;
+  background: color-mix(in oklab, var(--yt-canvas-soft) 80%, oklch(0.9 0.05 85)) !important;
   border-left: 4px solid oklch(0.7 0.12 85) !important;
 }
 
 .custom-block.danger {
-  background: color-mix(in oklab, var(--yt-bg-soft) 80%, oklch(0.9 0.05 25)) !important;
+  background: color-mix(in oklab, var(--yt-canvas-soft) 80%, oklch(0.9 0.05 25)) !important;
   border-left: 4px solid oklch(0.65 0.15 25) !important;
 }
 
-/* ---- Footer ---- */
+/* ================================================================
+   FOOTER
+   ================================================================ */
+
 .VPFooter {
   border-top: 1px solid var(--yt-border);
-  background: var(--yt-bg-soft);
+  background: var(--yt-canvas-soft);
 }
 
-/* ---- Sidebar ---- */
+/* ================================================================
+   SIDEBAR
+   ================================================================ */
+
 .VPSidebar {
-  background: var(--yt-bg);
+  background: var(--yt-canvas);
   border-right: 1px solid var(--yt-border);
 }
 
 .VPSidebarItem .text:hover {
-  color: var(--yt-brand-1);
+  color: var(--yt-brand);
 }
 
 .VPSidebarItem.is-active .text {
-  color: var(--yt-brand-1);
+  color: var(--yt-brand);
   background: var(--yt-brand-soft);
 }
 
-/* ---- Search ---- */
+/* ================================================================
+   SEARCH
+   ================================================================ */
+
 .VPLocalSearchBox .backdrop {
-  background: color-mix(in oklab, var(--yt-bg) 60%, transparent);
+  background: color-mix(in oklab, var(--yt-canvas) 60%, transparent);
   backdrop-filter: blur(12px);
 }
 
@@ -708,7 +690,68 @@ body {
   box-shadow: var(--yt-shadow);
 }
 
-/* ---- Responsive ---- */
+/* ================================================================
+   CITATION BLOCK (New Component)
+   ================================================================ */
+
+.citation-block {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  margin: var(--space-3) 0;
+  border-radius: var(--yt-radius-sm);
+  background: var(--yt-canvas-soft);
+  border-left: 3px solid var(--yt-brand);
+}
+
+.citation-block .citation-number {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--yt-brand-soft);
+  color: var(--yt-brand);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+}
+
+.citation-block .citation-content {
+  flex: 1;
+  color: var(--yt-text-soft);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+}
+
+/* ================================================================
+   CROSS REFERENCE (New Component)
+   ================================================================ */
+
+.cross-reference {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--yt-accent-soft);
+  color: var(--yt-accent);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  text-decoration: none;
+  transition: var(--transition-colors);
+}
+
+.cross-reference:hover {
+  background: var(--yt-accent);
+  color: var(--yt-text-inverted);
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
 @media (max-width: 960px) {
   .yt-whitepaper__hero,
   .yt-signal-strip,

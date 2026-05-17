@@ -1,19 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 840" role="img" aria-labelledby="title desc">
   <title id="title">YOLO-Toys request lifecycle</title>
   <desc id="desc">A six-step request lifecycle covering ingress, validation, coordination, execution, normalization, and emission.</desc>
-  <style>
-    .bg { fill: var(--svg-bg, #faf8f5); }
-    .panel { fill: var(--svg-panel, #ffffff); stroke: var(--svg-border, #e0dbe8); stroke-width: 2; }
-    .step { fill: var(--svg-card, #fffdfa); stroke: var(--svg-border, #e0dbe8); stroke-width: 2; rx: 28; }
-    .ink { fill: var(--svg-ink, #1c1a22); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    .muted { fill: var(--svg-muted, #6b6680); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    .accent { fill: var(--svg-accent, #e85524); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    .wire { stroke: var(--svg-wire, #9b96b0); stroke-width: 3; fill: none; }
-    .badge { fill: var(--svg-accent-soft, rgba(232,85,36,0.10)); }
-  </style>
 
-  <rect class="bg" width="1280" height="840" rx="36" />
-  <rect class="panel" x="28" y="28" width="1224" height="784" rx="28" />
+  <!-- Background -->
+  <rect class="canvas" width="1280" height="840" rx="36" />
+  <rect class="surface" x="28" y="28" width="1224" height="784" rx="28" stroke-width="2" />
 
   <!-- Title -->
   <text class="ink" x="84" y="106" font-size="22" font-weight="700" letter-spacing="2">REQUEST LIFECYCLE</text>
@@ -21,54 +12,54 @@
 
   <!-- Step 1: Ingress -->
   <g transform="translate(88 214)">
-    <rect class="step" width="322" height="126" rx="28" />
-    <rect class="badge" x="24" y="22" width="58" height="30" rx="15" />
-    <text class="accent" x="44" y="43" font-size="15" font-weight="800">01</text>
+    <rect class="surface-alt" width="322" height="126" rx="28" stroke-width="2" />
+    <rect class="brand-soft" x="24" y="22" width="58" height="30" rx="15" />
+    <text class="brand" x="44" y="43" font-size="15" font-weight="800">01</text>
     <text class="ink" x="24" y="82" font-size="24" font-weight="760">Ingress</text>
     <text class="muted" x="24" y="108" font-size="16">HTTP or WebSocket receives the payload and request intent.</text>
   </g>
 
   <!-- Step 2: Validation -->
   <g transform="translate(478 214)">
-    <rect class="step" width="322" height="126" rx="28" />
-    <rect class="badge" x="24" y="22" width="58" height="30" rx="15" />
-    <text class="accent" x="44" y="43" font-size="15" font-weight="800">02</text>
+    <rect class="surface-alt" width="322" height="126" rx="28" stroke-width="2" />
+    <rect class="brand-soft" x="24" y="22" width="58" height="30" rx="15" />
+    <text class="brand" x="44" y="43" font-size="15" font-weight="800">02</text>
     <text class="ink" x="24" y="82" font-size="24" font-weight="760">Validation</text>
     <text class="muted" x="24" y="108" font-size="16">Files, parameters, and model identifiers are checked up front.</text>
   </g>
 
   <!-- Step 3: Coordination -->
   <g transform="translate(868 214)">
-    <rect class="step" width="322" height="126" rx="28" />
-    <rect class="badge" x="24" y="22" width="58" height="30" rx="15" />
-    <text class="accent" x="44" y="43" font-size="15" font-weight="800">03</text>
+    <rect class="surface-alt" width="322" height="126" rx="28" stroke-width="2" />
+    <rect class="brand-soft" x="24" y="22" width="58" height="30" rx="15" />
+    <text class="brand" x="44" y="43" font-size="15" font-weight="800">03</text>
     <text class="ink" x="24" y="82" font-size="24" font-weight="760">Coordination</text>
     <text class="muted" x="24" y="108" font-size="16">ModelManager resolves handler, cache state, and resource constraints.</text>
   </g>
 
   <!-- Step 4: Execution -->
   <g transform="translate(88 492)">
-    <rect class="step" width="322" height="126" rx="28" />
-    <rect class="badge" x="24" y="22" width="58" height="30" rx="15" />
-    <text class="accent" x="44" y="43" font-size="15" font-weight="800">04</text>
+    <rect class="surface-alt" width="322" height="126" rx="28" stroke-width="2" />
+    <rect class="brand-soft" x="24" y="22" width="58" height="30" rx="15" />
+    <text class="brand" x="44" y="43" font-size="15" font-weight="800">04</text>
     <text class="ink" x="24" y="82" font-size="24" font-weight="760">Execution</text>
     <text class="muted" x="24" y="108" font-size="16">The selected handler runs family-specific inference logic.</text>
   </g>
 
   <!-- Step 5: Normalization -->
   <g transform="translate(478 492)">
-    <rect class="step" width="322" height="126" rx="28" />
-    <rect class="badge" x="24" y="22" width="58" height="30" rx="15" />
-    <text class="accent" x="44" y="43" font-size="15" font-weight="800">05</text>
+    <rect class="surface-alt" width="322" height="126" rx="28" stroke-width="2" />
+    <rect class="brand-soft" x="24" y="22" width="58" height="30" rx="15" />
+    <text class="brand" x="44" y="43" font-size="15" font-weight="800">05</text>
     <text class="ink" x="24" y="82" font-size="24" font-weight="760">Normalization</text>
     <text class="muted" x="24" y="108" font-size="16">Raw model outputs become stable response schemas.</text>
   </g>
 
   <!-- Step 6: Emission -->
   <g transform="translate(868 492)">
-    <rect class="step" width="322" height="126" rx="28" />
-    <rect class="badge" x="24" y="22" width="58" height="30" rx="15" />
-    <text class="accent" x="44" y="43" font-size="15" font-weight="800">06</text>
+    <rect class="surface-alt" width="322" height="126" rx="28" stroke-width="2" />
+    <rect class="brand-soft" x="24" y="22" width="58" height="30" rx="15" />
+    <text class="brand" x="44" y="43" font-size="15" font-weight="800">06</text>
     <text class="ink" x="24" y="82" font-size="24" font-weight="760">Emission</text>
     <text class="muted" x="24" y="108" font-size="16">JSON or streamed payloads leave the runtime with uniform semantics.</text>
   </g>
