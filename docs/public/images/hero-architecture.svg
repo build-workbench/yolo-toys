@@ -2,34 +2,25 @@
   <title id="title">YOLO-Toys runtime topology</title>
   <desc id="desc">A layered diagram showing client surfaces, runtime coordination, dispatch, and execution adapters.</desc>
   <style>
-    .bg { fill: #f5f0ec; }
-    .panel { fill: #fcfaf8; stroke: #d7c8bc; stroke-width: 2; }
-    .card { fill: #fffaf6; stroke: #cdb8a8; stroke-width: 2; rx: 28; }
-    .ink { fill: #2d261f; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    .muted { fill: #6f645a; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    .accent { fill: #e06c2f; }
-    .accent-soft { fill: #f7d8c4; }
-    .wire { stroke: #8f7f72; stroke-width: 3; fill: none; }
-    .dot { fill: #2d261f; }
-    @media (prefers-color-scheme: dark) {
-      .bg { fill: #201b17; }
-      .panel { fill: #27211d; stroke: #51443a; }
-      .card { fill: #2f2823; stroke: #5f5146; }
-      .ink { fill: #f2e8de; }
-      .muted { fill: #c4b6a9; }
-      .accent { fill: #ff9b63; }
-      .accent-soft { fill: #503222; }
-      .wire { stroke: #b99a85; }
-      .dot { fill: #f2e8de; }
-    }
+    .bg { fill: var(--svg-bg, #faf8f5); }
+    .panel { fill: var(--svg-panel, #ffffff); stroke: var(--svg-border, #e0dbe8); stroke-width: 2; }
+    .card { fill: var(--svg-card, #fffdfa); stroke: var(--svg-border, #e0dbe8); stroke-width: 2; rx: 28; }
+    .ink { fill: var(--svg-ink, #1c1a22); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    .muted { fill: var(--svg-muted, #6b6680); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    .accent { fill: var(--svg-accent, #e85524); }
+    .accent-soft { fill: var(--svg-accent-soft, rgba(232,85,36,0.10)); }
+    .wire { stroke: var(--svg-wire, #9b96b0); stroke-width: 3; fill: none; }
+    .dot { fill: var(--svg-ink, #1c1a22); }
   </style>
 
   <rect class="bg" width="1280" height="820" rx="36" />
   <rect class="panel" x="28" y="28" width="1224" height="764" rx="28" />
 
+  <!-- Title -->
   <text class="ink" x="84" y="104" font-size="22" font-weight="700" letter-spacing="2">YOLO-TOYS RUNTIME TOPOLOGY</text>
   <text class="muted" x="84" y="138" font-size="28" font-weight="600">One service boundary, explicit execution adapters, and a readable control plane.</text>
 
+  <!-- Client Surfaces -->
   <rect class="card" x="84" y="198" width="264" height="152" rx="28" />
   <rect class="accent-soft" x="108" y="224" width="112" height="28" rx="14" />
   <text class="ink" x="118" y="244" font-size="13" font-weight="700" letter-spacing="1.4">CLIENT SURFACES</text>
@@ -37,6 +28,7 @@
   <text class="ink" x="108" y="320" font-size="24" font-weight="700">observability</text>
   <text class="muted" x="108" y="346" font-size="16">Routes stay thin, transport-specific, and replaceable.</text>
 
+  <!-- Runtime Coordination -->
   <rect class="card" x="400" y="198" width="470" height="220" rx="28" />
   <rect class="accent-soft" x="424" y="224" width="148" height="28" rx="14" />
   <text class="ink" x="434" y="244" font-size="13" font-weight="700" letter-spacing="1.4">RUNTIME COORDINATION</text>
@@ -44,6 +36,7 @@
   <text class="ink" x="424" y="322" font-size="28" font-weight="760">cache policy, and lifecycle control</text>
   <text class="muted" x="424" y="360" font-size="17">This layer absorbs warm-model reuse, lazy loads, and operational constraints so they do not leak into every route.</text>
 
+  <!-- Dispatch -->
   <rect class="card" x="922" y="198" width="274" height="220" rx="28" />
   <rect class="accent-soft" x="946" y="224" width="114" height="28" rx="14" />
   <text class="ink" x="956" y="244" font-size="13" font-weight="700" letter-spacing="1.4">DISPATCH</text>
@@ -51,6 +44,7 @@
   <text class="ink" x="946" y="320" font-size="25" font-weight="760">model resolution</text>
   <text class="muted" x="946" y="360" font-size="16">Model identity, task type, and handler mapping stay explicit.</text>
 
+  <!-- Execution Adapters -->
   <rect class="card" x="168" y="496" width="944" height="212" rx="32" />
   <rect class="accent-soft" x="196" y="522" width="160" height="28" rx="14" />
   <text class="ink" x="206" y="542" font-size="13" font-weight="700" letter-spacing="1.4">EXECUTION ADAPTERS</text>
@@ -75,6 +69,7 @@
   <text class="ink" x="972" y="610" font-size="24" font-weight="760">BLIP</text>
   <text class="muted" x="972" y="636" font-size="15">caption and VQA</text>
 
+  <!-- Connections -->
   <path class="wire" d="M348 274H400" />
   <path class="wire" d="M870 308H922" />
   <path class="wire" d="M640 418V472" />
@@ -87,5 +82,6 @@
   <circle class="dot" cx="640" cy="418" r="6" />
   <circle class="dot" cx="640" cy="496" r="6" />
 
+  <!-- Footer -->
   <text class="muted" x="84" y="748" font-size="16">Control stays centralized, execution stays specialized, public contracts stay normalized.</text>
 </svg>

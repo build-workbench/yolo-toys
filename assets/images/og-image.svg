@@ -2,22 +2,13 @@
   <title id="title">YOLO-Toys Whitepaper social card</title>
   <desc id="desc">A whitepaper-style social card showing the YOLO-Toys title, subtitle, and runtime architecture motif.</desc>
   <style>
-    .bg { fill: #f4eee8; }
-    .panel { fill: #fbf8f5; stroke: #d6c7ba; stroke-width: 2; }
-    .ink { fill: #2d261f; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    .muted { fill: #6f645a; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    .accent { fill: #e06c2f; }
-    .accent-soft { fill: #f4d6c2; }
-    .wire { stroke: #8f7f72; stroke-width: 3; fill: none; }
-    @media (prefers-color-scheme: dark) {
-      .bg { fill: #201b17; }
-      .panel { fill: #2a231e; stroke: #55463b; }
-      .ink { fill: #f2e8de; }
-      .muted { fill: #cab9aa; }
-      .accent { fill: #ff9b63; }
-      .accent-soft { fill: #503222; }
-      .wire { stroke: #b99a85; }
-    }
+    .bg { fill: var(--svg-bg, #faf8f5); }
+    .panel { fill: var(--svg-panel, #ffffff); stroke: var(--svg-border, #e0dbe8); stroke-width: 2; }
+    .ink { fill: var(--svg-ink, #1c1a22); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    .muted { fill: var(--svg-muted, #6b6680); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    .accent { fill: var(--svg-accent, #e85524); }
+    .accent-soft { fill: var(--svg-accent-soft, rgba(232,85,36,0.10)); }
+    .wire { stroke: var(--svg-wire, #9b96b0); stroke-width: 3; fill: none; }
   </style>
 
   <rect class="bg" width="1200" height="630" rx="28" />

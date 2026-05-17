@@ -10,7 +10,7 @@ const base = rawBase
   : '/'
 
 const sharedHead = [
-  ['meta', { name: 'theme-color', content: '#ff6b35' }],
+  ['meta', { name: 'theme-color', content: '#e85524' }],
   ['meta', { name: 'og:type', content: 'website' }],
   ['meta', { property: 'og:title', content: 'YOLO-Toys Whitepaper' }],
   ['meta', { property: 'og:description', content: 'A whitepaper-grade architecture and research guide for the YOLO-Toys multi-model vision serving stack.' }],
@@ -112,6 +112,9 @@ export default withMermaid(defineConfig({
                 { text: '系统总览', link: '/zh/architecture/overview' },
                 { text: '请求流程', link: '/zh/architecture/request-flow' },
                 { text: '处理器体系', link: '/zh/architecture/handlers' },
+                { text: '中间件栈', link: '/zh/architecture/middleware-stack' },
+                { text: '配置注入', link: '/zh/architecture/config-injection' },
+                { text: '模型缓存', link: '/zh/architecture/model-cache' },
               ],
             },
             {
@@ -155,6 +158,7 @@ export default withMermaid(defineConfig({
                 { text: '研究首页', link: '/zh/research/' },
                 { text: '参考文献', link: '/zh/citations' },
                 { text: '竞品探究', link: '/zh/reference/comparisons' },
+                { text: '演进思考', link: '/zh/research/evolution' },
               ],
             },
           ],
@@ -208,6 +212,9 @@ export default withMermaid(defineConfig({
                 { text: 'System Overview', link: '/en/architecture/overview' },
                 { text: 'Request Lifecycle', link: '/en/architecture/request-flow' },
                 { text: 'Handler Topology', link: '/en/architecture/handlers' },
+                { text: 'Middleware Stack', link: '/en/architecture/middleware-stack' },
+                { text: 'Config Injection', link: '/en/architecture/config-injection' },
+                { text: 'Model Cache', link: '/en/architecture/model-cache' },
               ],
             },
             {
@@ -251,6 +258,7 @@ export default withMermaid(defineConfig({
                 { text: 'Research Home', link: '/en/research/' },
                 { text: 'Bibliography', link: '/en/citations' },
                 { text: 'Comparative Analysis', link: '/en/reference/comparisons' },
+                { text: 'Evolution', link: '/en/research/evolution' },
               ],
             },
           ],

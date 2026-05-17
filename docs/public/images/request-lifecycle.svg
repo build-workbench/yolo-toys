@@ -2,32 +2,24 @@
   <title id="title">YOLO-Toys request lifecycle</title>
   <desc id="desc">A six-step request lifecycle covering ingress, validation, coordination, execution, normalization, and emission.</desc>
   <style>
-    .bg { fill: #f5f0ec; }
-    .panel { fill: #fcfaf8; stroke: #d7c8bc; stroke-width: 2; }
-    .step { fill: #fffaf6; stroke: #cdb8a8; stroke-width: 2; rx: 28; }
-    .ink { fill: #2d261f; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    .muted { fill: #6f645a; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    .accent { fill: #e06c2f; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    .wire { stroke: #8f7f72; stroke-width: 3; fill: none; }
-    .badge { fill: #f7d8c4; }
-    @media (prefers-color-scheme: dark) {
-      .bg { fill: #201b17; }
-      .panel { fill: #27211d; stroke: #51443a; }
-      .step { fill: #2f2823; stroke: #5f5146; }
-      .ink { fill: #f2e8de; }
-      .muted { fill: #c4b6a9; }
-      .accent { fill: #ff9b63; }
-      .wire { stroke: #b99a85; }
-      .badge { fill: #503222; }
-    }
+    .bg { fill: var(--svg-bg, #faf8f5); }
+    .panel { fill: var(--svg-panel, #ffffff); stroke: var(--svg-border, #e0dbe8); stroke-width: 2; }
+    .step { fill: var(--svg-card, #fffdfa); stroke: var(--svg-border, #e0dbe8); stroke-width: 2; rx: 28; }
+    .ink { fill: var(--svg-ink, #1c1a22); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    .muted { fill: var(--svg-muted, #6b6680); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    .accent { fill: var(--svg-accent, #e85524); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    .wire { stroke: var(--svg-wire, #9b96b0); stroke-width: 3; fill: none; }
+    .badge { fill: var(--svg-accent-soft, rgba(232,85,36,0.10)); }
   </style>
 
   <rect class="bg" width="1280" height="840" rx="36" />
   <rect class="panel" x="28" y="28" width="1224" height="784" rx="28" />
 
+  <!-- Title -->
   <text class="ink" x="84" y="106" font-size="22" font-weight="700" letter-spacing="2">REQUEST LIFECYCLE</text>
   <text class="muted" x="84" y="140" font-size="28" font-weight="600">Where validation, coordination, execution, and normalization each belong.</text>
 
+  <!-- Step 1: Ingress -->
   <g transform="translate(88 214)">
     <rect class="step" width="322" height="126" rx="28" />
     <rect class="badge" x="24" y="22" width="58" height="30" rx="15" />
@@ -36,6 +28,7 @@
     <text class="muted" x="24" y="108" font-size="16">HTTP or WebSocket receives the payload and request intent.</text>
   </g>
 
+  <!-- Step 2: Validation -->
   <g transform="translate(478 214)">
     <rect class="step" width="322" height="126" rx="28" />
     <rect class="badge" x="24" y="22" width="58" height="30" rx="15" />
@@ -44,6 +37,7 @@
     <text class="muted" x="24" y="108" font-size="16">Files, parameters, and model identifiers are checked up front.</text>
   </g>
 
+  <!-- Step 3: Coordination -->
   <g transform="translate(868 214)">
     <rect class="step" width="322" height="126" rx="28" />
     <rect class="badge" x="24" y="22" width="58" height="30" rx="15" />
@@ -52,6 +46,7 @@
     <text class="muted" x="24" y="108" font-size="16">ModelManager resolves handler, cache state, and resource constraints.</text>
   </g>
 
+  <!-- Step 4: Execution -->
   <g transform="translate(88 492)">
     <rect class="step" width="322" height="126" rx="28" />
     <rect class="badge" x="24" y="22" width="58" height="30" rx="15" />
@@ -60,6 +55,7 @@
     <text class="muted" x="24" y="108" font-size="16">The selected handler runs family-specific inference logic.</text>
   </g>
 
+  <!-- Step 5: Normalization -->
   <g transform="translate(478 492)">
     <rect class="step" width="322" height="126" rx="28" />
     <rect class="badge" x="24" y="22" width="58" height="30" rx="15" />
@@ -68,6 +64,7 @@
     <text class="muted" x="24" y="108" font-size="16">Raw model outputs become stable response schemas.</text>
   </g>
 
+  <!-- Step 6: Emission -->
   <g transform="translate(868 492)">
     <rect class="step" width="322" height="126" rx="28" />
     <rect class="badge" x="24" y="22" width="58" height="30" rx="15" />
@@ -76,11 +73,13 @@
     <text class="muted" x="24" y="108" font-size="16">JSON or streamed payloads leave the runtime with uniform semantics.</text>
   </g>
 
+  <!-- Flow lines -->
   <path class="wire" d="M410 277H478" />
   <path class="wire" d="M800 277H868" />
   <path class="wire" d="M1028 340V420H249V492" />
   <path class="wire" d="M410 555H478" />
   <path class="wire" d="M800 555H868" />
 
+  <!-- Footer -->
   <text class="muted" x="88" y="714" font-size="16">The lifecycle is both a functional path and an operational path: cache hits, lazy loads, and concurrency limits shape real user-visible behavior.</text>
 </svg>
