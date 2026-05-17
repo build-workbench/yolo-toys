@@ -48,11 +48,6 @@ layout: home
     <ReadingTracks
       :tracks="[
         {
-          title: 'Interviewer / Reviewer',
-          summary: 'Read the architecture atlas first, then the comparisons page, then the citations surface.',
-          href: '/en/architecture/'
-        },
-        {
           title: 'Integrator / Operator',
           summary: 'Start in the primer, validate deployment assumptions, then move into API and operations pages.',
           href: '/en/primer/'

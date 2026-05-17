@@ -48,11 +48,6 @@ layout: home
     <ReadingTracks
       :tracks="[
         {
-          title: '面试官 / 审查者',
-          summary: '先读架构图谱，再看竞品对比与参考文献，快速建立判断。',
-          href: '/zh/architecture/'
-        },
-        {
           title: '集成者 / 运维者',
           summary: '先走导读，再看部署与 API 页面，明确系统落地方式。',
           href: '/zh/primer/'
