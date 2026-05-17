@@ -1,16 +1,23 @@
 import DefaultTheme from 'vitepress/theme'
 import { watch } from 'vue'
 import { useRoute } from 'vitepress'
+import WhitepaperLanding from './components/WhitepaperLanding.vue'
+import ReadingTracks from './components/ReadingTracks.vue'
+import FigureFrame from './components/FigureFrame.vue'
 import './style.css'
 
 const STORAGE_KEY = 'yolo-toys-lang-preference'
 
 export default {
   extends: DefaultTheme,
+  enhanceApp({ app }) {
+    app.component('WhitepaperLanding', WhitepaperLanding)
+    app.component('ReadingTracks', ReadingTracks)
+    app.component('FigureFrame', FigureFrame)
+  },
   setup() {
     const route = useRoute()
 
-    // 监听路由变化，自动更新语言偏好（仅客户端）
     if (typeof window !== 'undefined') {
       watch(
         () => route.path,
@@ -24,5 +31,5 @@ export default {
         { immediate: true }
       )
     }
-  }
+  },
 }

@@ -1,247 +1,44 @@
----
-title: Request Flow - End-to-End Processing
----
+# Request Lifecycle
 
-# Request Flow: End-to-End Processing
+This page follows one inference request through the runtime. The lifecycle matters because the quality of the public API depends on where the system translates, caches, validates, and formats.
 
-This document traces a complete inference request from HTTP receipt to response, showing how each component participates.
+<FigureFrame
+  title="Figure 2. End-to-end lifecycle"
+  caption="Requests enter through transport-specific surfaces but converge on a single coordination path before model-specific execution begins."
+>
+  <img src="/images/request-lifecycle.svg" alt="YOLO-Toys request lifecycle" />
+</FigureFrame>
 
-## High-Level Flow
+## The path, step by step
 
-```mermaid
-sequenceDiagram
-    participant Client
-    participant FastAPI
-    participant Middleware
-    participant Router
-    participant ModelManager
-    participant ModelCache
-    participant HandlerRegistry
-    participant Handler
-    participant LoadedModel
-    participant Model
+1. **Ingress**: the request enters through HTTP or WebSocket.
+2. **Validation**: parameters, files, and model identifiers are checked before execution starts.
+3. **Coordination**: `ModelManager` selects or reuses the model instance and resolves the handler.
+4. **Execution**: the selected handler runs model-family-specific inference.
+5. **Normalization**: raw outputs are shaped into stable response contracts.
+6. **Emission**: the runtime returns JSON or streamed frame-level payloads.
 
-    Client->>FastAPI: POST /infer (image, params)
-    FastAPI->>Middleware: process request
+## Why normalization sits after execution
 
-    Note over Middleware: Security Headers, Rate Limit, Metrics
+Upstream models disagree on output shape, label semantics, confidence behavior, and auxiliary artifacts. If route handlers tried to normalize those differences directly, the transport layer would become the place where model semantics accumulate. YOLO-Toys instead keeps the route surface thin and lets handlers plus formatter helpers perform the translation.
 
-    Middleware->>Router: infer()
-    Router->>Router: read_upload_image()
-    Router->>Router: parse params
+## Cache and concurrency interactions
 
-    Router->>ModelManager: infer(model_id, image, params)
+The lifecycle is not just functional, it is operational. A request path can trigger:
 
-    ModelManager->>ModelCache: check cache
-    alt Cache Hit
-        ModelCache-->>ModelManager: LoadedModel
-    else Cache Miss
-        ModelManager->>HandlerRegistry: get_handler(model_id)
-        HandlerRegistry->>HandlerRegistry: resolve category
-        HandlerRegistry-->>ModelManager: Handler instance
+- a cache hit and immediate reuse of a warm model
+- a lazy model load on first use
+- waiting behind concurrency limits when the runtime is already saturated
 
-        ModelManager->>Handler: load(model_id)
-        Handler->>Model: load model
-        Model-->>Handler: model object
-        Handler-->>ModelManager: LoadedModel
+Those interactions are part of the user-visible behavior because they shape latency, warm-up cost, and resource pressure.
 
-        ModelManager->>ModelCache: store LoadedModel
-    end
+## Failure surfaces
 
-    ModelManager->>LoadedModel: infer(image, params)
-    LoadedModel->>Handler: _infer_impl(model, processor, image, params)
-    Handler->>Handler: preprocess image
-    Handler->>Model: run inference
-    Model-->>Handler: raw results
-    Handler->>Handler: postprocess results
-    Handler-->>LoadedModel: result dict
-    LoadedModel-->>ModelManager: result dict
+Common failures cluster at four points:
 
-    ModelManager-->>Router: result dict
-    Router->>Router: add model_id to result
-    Router-->>Client: JSON response
-```
+- invalid or oversized inputs
+- unknown model identifiers
+- runtime model-loading failures
+- downstream inference errors inside handlers
 
-## Detailed Component Flow
-
-### 1. HTTP Request Reception
-
-```python
-# app/api/inference.py
-@router.post("/infer")
-async def infer(
-    file: UploadFile,
-    model: str | None = None,
-    conf: float | None = None,
-    ...
-):
-    # Semaphore for concurrency control
-    async with semaphore:
-        result = await asyncio.to_thread(
-            model_manager.infer,
-            model_id=model_id,
-            image=img,
-            ...
-        )
-```
-
-### 2. Middleware Chain
-
-```python
-# app/main.py
-app.add_middleware(SecurityHeadersMiddleware)
-app.add_middleware(MetricsMiddleware)
-app.add_middleware(TimeoutMiddleware)
-app.add_middleware(RateLimitMiddleware)
-app.add_middleware(GZipMiddleware)
-app.add_middleware(CORSMiddleware)
-```
-
-**Order matters**: Added first, executed last (wraps subsequent middleware).
-
-### 3. Image Processing
-
-```python
-# app/api/utils.py
-async def read_upload_image(file: UploadFile) -> tuple[np.ndarray, int]:
-    content = await file.read()
-    nparr = np.frombuffer(content, np.uint8)
-    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)  # BGR format
-    return image, len(content)
-```
-
-### 4. Model Resolution
-
-```python
-# app/model_manager.py
-def load_model(self, model_id: str) -> LoadedModel:
-    if model_id in self._cache:
-        return self._cache[model_id]
-
-    handler = self._registry.get_handler(model_id)
-    loaded = handler.load(model_id)
-    self._cache[model_id] = loaded
-    return loaded
-```
-
-### 5. Handler Resolution
-
-```python
-# app/handlers/registry.py
-def get_handler(self, model_id: str) -> BaseHandler:
-    category = ModelCategory.infer_from_id(model_id, MODEL_REGISTRY)
-    handler_cls = _CATEGORY_HANDLER_MAP[category]
-    return handler_cls(self._config_or_device)
-```
-
-### 6. Model Loading
-
-```python
-# app/handlers/base.py
-def load(self, model_id: str) -> LoadedModel:
-    model, processor = self._do_load(model_id)
-    return LoadedModel(model, processor, self, model_id)
-```
-
-### 7. Inference Execution
-
-```python
-# app/handlers/base.py (LoadedModel)
-def infer(self, image: np.ndarray, params: InferenceParams) -> dict:
-    return self._handler._infer_impl(
-        self._model, self._processor, image, params
-    )
-```
-
-### 8. Result Formatting
-
-```python
-# app/handlers/utils.py
-def make_result(image, *, detections, inference_time, task, **extra):
-    h, w = image.shape[:2]
-    return {
-        "width": w,
-        "height": h,
-        "inference_time": inference_time,
-        "task": task,
-        "detections": detections,
-        **extra
-    }
-```
-
-## WebSocket Flow
-
-```mermaid
-sequenceDiagram
-    participant Client
-    participant WebSocket
-    participant Parser
-    participant ModelManager
-    participant Handler
-
-    Client->>WebSocket: connect (ws://host/ws?model=yolov8n.pt)
-    WebSocket->>Parser: parse query params
-    WebSocket-->>Client: {"type": "ready", "model": "yolov8n.pt"}
-
-    loop For each frame
-        Client->>WebSocket: binary frame (image)
-        WebSocket->>Parser: decode image
-
-        alt Valid image
-            WebSocket->>ModelManager: infer(model_id, image, params)
-            ModelManager-->>WebSocket: result dict
-            WebSocket-->>Client: {"type": "result", "data": {...}}
-        else Invalid image
-            WebSocket-->>Client: {"type": "error", "detail": "..."}
-        end
-    end
-
-    Client->>WebSocket: close
-    WebSocket-->>Client: connection closed
-```
-
-## Error Handling Flow
-
-```mermaid
-flowchart TD
-    A[Request] --> B{Valid Image?}
-    B -->|No| C[400 Bad Request]
-    B -->|Yes| D{Valid Model?}
-    D -->|No| E[404 Not Found]
-    D -->|Yes| F{Memory Available?}
-    F -->|No| G[503 Service Unavailable]
-    F -->|Yes| H{Inference Success?}
-    H -->|No| I[500 Internal Error]
-    H -->|Yes| J[200 OK + Result]
-
-    C --> K[Log Error]
-    E --> K
-    G --> K
-    I --> K
-    J --> L[Update Metrics]
-```
-
-## Timing Breakdown
-
-| Phase | Typical Duration | Notes |
-|-------|------------------|-------|
-| HTTP parsing | < 1ms | FastAPI overhead |
-| Image decode | 1-10ms | Depends on size |
-| Cache lookup | < 1ms | Dict access |
-| Model load | 100ms - 10s | First load only |
-| Preprocessing | 1-50ms | Model-specific |
-| Inference | 10ms - 1s | GPU/CPU dependent |
-| Postprocessing | 1-10ms | Format conversion |
-| JSON encode | < 1ms | Response size dependent |
-
-## Metrics Collection
-
-Each request updates Prometheus metrics:
-
-```python
-INFERENCE_REQUESTS.labels(model, task, status).inc()
-INFERENCE_LATENCY.labels(model, task).observe(duration)
-INFERENCE_INPUT_SIZE.observe(file_size)
-```
-
-Access metrics at `/metrics` endpoint for Prometheus scraping.
+The value of the current architecture is that each failure type has a natural boundary where it can be surfaced cleanly.

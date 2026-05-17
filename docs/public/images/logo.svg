@@ -1,10 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FF6B35"/>
-      <stop offset="100%" style="stop-color:#FF8C5A"/>
-    </linearGradient>
-  </defs>
-  <rect width="100" height="100" rx="20" fill="url(#grad)"/>
-  <text x="50" y="65" font-family="system-ui, sans-serif" font-size="40" font-weight="700" fill="white" text-anchor="middle">YT</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title desc">
+  <title id="title">YOLO-Toys logo</title>
+  <desc id="desc">A rounded square badge with the YT monogram.</desc>
+  <style>
+    .badge { fill: #f1e4da; }
+    .frame { fill: #e06c2f; }
+    .mark { fill: #261f19; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-weight: 800; }
+    @media (prefers-color-scheme: dark) {
+      .badge { fill: #3a2a22; }
+      .frame { fill: #ff9b63; }
+      .mark { fill: #f2e8de; }
+    }
+  </style>
+  <rect class="badge" width="100" height="100" rx="24" />
+  <rect class="frame" x="12" y="12" width="76" height="76" rx="20" />
+  <text class="mark" x="50" y="61" text-anchor="middle" font-size="34">YT</text>
 </svg>

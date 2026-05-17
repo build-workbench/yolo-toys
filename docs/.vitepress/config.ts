@@ -9,29 +9,20 @@ const base = rawBase
     : `/${rawBase}/`
   : '/'
 
-export default withMermaid(defineConfig({
-  base,
-  title: 'YOLO-Toys Docs',
-  description: 'YOLO-Toys Documentation',
-  lastUpdated: true,
-  cleanUrls: true,
-  ignoreDeadLinks: [
-    // 忽略 localhost 链接（用于开发示例）
-    /^http:\/\/localhost/,
-  ],
-
-  sitemap: {
-    hostname: 'https://lessup.github.io/yolo-toys/'
-  },
-
-  head: [
-    ['meta', { name: 'theme-color', content: '#FF6B35' }],
-    ['meta', { name: 'og:type', content: 'website' }],
-    [
-      'script',
-      { id: 'lang-redirect' },
-      `((() => {
-  // 已在语言路径下，跳过
+const sharedHead = [
+  ['meta', { name: 'theme-color', content: '#ff6b35' }],
+  ['meta', { name: 'og:type', content: 'website' }],
+  ['meta', { property: 'og:title', content: 'YOLO-Toys Whitepaper' }],
+  ['meta', { property: 'og:description', content: 'A whitepaper-grade architecture and research guide for the YOLO-Toys multi-model vision serving stack.' }],
+  ['meta', { property: 'og:image', content: 'https://lessup.github.io/yolo-toys/assets/images/og-image.svg' }],
+  ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+  ['meta', { name: 'twitter:title', content: 'YOLO-Toys Whitepaper' }],
+  ['meta', { name: 'twitter:description', content: 'Architecture atlas, academy, reference, and research guide for YOLO-Toys.' }],
+  ['meta', { name: 'twitter:image', content: 'https://lessup.github.io/yolo-toys/assets/images/og-image.svg' }],
+  [
+    'script',
+    { id: 'lang-redirect' },
+    `((() => {
   if (location.pathname.match(/\\/(zh|en)(\\/|$)/)) return;
 
   const STORAGE_KEY = 'yolo-toys-lang-preference';
@@ -46,44 +37,97 @@ export default withMermaid(defineConfig({
   const target = lang.startsWith('zh') ? 'zh' : 'en';
   localStorage.setItem(STORAGE_KEY, target);
   window.location.replace(target + '/');
-})())`
-    ]
+})())`,
   ],
+]
 
+const sharedThemeConfig = {
+  outline: [2, 3] as [number, number],
+  search: { provider: 'local' as const },
+  socialLinks: [
+    { icon: 'github', link: 'https://github.com/LessUp/yolo-toys' },
+  ],
+  footer: {
+    message: 'Released under the MIT License.',
+    copyright: 'Copyright © 2024-present LessUp',
+  },
+}
+
+export default withMermaid(defineConfig({
+  base,
+  title: 'YOLO-Toys Whitepaper',
+  description: 'A bilingual architecture and research guide for the YOLO-Toys multi-model vision serving stack.',
+  lastUpdated: true,
+  cleanUrls: true,
+  ignoreDeadLinks: [/^http:\/\/localhost/],
+  sitemap: {
+    hostname: 'https://lessup.github.io/yolo-toys/',
+  },
+  head: sharedHead,
   locales: {
     zh: {
       label: '简体中文',
       lang: 'zh-CN',
       link: '/zh/',
-      title: 'YOLO-Toys 文档',
-      description: 'YOLO-Toys 多模型视觉推理服务文档',
+      title: 'YOLO-Toys 白皮书',
+      description: 'YOLO-Toys 多模型视觉推理平台的架构白皮书与研究导读。',
       themeConfig: {
         nav: [
-          { text: '学院', link: '/zh/academy/', activeMatch: '/zh/academy/' },
-          { text: '指南', link: '/zh/guides/', activeMatch: '/zh/guides/' },
-          { text: 'API', link: '/zh/api/', activeMatch: '/zh/api/' },
-          { text: '架构', link: '/zh/architecture/', activeMatch: '/zh/architecture/' },
-          { text: '部署', link: '/zh/deployment/', activeMatch: '/zh/deployment/' },
-          { text: '参考', link: '/zh/reference/', activeMatch: '/zh/reference/' },
+          { text: '总览', link: '/zh/' },
+          { text: '导读', link: '/zh/primer/' },
+          { text: '架构', link: '/zh/architecture/' },
+          { text: '学院', link: '/zh/academy/' },
+          { text: '参考', link: '/zh/reference/' },
+          { text: '研究', link: '/zh/research/' },
         ],
         editLink: {
           pattern: 'https://github.com/LessUp/yolo-toys/edit/master/docs/:path',
-          text: '在 GitHub 上编辑此页'
+          text: '在 GitHub 上编辑此页',
         },
         lastUpdatedText: '最后更新',
         docFooter: {
           prev: '上一页',
-          next: '下一页'
+          next: '下一页',
         },
         outline: {
-          label: '目录'
+          label: '目录',
         },
         sidebar: {
+          '/zh/primer/': [
+            {
+              text: '项目导读',
+              items: [
+                { text: '导读首页', link: '/zh/primer/' },
+                { text: '快速开始', link: '/zh/getting-started/quickstart' },
+                { text: '安装', link: '/zh/getting-started/installation' },
+                { text: '部署概览', link: '/zh/deployment/' },
+              ],
+            },
+          ],
+          '/zh/architecture/': [
+            {
+              text: '架构图谱',
+              items: [
+                { text: '章节首页', link: '/zh/architecture/' },
+                { text: '系统总览', link: '/zh/architecture/overview' },
+                { text: '请求流程', link: '/zh/architecture/request-flow' },
+                { text: '处理器体系', link: '/zh/architecture/handlers' },
+              ],
+            },
+            {
+              text: '架构决策',
+              items: [
+                { text: '001: Handler Pattern', link: '/zh/architecture/adr/001-handler-pattern' },
+                { text: '002: Registry Pattern', link: '/zh/architecture/adr/002-registry-pattern' },
+                { text: '003: Caching Strategy', link: '/zh/architecture/adr/003-caching-strategy' },
+              ],
+            },
+          ],
           '/zh/academy/': [
             {
-              text: '深度学院',
+              text: '学院',
               items: [
-                { text: '概述', link: '/zh/academy/' },
+                { text: '学院首页', link: '/zh/academy/' },
                 { text: 'Handler 模式', link: '/zh/academy/handler-pattern' },
                 { text: 'Registry 模式', link: '/zh/academy/registry-pattern' },
                 { text: '缓存策略', link: '/zh/academy/caching-strategy' },
@@ -91,69 +135,26 @@ export default withMermaid(defineConfig({
               ],
             },
           ],
-          '/zh/guides/': [
-            {
-              text: '开发指南',
-              items: [
-                { text: '概述', link: '/zh/guides/' },
-                { text: '添加模型', link: '/zh/guides/adding-models' },
-                { text: '自定义 Handler', link: '/zh/guides/custom-handler' },
-                { text: '性能调优', link: '/zh/guides/performance-tuning' },
-              ],
-            },
-          ],
-          '/zh/api/': [
-            {
-              text: 'API 参考',
-              items: [
-                { text: '概述', link: '/zh/api/' },
-                { text: 'REST API', link: '/zh/api/rest-api' },
-                { text: 'WebSocket', link: '/zh/api/websocket' },
-                { text: '错误码', link: '/zh/api/error-codes' },
-              ],
-            },
-          ],
-          '/zh/architecture/': [
-            {
-              text: '系统架构',
-              items: [
-                { text: '概述', link: '/zh/architecture/' },
-                { text: '系统总览', link: '/zh/architecture/overview' },
-                { text: 'Handler 架构', link: '/zh/architecture/handlers' },
-                { text: '请求流程', link: '/zh/architecture/request-flow' },
-              ],
-            },
-            {
-              text: '架构决策记录',
-              items: [
-                { text: '001: Handler 模式', link: '/zh/architecture/adr/001-handler-pattern' },
-                { text: '002: Registry 模式', link: '/zh/architecture/adr/002-registry-pattern' },
-                { text: '003: 缓存策略', link: '/zh/architecture/adr/003-caching-strategy' },
-              ],
-            },
-          ],
-          '/zh/deployment/': [
-            {
-              text: '部署运维',
-              items: [
-                { text: '概述', link: '/zh/deployment/' },
-                { text: 'Docker', link: '/zh/deployment/docker' },
-                { text: '环境配置', link: '/zh/deployment/environments' },
-                { text: 'Kubernetes', link: '/zh/deployment/kubernetes' },
-                { text: '监控告警', link: '/zh/deployment/monitoring' },
-              ],
-            },
-          ],
           '/zh/reference/': [
             {
-              text: '参考资料',
+              text: '参考',
               items: [
-                { text: '概述', link: '/zh/reference/' },
-                { text: '模型列表', link: '/zh/reference/models' },
+                { text: '参考首页', link: '/zh/reference/' },
+                { text: '模型矩阵', link: '/zh/reference/models' },
                 { text: '性能基准', link: '/zh/reference/benchmarks' },
                 { text: '竞品对比', link: '/zh/reference/comparisons' },
-                { text: '常见问题', link: '/zh/reference/faq' },
+                { text: 'FAQ', link: '/zh/reference/faq' },
                 { text: '更新日志', link: '/zh/reference/changelog' },
+              ],
+            },
+          ],
+          '/zh/research/': [
+            {
+              text: '研究',
+              items: [
+                { text: '研究首页', link: '/zh/research/' },
+                { text: '参考文献', link: '/zh/citations' },
+                { text: '竞品探究', link: '/zh/reference/comparisons' },
               ],
             },
           ],
@@ -164,76 +165,53 @@ export default withMermaid(defineConfig({
       label: 'English',
       lang: 'en-US',
       link: '/en/',
-      title: 'YOLO-Toys Docs',
-      description: 'YOLO-Toys Multi-model Vision Inference Service',
+      title: 'YOLO-Toys Whitepaper',
+      description: 'A whitepaper-grade architecture and research guide for the YOLO-Toys serving stack.',
       themeConfig: {
         nav: [
-          { text: 'Academy', link: '/en/academy/', activeMatch: '/en/academy/' },
-          { text: 'Guides', link: '/en/guides/', activeMatch: '/en/guides/' },
-          { text: 'API', link: '/en/api/', activeMatch: '/en/api/' },
-          { text: 'Architecture', link: '/en/architecture/', activeMatch: '/en/architecture/' },
-          { text: 'Deployment', link: '/en/deployment/', activeMatch: '/en/deployment/' },
-          { text: 'Reference', link: '/en/reference/', activeMatch: '/en/reference/' },
+          { text: 'Overview', link: '/en/' },
+          { text: 'Primer', link: '/en/primer/' },
+          { text: 'Architecture', link: '/en/architecture/' },
+          { text: 'Academy', link: '/en/academy/' },
+          { text: 'Reference', link: '/en/reference/' },
+          { text: 'Research', link: '/en/research/' },
         ],
         editLink: {
           pattern: 'https://github.com/LessUp/yolo-toys/edit/master/docs/:path',
-          text: 'Edit this page on GitHub'
+          text: 'Edit this page on GitHub',
         },
         lastUpdatedText: 'Last updated',
         docFooter: {
           prev: 'Previous',
-          next: 'Next'
+          next: 'Next',
         },
         outline: {
-          label: 'On this page'
+          label: 'On this page',
         },
         sidebar: {
-          '/en/academy/': [
+          '/en/primer/': [
             {
-              text: 'Academy',
+              text: 'Primer',
               items: [
-                { text: 'Overview', link: '/en/academy/' },
-                { text: 'Handler Pattern', link: '/en/academy/handler-pattern' },
-                { text: 'Registry Pattern', link: '/en/academy/registry-pattern' },
-                { text: 'Caching Strategy', link: '/en/academy/caching-strategy' },
-                { text: 'OpenSpec System', link: '/en/academy/openspec-system' },
-              ],
-            },
-          ],
-          '/en/guides/': [
-            {
-              text: 'Guides',
-              items: [
-                { text: 'Overview', link: '/en/guides/' },
-                { text: 'Adding Models', link: '/en/guides/adding-models' },
-                { text: 'Custom Handler', link: '/en/guides/custom-handler' },
-                { text: 'Performance Tuning', link: '/en/guides/performance-tuning' },
-              ],
-            },
-          ],
-          '/en/api/': [
-            {
-              text: 'API Reference',
-              items: [
-                { text: 'Overview', link: '/en/api/' },
-                { text: 'REST API', link: '/en/api/rest-api' },
-                { text: 'WebSocket', link: '/en/api/websocket' },
-                { text: 'Error Codes', link: '/en/api/error-codes' },
+                { text: 'Primer Home', link: '/en/primer/' },
+                { text: 'Quickstart', link: '/en/getting-started/quickstart' },
+                { text: 'Installation', link: '/en/getting-started/installation' },
+                { text: 'Deployment Overview', link: '/en/deployment/' },
               ],
             },
           ],
           '/en/architecture/': [
             {
-              text: 'Architecture',
+              text: 'Architecture Atlas',
               items: [
-                { text: 'Overview', link: '/en/architecture/' },
+                { text: 'Chapter Home', link: '/en/architecture/' },
                 { text: 'System Overview', link: '/en/architecture/overview' },
-                { text: 'Handlers', link: '/en/architecture/handlers' },
-                { text: 'Request Flow', link: '/en/architecture/request-flow' },
+                { text: 'Request Lifecycle', link: '/en/architecture/request-flow' },
+                { text: 'Handler Topology', link: '/en/architecture/handlers' },
               ],
             },
             {
-              text: 'ADR',
+              text: 'Decision Records',
               items: [
                 { text: '001: Handler Pattern', link: '/en/architecture/adr/001-handler-pattern' },
                 { text: '002: Registry Pattern', link: '/en/architecture/adr/002-registry-pattern' },
@@ -241,15 +219,15 @@ export default withMermaid(defineConfig({
               ],
             },
           ],
-          '/en/deployment/': [
+          '/en/academy/': [
             {
-              text: 'Deployment',
+              text: 'Academy',
               items: [
-                { text: 'Overview', link: '/en/deployment/' },
-                { text: 'Docker', link: '/en/deployment/docker' },
-                { text: 'Environments', link: '/en/deployment/environments' },
-                { text: 'Kubernetes', link: '/en/deployment/kubernetes' },
-                { text: 'Monitoring', link: '/en/deployment/monitoring' },
+                { text: 'Academy Home', link: '/en/academy/' },
+                { text: 'Handler Pattern', link: '/en/academy/handler-pattern' },
+                { text: 'Registry Pattern', link: '/en/academy/registry-pattern' },
+                { text: 'Caching Strategy', link: '/en/academy/caching-strategy' },
+                { text: 'OpenSpec System', link: '/en/academy/openspec-system' },
               ],
             },
           ],
@@ -257,8 +235,8 @@ export default withMermaid(defineConfig({
             {
               text: 'Reference',
               items: [
-                { text: 'Overview', link: '/en/reference/' },
-                { text: 'Models', link: '/en/reference/models' },
+                { text: 'Reference Home', link: '/en/reference/' },
+                { text: 'Model Matrix', link: '/en/reference/models' },
                 { text: 'Benchmarks', link: '/en/reference/benchmarks' },
                 { text: 'Comparisons', link: '/en/reference/comparisons' },
                 { text: 'FAQ', link: '/en/reference/faq' },
@@ -266,41 +244,32 @@ export default withMermaid(defineConfig({
               ],
             },
           ],
+          '/en/research/': [
+            {
+              text: 'Research',
+              items: [
+                { text: 'Research Home', link: '/en/research/' },
+                { text: 'Bibliography', link: '/en/citations' },
+                { text: 'Comparative Analysis', link: '/en/reference/comparisons' },
+              ],
+            },
+          ],
         },
       },
     },
   },
-
-  themeConfig: {
-    logo: '/images/logo.svg',
-    outline: [2, 3],
-    search: { provider: 'local' },
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/LessUp/yolo-toys' },
-    ],
-    editLink: {
-      pattern: 'https://github.com/LessUp/yolo-toys/edit/master/docs/:path',
-      text: 'Edit this page on GitHub'
-    },
-    lastUpdatedText: 'Last updated',
-    footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024-present LessUp'
-    },
-  },
-
+  themeConfig: sharedThemeConfig,
   mermaid: {
     theme: 'base',
     themeVariables: {
-      primaryColor: '#FF6B35',
-      primaryTextColor: '#24292f',
-      primaryBorderColor: '#d0d7de',
-      lineColor: '#57606a',
-      secondaryColor: '#f6f8fa',
-      tertiaryColor: '#eaefef'
-    }
+      primaryColor: '#fff2ec',
+      primaryTextColor: '#1e2933',
+      primaryBorderColor: '#ffb08b',
+      lineColor: '#6f6b73',
+      secondaryColor: '#f6f1ee',
+      tertiaryColor: '#ece7e4',
+    },
   },
-
   vite: {
     plugins: [llmstxt()],
   },
