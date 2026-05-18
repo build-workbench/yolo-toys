@@ -320,7 +320,7 @@
 
   /* Structure - more visible borders */
   --svg-wire: #7878a0;
-  --svg-wire-alt: #5858780;
+  --svg-wire-alt: #585878;
   --svg-border: #38384a;
   --svg-border-strong: #58586a;
 
@@ -434,4 +434,66 @@
 
   --transition-theme: background-color var(--duration-slow) var(--ease-in-out),
                       color var(--duration-slow) var(--ease-in-out);
+}
+
+/* ================================================================
+   VISUAL ENHANCEMENT TOKENS
+   Advanced effects for whitepaper-grade presentation.
+   ================================================================ */
+
+:root {
+  /* ---- Grid & Pattern Overlays ---- */
+  /* Subtle dot-grid for hero sections */
+  --hero-dot-color: oklch(0.72 0.028 280 / 0.18);
+  --hero-dot-size: 24px;
+  --hero-grid-pattern: radial-gradient(
+    circle,
+    var(--hero-dot-color) 1px,
+    transparent 1px
+  );
+
+  /* ---- Gradient System ---- */
+  --gradient-brand-subtle: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--yt-brand-soft) 60%, transparent) 0%,
+    transparent 60%
+  );
+  --gradient-surface-lift: linear-gradient(
+    180deg,
+    var(--yt-surface) 0%,
+    var(--yt-canvas-soft) 100%
+  );
+  --gradient-hero-radial: radial-gradient(
+    ellipse 80% 50% at 50% -10%,
+    color-mix(in oklab, var(--yt-brand-soft) 40%, transparent),
+    transparent
+  );
+
+  /* ---- Glassmorphism ---- */
+  --glass-bg: color-mix(in oklab, var(--yt-surface) 70%, transparent);
+  --glass-border: color-mix(in oklab, var(--yt-border) 60%, transparent);
+  --glass-blur: blur(16px);
+
+  /* ---- Stat / Metric Highlight ---- */
+  --stat-number-size: clamp(2rem, 4vw, 3.5rem);
+  --stat-label-size: var(--text-sm);
+
+  /* ---- Section Dividers ---- */
+  --divider-gradient: linear-gradient(
+    90deg,
+    transparent,
+    var(--yt-border),
+    transparent
+  );
+
+  /* ---- Code Highlight (inline) ---- */
+  --code-brand: color-mix(in oklab, var(--yt-brand) 8%, var(--yt-canvas-soft));
+}
+
+/* Dark mode overrides for visual enhancement tokens */
+.dark {
+  --hero-dot-color: oklch(0.78 0.016 280 / 0.12);
+  --glass-bg: color-mix(in oklab, oklch(0.2 0.014 280) 72%, transparent);
+  --glass-border: color-mix(in oklab, oklch(0.36 0.018 280) 50%, transparent);
+  --code-brand: color-mix(in oklab, var(--yt-brand) 10%, oklch(0.2 0.014 280));
 }

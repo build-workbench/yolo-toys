@@ -1,76 +1,352 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 840" role="img" aria-labelledby="title desc">
-  <title id="title">YOLO-Toys request lifecycle</title>
-  <desc id="desc">A six-step request lifecycle covering ingress, validation, coordination, execution, normalization, and emission.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 860" role="img" aria-labelledby="lc-title lc-desc"
+     style="font-family: Inter, ui-sans-serif, system-ui, sans-serif;">
+  <title id="lc-title">YOLO-Toys Request Lifecycle</title>
+  <desc id="lc-desc">Six-stage request lifecycle: Ingress, Validation, Cache Check, Execution, Normalization, and Emission, with cache-hit and cache-miss branch paths annotated.</desc>
 
-  <!-- Background -->
-  <rect class="canvas" width="1280" height="840" rx="36" />
-  <rect class="surface" x="28" y="28" width="1224" height="784" rx="28" stroke-width="2" />
+  <defs>
+    <!-- Arrows -->
+    <marker id="arr-r" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M2,2 L8,5 L2,8" fill="none" stroke="var(--svg-wire)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-r-brand" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M2,2 L8,5 L2,8" fill="none" stroke="var(--svg-brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-r-success" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M2,2 L8,5 L2,8" fill="none" stroke="var(--svg-success)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-r-warning" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M2,2 L8,5 L2,8" fill="none" stroke="var(--svg-warning)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-d" markerWidth="10" markerHeight="10" refX="5" refY="7" orient="auto">
+      <path d="M2,2 L5,8 L8,2" fill="none" stroke="var(--svg-wire)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-d-warning" markerWidth="10" markerHeight="10" refX="5" refY="7" orient="auto">
+      <path d="M2,2 L5,8 L8,2" fill="none" stroke="var(--svg-warning)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-up-success" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto">
+      <path d="M2,8 L5,2 L8,8" fill="none" stroke="var(--svg-success)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <!-- Shadows -->
+    <filter id="shadow-sm" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="var(--svg-shadow)" flood-opacity="1"/>
+    </filter>
+    <filter id="shadow-md" x="-5%" y="-5%" width="110%" height="122%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="var(--svg-shadow)" flood-opacity="1"/>
+    </filter>
+    <!-- Grid -->
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="var(--svg-border)" stroke-width="0.4" opacity="0.5"/>
+    </pattern>
+  </defs>
 
+  <!-- ═══════════════════════════════════
+       CANVAS
+  ═══════════════════════════════════ -->
+  <rect width="1400" height="860" rx="20" fill="var(--svg-canvas)"/>
+  <rect x="1" y="1" width="1398" height="858" rx="20" fill="none" stroke="var(--svg-border)" stroke-width="1.5"/>
+  <rect x="1" y="1" width="1398" height="858" rx="20" fill="url(#grid)" opacity="0.3"/>
+
+  <!-- ═══════════════════════════════════
+       HEADER
+  ═══════════════════════════════════ -->
+  <!-- Title badge -->
+  <rect x="60" y="28" width="220" height="30" rx="6" fill="var(--svg-brand-soft)"/>
+  <text x="72" y="48" font-size="11" font-weight="700" fill="var(--svg-brand)" letter-spacing="2">REQUEST LIFECYCLE</text>
+
+  <!-- Subtitle -->
+  <text x="60" y="78" font-size="18" font-weight="700" fill="var(--svg-ink)">Six stages from ingress to emission</text>
+
+  <!-- Decorative dots -->
+  <circle cx="1290" cy="42" r="5" fill="var(--svg-success)" opacity="0.8"/>
+  <circle cx="1308" cy="42" r="5" fill="var(--svg-warning)" opacity="0.8"/>
+  <circle cx="1326" cy="42" r="5" fill="var(--svg-danger)" opacity="0.8"/>
+
+  <!-- Header line -->
+  <line x1="60" y1="96" x2="1340" y2="96" stroke="var(--svg-border)" stroke-width="1"/>
+
+  <!-- ═══════════════════════════════════
+       STAGE CARDS  (6 × steps, horizontal)
+       card width=172, gap=20, start x=60
+       positions: 60, 252, 444, 636, 828, 1020
+       each card height=200
+  ═══════════════════════════════════ -->
+
+  <!-- ── STAGE 1: INGRESS ── -->
+  <rect x="60" y="118" width="172" height="212" rx="12" fill="var(--svg-surface)" filter="url(#shadow-sm)"/>
+  <rect x="60" y="118" width="172" height="212" rx="12" fill="none" stroke="var(--svg-brand)" stroke-width="1.5" opacity="0.5"/>
+  <!-- Number circle -->
+  <circle cx="96" cy="150" r="18" fill="var(--svg-brand)"/>
+  <text x="96" y="155" font-size="11" font-weight="800" fill="var(--svg-canvas)" text-anchor="middle">01</text>
+  <!-- Icon symbol: network plug -->
+  <text x="136" y="142" font-size="20" fill="var(--svg-brand-soft)" text-anchor="middle">⬡</text>
   <!-- Title -->
-  <text class="ink" x="84" y="106" font-size="22" font-weight="700" letter-spacing="2">REQUEST LIFECYCLE</text>
-  <text class="muted" x="84" y="140" font-size="28" font-weight="600">Where validation, coordination, execution, and normalization each belong.</text>
+  <text x="76" y="190" font-size="15" font-weight="700" fill="var(--svg-ink)">Ingress</text>
+  <!-- Divider -->
+  <line x1="76" y1="198" x2="216" y2="198" stroke="var(--svg-border)" stroke-width="1"/>
+  <!-- Description -->
+  <text x="76" y="216" font-size="10" font-weight="400" fill="var(--svg-muted)">HTTP or WebSocket</text>
+  <text x="76" y="231" font-size="10" font-weight="400" fill="var(--svg-muted)">receives payload</text>
+  <!-- Tags -->
+  <rect x="76" y="246" width="54" height="16" rx="8" fill="var(--svg-brand-soft)"/>
+  <text x="103" y="257" font-size="8.5" font-weight="600" fill="var(--svg-brand)" text-anchor="middle">HTTP</text>
+  <rect x="136" y="246" width="50" height="16" rx="8" fill="var(--svg-accent-soft)"/>
+  <text x="161" y="257" font-size="8.5" font-weight="600" fill="var(--svg-accent)" text-anchor="middle">/ws</text>
+  <!-- Transport label -->
+  <text x="76" y="312" font-size="9" font-weight="400" fill="var(--svg-muted-soft)">transport layer</text>
 
-  <!-- Step 1: Ingress -->
-  <g transform="translate(88 214)">
-    <rect class="surface-alt" width="322" height="126" rx="28" stroke-width="2" />
-    <rect class="brand-soft" x="24" y="22" width="58" height="30" rx="15" />
-    <text class="brand" x="44" y="43" font-size="15" font-weight="800">01</text>
-    <text class="ink" x="24" y="82" font-size="24" font-weight="760">Ingress</text>
-    <text class="muted" x="24" y="108" font-size="16">HTTP or WebSocket receives the payload and request intent.</text>
-  </g>
+  <!-- Arrow 1→2 -->
+  <line x1="234" y1="224" x2="250" y2="224" stroke="var(--svg-wire)" stroke-width="1.5" marker-end="url(#arr-r)"/>
 
-  <!-- Step 2: Validation -->
-  <g transform="translate(478 214)">
-    <rect class="surface-alt" width="322" height="126" rx="28" stroke-width="2" />
-    <rect class="brand-soft" x="24" y="22" width="58" height="30" rx="15" />
-    <text class="brand" x="44" y="43" font-size="15" font-weight="800">02</text>
-    <text class="ink" x="24" y="82" font-size="24" font-weight="760">Validation</text>
-    <text class="muted" x="24" y="108" font-size="16">Files, parameters, and model identifiers are checked up front.</text>
-  </g>
+  <!-- ── STAGE 2: VALIDATION ── -->
+  <rect x="252" y="118" width="172" height="212" rx="12" fill="var(--svg-surface)" filter="url(#shadow-sm)"/>
+  <rect x="252" y="118" width="172" height="212" rx="12" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <!-- Number circle -->
+  <circle cx="288" cy="150" r="18" fill="var(--svg-brand)"/>
+  <text x="288" y="155" font-size="11" font-weight="800" fill="var(--svg-canvas)" text-anchor="middle">02</text>
+  <text x="328" y="142" font-size="20" fill="var(--svg-brand-soft)" text-anchor="middle">⬡</text>
+  <text x="268" y="190" font-size="15" font-weight="700" fill="var(--svg-ink)">Validation</text>
+  <line x1="268" y1="198" x2="408" y2="198" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="268" y="216" font-size="10" font-weight="400" fill="var(--svg-muted)">Pydantic schemas</text>
+  <text x="268" y="231" font-size="10" font-weight="400" fill="var(--svg-muted)">file checks · model ID</text>
+  <rect x="268" y="246" width="60" height="16" rx="8" fill="var(--svg-brand-soft)"/>
+  <text x="298" y="257" font-size="8.5" font-weight="600" fill="var(--svg-brand)" text-anchor="middle">Pydantic</text>
+  <rect x="334" y="246" width="44" height="16" rx="8" fill="var(--svg-surface-alt)"/>
+  <text x="356" y="257" font-size="8.5" font-weight="600" fill="var(--svg-ink-soft)" text-anchor="middle">422</text>
+  <text x="268" y="312" font-size="9" font-weight="400" fill="var(--svg-muted-soft)">schema enforcement</text>
 
-  <!-- Step 3: Coordination -->
-  <g transform="translate(868 214)">
-    <rect class="surface-alt" width="322" height="126" rx="28" stroke-width="2" />
-    <rect class="brand-soft" x="24" y="22" width="58" height="30" rx="15" />
-    <text class="brand" x="44" y="43" font-size="15" font-weight="800">03</text>
-    <text class="ink" x="24" y="82" font-size="24" font-weight="760">Coordination</text>
-    <text class="muted" x="24" y="108" font-size="16">ModelManager resolves handler, cache state, and resource constraints.</text>
-  </g>
+  <!-- Arrow 2→3 -->
+  <line x1="426" y1="224" x2="442" y2="224" stroke="var(--svg-wire)" stroke-width="1.5" marker-end="url(#arr-r)"/>
 
-  <!-- Step 4: Execution -->
-  <g transform="translate(88 492)">
-    <rect class="surface-alt" width="322" height="126" rx="28" stroke-width="2" />
-    <rect class="brand-soft" x="24" y="22" width="58" height="30" rx="15" />
-    <text class="brand" x="44" y="43" font-size="15" font-weight="800">04</text>
-    <text class="ink" x="24" y="82" font-size="24" font-weight="760">Execution</text>
-    <text class="muted" x="24" y="108" font-size="16">The selected handler runs family-specific inference logic.</text>
-  </g>
+  <!-- ── STAGE 3: CACHE CHECK ── -->
+  <rect x="444" y="118" width="172" height="212" rx="12" fill="var(--svg-surface)" filter="url(#shadow-md)"/>
+  <rect x="444" y="118" width="172" height="212" rx="12" fill="none" stroke="var(--svg-brand)" stroke-width="2" opacity="0.7"/>
+  <!-- Number circle -->
+  <circle cx="480" cy="150" r="18" fill="var(--svg-brand)"/>
+  <text x="480" y="155" font-size="11" font-weight="800" fill="var(--svg-canvas)" text-anchor="middle">03</text>
+  <text x="520" y="142" font-size="20" fill="var(--svg-brand-soft)" text-anchor="middle">⬡</text>
+  <text x="460" y="190" font-size="15" font-weight="700" fill="var(--svg-ink)">Cache Check</text>
+  <line x1="460" y1="198" x2="600" y2="198" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="460" y="216" font-size="10" font-weight="400" fill="var(--svg-muted)">ModelCache lookup</text>
+  <text x="460" y="231" font-size="10" font-weight="400" fill="var(--svg-muted)">HIT or MISS</text>
+  <!-- HIT badge -->
+  <rect x="460" y="246" width="42" height="16" rx="8" fill="var(--svg-success)" opacity="0.2"/>
+  <text x="481" y="257" font-size="8.5" font-weight="700" fill="var(--svg-success)" text-anchor="middle">HIT</text>
+  <!-- MISS badge -->
+  <rect x="508" y="246" width="44" height="16" rx="8" fill="var(--svg-warning)" opacity="0.2"/>
+  <text x="530" y="257" font-size="8.5" font-weight="700" fill="var(--svg-warning)" text-anchor="middle">MISS</text>
+  <text x="460" y="312" font-size="9" font-weight="400" fill="var(--svg-muted-soft)">warm-model reuse</text>
 
-  <!-- Step 5: Normalization -->
-  <g transform="translate(478 492)">
-    <rect class="surface-alt" width="322" height="126" rx="28" stroke-width="2" />
-    <rect class="brand-soft" x="24" y="22" width="58" height="30" rx="15" />
-    <text class="brand" x="44" y="43" font-size="15" font-weight="800">05</text>
-    <text class="ink" x="24" y="82" font-size="24" font-weight="760">Normalization</text>
-    <text class="muted" x="24" y="108" font-size="16">Raw model outputs become stable response schemas.</text>
-  </g>
+  <!-- Arrow 3→4 main -->
+  <line x1="618" y1="224" x2="634" y2="224" stroke="var(--svg-wire)" stroke-width="1.5" marker-end="url(#arr-r)"/>
 
-  <!-- Step 6: Emission -->
-  <g transform="translate(868 492)">
-    <rect class="surface-alt" width="322" height="126" rx="28" stroke-width="2" />
-    <rect class="brand-soft" x="24" y="22" width="58" height="30" rx="15" />
-    <text class="brand" x="44" y="43" font-size="15" font-weight="800">06</text>
-    <text class="ink" x="24" y="82" font-size="24" font-weight="760">Emission</text>
-    <text class="muted" x="24" y="108" font-size="16">JSON or streamed payloads leave the runtime with uniform semantics.</text>
-  </g>
+  <!-- ── STAGE 4: EXECUTION ── -->
+  <rect x="636" y="118" width="172" height="212" rx="12" fill="var(--svg-surface)" filter="url(#shadow-sm)"/>
+  <rect x="636" y="118" width="172" height="212" rx="12" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <circle cx="672" cy="150" r="18" fill="var(--svg-brand)"/>
+  <text x="672" y="155" font-size="11" font-weight="800" fill="var(--svg-canvas)" text-anchor="middle">04</text>
+  <text x="712" y="142" font-size="20" fill="var(--svg-brand-soft)" text-anchor="middle">⬡</text>
+  <text x="652" y="190" font-size="15" font-weight="700" fill="var(--svg-ink)">Execution</text>
+  <line x1="652" y1="198" x2="792" y2="198" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="652" y="216" font-size="10" font-weight="400" fill="var(--svg-muted)">Handler-specific</text>
+  <text x="652" y="231" font-size="10" font-weight="400" fill="var(--svg-muted)">inference logic</text>
+  <rect x="652" y="246" width="86" height="16" rx="8" fill="var(--svg-surface-alt)"/>
+  <text x="695" y="257" font-size="8.5" font-weight="600" fill="var(--svg-ink-soft)" text-anchor="middle">YOLO/DETR/BLIP…</text>
+  <text x="652" y="312" font-size="9" font-weight="400" fill="var(--svg-muted-soft)">adapter dispatch</text>
 
-  <!-- Flow lines -->
-  <path class="wire" d="M410 277H478" />
-  <path class="wire" d="M800 277H868" />
-  <path class="wire" d="M1028 340V420H249V492" />
-  <path class="wire" d="M410 555H478" />
-  <path class="wire" d="M800 555H868" />
+  <!-- Arrow 4→5 -->
+  <line x1="810" y1="224" x2="826" y2="224" stroke="var(--svg-wire)" stroke-width="1.5" marker-end="url(#arr-r)"/>
 
-  <!-- Footer -->
-  <text class="muted" x="88" y="714" font-size="16">The lifecycle is both a functional path and an operational path: cache hits, lazy loads, and concurrency limits shape real user-visible behavior.</text>
+  <!-- ── STAGE 5: NORMALIZATION ── -->
+  <rect x="828" y="118" width="172" height="212" rx="12" fill="var(--svg-surface)" filter="url(#shadow-sm)"/>
+  <rect x="828" y="118" width="172" height="212" rx="12" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <circle cx="864" cy="150" r="18" fill="var(--svg-brand)"/>
+  <text x="864" y="155" font-size="11" font-weight="800" fill="var(--svg-canvas)" text-anchor="middle">05</text>
+  <text x="904" y="142" font-size="20" fill="var(--svg-brand-soft)" text-anchor="middle">⬡</text>
+  <text x="844" y="190" font-size="15" font-weight="700" fill="var(--svg-ink)">Normalization</text>
+  <line x1="844" y1="198" x2="984" y2="198" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="844" y="216" font-size="10" font-weight="400" fill="var(--svg-muted)">Raw outputs →</text>
+  <text x="844" y="231" font-size="10" font-weight="400" fill="var(--svg-muted)">stable response schema</text>
+  <rect x="844" y="246" width="80" height="16" rx="8" fill="var(--svg-brand-soft)"/>
+  <text x="884" y="257" font-size="8.5" font-weight="600" fill="var(--svg-brand)" text-anchor="middle">unified schema</text>
+  <text x="844" y="312" font-size="9" font-weight="400" fill="var(--svg-muted-soft)">output contract</text>
+
+  <!-- Arrow 5→6 -->
+  <line x1="1002" y1="224" x2="1018" y2="224" stroke="var(--svg-wire)" stroke-width="1.5" marker-end="url(#arr-r)"/>
+
+  <!-- ── STAGE 6: EMISSION ── -->
+  <rect x="1020" y="118" width="172" height="212" rx="12" fill="var(--svg-brand-soft)" opacity="0.35"/>
+  <rect x="1020" y="118" width="172" height="212" rx="12" fill="none" stroke="var(--svg-brand)" stroke-width="1.5" opacity="0.6"/>
+  <circle cx="1056" cy="150" r="18" fill="var(--svg-brand)"/>
+  <text x="1056" y="155" font-size="11" font-weight="800" fill="var(--svg-canvas)" text-anchor="middle">06</text>
+  <text x="1096" y="142" font-size="20" fill="var(--svg-brand-soft)" text-anchor="middle">⬡</text>
+  <text x="1036" y="190" font-size="15" font-weight="700" fill="var(--svg-ink)">Emission</text>
+  <line x1="1036" y1="198" x2="1176" y2="198" stroke="var(--svg-border)" stroke-width="1" opacity="0.5"/>
+  <text x="1036" y="216" font-size="10" font-weight="400" fill="var(--svg-muted)">JSON or streamed</text>
+  <text x="1036" y="231" font-size="10" font-weight="400" fill="var(--svg-muted)">WebSocket frames</text>
+  <rect x="1036" y="246" width="38" height="16" rx="8" fill="var(--svg-brand-soft)"/>
+  <text x="1055" y="257" font-size="8.5" font-weight="600" fill="var(--svg-brand)" text-anchor="middle">JSON</text>
+  <rect x="1080" y="246" width="38" height="16" rx="8" fill="var(--svg-accent-soft)"/>
+  <text x="1099" y="257" font-size="8.5" font-weight="600" fill="var(--svg-accent)" text-anchor="middle">/ws</text>
+  <text x="1036" y="312" font-size="9" font-weight="400" fill="var(--svg-muted-soft)">response egress</text>
+
+  <!-- ═══════════════════════════════════
+       BRANCH PATHS (cache hit / miss)
+  ═══════════════════════════════════ -->
+
+  <!-- ── Cache HIT path ──
+       From Stage 3 top → skip cold load → go directly to Stage 4
+       Drawn as green arc above the cards -->
+
+  <!-- HIT label above stage 3 -->
+  <rect x="453" y="98" width="56" height="18" rx="9" fill="var(--svg-success)" opacity="0.18"/>
+  <text x="481" y="110" font-size="9" font-weight="700" fill="var(--svg-success)" text-anchor="middle" letter-spacing="0.5">CACHE HIT</text>
+
+  <!-- HIT timing -->
+  <text x="481" y="116" font-size="8" font-weight="400" fill="var(--svg-success)" text-anchor="middle">→ warm model</text>
+
+  <!-- ── Cache MISS path ──
+       Drawn below the cards: cold load penalty loop -->
+
+  <!-- MISS arrow: Stage 3 bottom → down → cold load box → back up to Stage 4 bottom -->
+
+  <!-- Down from stage 3 -->
+  <line x1="530" y1="330" x2="530" y2="380" stroke="var(--svg-warning)" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr-d-warning)"/>
+
+  <!-- Cold load box -->
+  <rect x="444" y="382" width="374" height="72" rx="10" fill="var(--svg-surface-alt)" filter="url(#shadow-sm)"/>
+  <rect x="444" y="382" width="374" height="72" rx="10" fill="none" stroke="var(--svg-warning)" stroke-width="1.5" opacity="0.6" stroke-dasharray="5,3"/>
+  <!-- MISS badge inside -->
+  <rect x="460" y="394" width="58" height="18" rx="9" fill="var(--svg-warning)" opacity="0.2"/>
+  <text x="489" y="406" font-size="9.5" font-weight="700" fill="var(--svg-warning)" text-anchor="middle" letter-spacing="0.5">CACHE MISS</text>
+  <!-- description -->
+  <text x="530" y="430" font-size="11" font-weight="600" fill="var(--svg-ink)" text-anchor="middle">Cold Load Penalty</text>
+  <text x="530" y="446" font-size="9.5" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">model weights → GPU transfer → warm-up · +2–10 s</text>
+
+  <!-- Up from cold load to stage 4 -->
+  <line x1="700" y1="382" x2="700" y2="332" stroke="var(--svg-warning)" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr-up-success)"/>
+
+  <!-- ═══════════════════════════════════
+       PERFORMANCE IMPACT PANEL (right side)
+  ═══════════════════════════════════ -->
+  <rect x="1214" y="118" width="166" height="332" rx="12" fill="var(--svg-surface)" filter="url(#shadow-md)"/>
+  <rect x="1214" y="118" width="166" height="332" rx="12" fill="none" stroke="var(--svg-border-strong)" stroke-width="1.5"/>
+
+  <!-- Panel header -->
+  <rect x="1214" y="118" width="166" height="40" rx="12" fill="var(--svg-brand-soft)"/>
+  <rect x="1214" y="138" width="166" height="20" fill="var(--svg-brand-soft)"/>
+  <rect x="1214" y="118" width="166" height="40" rx="12" fill="none" stroke="var(--svg-brand)" stroke-width="1" opacity="0.4"/>
+  <text x="1297" y="143" font-size="10.5" font-weight="700" fill="var(--svg-brand)" text-anchor="middle" letter-spacing="1">PERFORMANCE</text>
+
+  <line x1="1228" y1="162" x2="1366" y2="162" stroke="var(--svg-border)" stroke-width="1"/>
+
+  <!-- HIT section -->
+  <rect x="1228" y="172" width="138" height="56" rx="8" fill="var(--svg-success)" opacity="0.1"/>
+  <rect x="1228" y="172" width="138" height="56" rx="8" fill="none" stroke="var(--svg-success)" stroke-width="1" opacity="0.4"/>
+  <text x="1297" y="191" font-size="9.5" font-weight="700" fill="var(--svg-success)" text-anchor="middle" letter-spacing="0.5">▲ CACHE HIT</text>
+  <text x="1297" y="206" font-size="18" font-weight="800" fill="var(--svg-ink)" text-anchor="middle">4–18 ms</text>
+  <text x="1297" y="221" font-size="8.5" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">warm model · no load</text>
+
+  <!-- MISS section -->
+  <rect x="1228" y="238" width="138" height="56" rx="8" fill="var(--svg-warning)" opacity="0.1"/>
+  <rect x="1228" y="238" width="138" height="56" rx="8" fill="none" stroke="var(--svg-warning)" stroke-width="1" opacity="0.4"/>
+  <text x="1297" y="257" font-size="9.5" font-weight="700" fill="var(--svg-warning)" text-anchor="middle" letter-spacing="0.5">▼ CACHE MISS</text>
+  <text x="1297" y="271" font-size="14" font-weight="800" fill="var(--svg-ink)" text-anchor="middle">+2–10 s</text>
+  <text x="1297" y="286" font-size="8.5" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">cold load penalty</text>
+
+  <line x1="1228" y1="304" x2="1366" y2="304" stroke="var(--svg-border)" stroke-width="1"/>
+
+  <!-- Stages breakdown -->
+  <text x="1228" y="322" font-size="9" font-weight="700" fill="var(--svg-ink-soft)" letter-spacing="0.5">STAGE COSTS</text>
+
+  <text x="1228" y="340" font-size="9" font-weight="400" fill="var(--svg-muted)">Ingress</text>
+  <text x="1366" y="340" font-size="9" font-weight="600" fill="var(--svg-ink)" text-anchor="end">&lt; 1 ms</text>
+
+  <text x="1228" y="356" font-size="9" font-weight="400" fill="var(--svg-muted)">Validation</text>
+  <text x="1366" y="356" font-size="9" font-weight="600" fill="var(--svg-ink)" text-anchor="end">1–3 ms</text>
+
+  <text x="1228" y="372" font-size="9" font-weight="400" fill="var(--svg-muted)">Cache Check</text>
+  <text x="1366" y="372" font-size="9" font-weight="600" fill="var(--svg-ink)" text-anchor="end">&lt; 1 ms</text>
+
+  <text x="1228" y="388" font-size="9" font-weight="400" fill="var(--svg-muted)">Execution</text>
+  <text x="1366" y="388" font-size="9" font-weight="600" fill="var(--svg-ink)" text-anchor="end">2–15 ms</text>
+
+  <text x="1228" y="404" font-size="9" font-weight="400" fill="var(--svg-muted)">Normalize</text>
+  <text x="1366" y="404" font-size="9" font-weight="600" fill="var(--svg-ink)" text-anchor="end">&lt; 1 ms</text>
+
+  <text x="1228" y="420" font-size="9" font-weight="400" fill="var(--svg-muted)">Emission</text>
+  <text x="1366" y="420" font-size="9" font-weight="600" fill="var(--svg-ink)" text-anchor="end">&lt; 1 ms</text>
+
+  <rect x="1228" y="430" width="138" height="12" rx="4" fill="var(--svg-border)"/>
+  <rect x="1228" y="430" width="55" height="12" rx="4" fill="var(--svg-brand)" opacity="0.6"/>
+
+  <!-- ═══════════════════════════════════
+       STAGE CONNECTOR — progress bar strip
+  ═══════════════════════════════════ -->
+
+  <!-- Progress track below cards -->
+  <rect x="79" y="342" width="1106" height="4" rx="2" fill="var(--svg-border)"/>
+  <!-- Filled progress -->
+  <rect x="79" y="342" width="1106" height="4" rx="2" fill="var(--svg-brand)" opacity="0.35"/>
+  <!-- Stage markers on progress bar -->
+  <circle cx="146" cy="344" r="5" fill="var(--svg-brand)"/>
+  <circle cx="338" cy="344" r="5" fill="var(--svg-brand)"/>
+  <circle cx="530" cy="344" r="5" fill="var(--svg-brand)"/>
+  <circle cx="722" cy="344" r="5" fill="var(--svg-brand)"/>
+  <circle cx="914" cy="344" r="5" fill="var(--svg-brand)"/>
+  <circle cx="1106" cy="344" r="5" fill="var(--svg-brand)"/>
+
+  <!-- ═══════════════════════════════════
+       BOTTOM SECTION — stage labels + sub-descriptions
+  ═══════════════════════════════════ -->
+
+  <!-- Stage label row -->
+  <text x="146" y="370" font-size="10" font-weight="600" fill="var(--svg-ink)" text-anchor="middle">INGEST</text>
+  <text x="338" y="370" font-size="10" font-weight="600" fill="var(--svg-ink)" text-anchor="middle">VALIDATE</text>
+  <text x="530" y="370" font-size="10" font-weight="600" fill="var(--svg-brand)" text-anchor="middle">CACHE</text>
+  <text x="722" y="370" font-size="10" font-weight="600" fill="var(--svg-ink)" text-anchor="middle">EXECUTE</text>
+  <text x="914" y="370" font-size="10" font-weight="600" fill="var(--svg-ink)" text-anchor="middle">NORMALIZE</text>
+  <text x="1106" y="370" font-size="10" font-weight="600" fill="var(--svg-ink)" text-anchor="middle">EMIT</text>
+
+  <!-- ═══════════════════════════════════
+       CACHE BRANCH ANNOTATIONS
+  ═══════════════════════════════════ -->
+
+  <!-- HIT annotation with timing chip, positioned near stage 3–4 connector -->
+  <rect x="590" y="388" width="94" height="36" rx="8" fill="var(--svg-success)" opacity="0.12"/>
+  <rect x="590" y="388" width="94" height="36" rx="8" fill="none" stroke="var(--svg-success)" stroke-width="1" opacity="0.5"/>
+  <text x="637" y="403" font-size="9" font-weight="700" fill="var(--svg-success)" text-anchor="middle">HIT PATH</text>
+  <text x="637" y="418" font-size="9" font-weight="600" fill="var(--svg-ink)" text-anchor="middle">4–18 ms total</text>
+
+  <!-- MISS cold-load annotation -->
+  <rect x="382" y="460" width="100" height="36" rx="8" fill="var(--svg-warning)" opacity="0.12"/>
+  <rect x="382" y="460" width="100" height="36" rx="8" fill="none" stroke="var(--svg-warning)" stroke-width="1" opacity="0.5"/>
+  <text x="432" y="475" font-size="9" font-weight="700" fill="var(--svg-warning)" text-anchor="middle">MISS PATH</text>
+  <text x="432" y="490" font-size="9" font-weight="600" fill="var(--svg-ink)" text-anchor="middle">+2–10 s penalty</text>
+
+  <!-- ═══════════════════════════════════
+       PRINCIPLES / INFO STRIP
+  ═══════════════════════════════════ -->
+  <rect x="60" y="528" width="1140" height="68" rx="10" fill="var(--svg-surface)" filter="url(#shadow-sm)"/>
+  <rect x="60" y="528" width="1140" height="68" rx="10" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+
+  <text x="80" y="548" font-size="10" font-weight="700" fill="var(--svg-ink-soft)" letter-spacing="1">DESIGN PRINCIPLES</text>
+
+  <!-- Three principles -->
+  <rect x="80" y="558" width="8" height="8" rx="2" fill="var(--svg-brand)"/>
+  <text x="96" y="566" font-size="10" font-weight="600" fill="var(--svg-ink)">Fail fast at validation</text>
+  <text x="96" y="580" font-size="9" font-weight="400" fill="var(--svg-muted)">Pydantic rejects bad input before any model work begins</text>
+
+  <rect x="420" y="558" width="8" height="8" rx="2" fill="var(--svg-brand)"/>
+  <text x="436" y="566" font-size="10" font-weight="600" fill="var(--svg-ink)">Cache hit is the fast path</text>
+  <text x="436" y="580" font-size="9" font-weight="400" fill="var(--svg-muted)">Warm models serve in 4–18 ms; cold load is an exception, not the norm</text>
+
+  <rect x="800" y="558" width="8" height="8" rx="2" fill="var(--svg-brand)"/>
+  <text x="816" y="566" font-size="10" font-weight="600" fill="var(--svg-ink)">Stable output contract</text>
+  <text x="816" y="580" font-size="9" font-weight="400" fill="var(--svg-muted)">Normalization isolates callers from per-adapter output variation</text>
+
+  <!-- ═══════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════ -->
+  <line x1="60" y1="620" x2="1380" y2="620" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="700" y="638" font-size="10" font-weight="400" fill="var(--svg-muted)" text-anchor="middle" letter-spacing="0.3">Cache hits, lazy loads, and concurrency limits shape real user-visible latency — the lifecycle is both a functional and operational path.</text>
 </svg>

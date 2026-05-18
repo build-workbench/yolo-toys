@@ -41,13 +41,23 @@ defineProps<{
       <slot name="signals" />
     </section>
 
+    <!-- Stats Grid — technical metrics highlight -->
+    <section v-if="$slots.stats" class="yt-whitepaper__stats">
+      <slot name="stats" />
+    </section>
+
+    <!-- Blueprint — architecture layer overview -->
+    <section v-if="$slots.blueprint" class="yt-whitepaper__blueprint">
+      <slot name="blueprint" />
+    </section>
+
     <section class="yt-whitepaper__tracks">
       <div class="yt-section-label">Reading tracks</div>
       <div class="yt-section-heading">
-        Enter through architecture, operations, or extensibility, not through a generic docs dump.
+        Enter through architecture, operations, or research — each path is optimized for a different kind of expert reader.
       </div>
       <div class="yt-section-body">
-        The site is structured as an academy and project atlas. Each path below is optimized for a different kind of advanced reader.
+        The site is structured as a technical whitepaper with an academy and research wing. Every reading track is designed for advanced readers who want both the how and the why.
       </div>
       <slot name="tracks" />
     </section>

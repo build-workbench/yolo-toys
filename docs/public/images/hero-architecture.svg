@@ -1,82 +1,350 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 820" role="img" aria-labelledby="title desc">
-  <title id="title">YOLO-Toys runtime topology</title>
-  <desc id="desc">A layered diagram showing client surfaces, runtime coordination, dispatch, and execution adapters.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" role="img" aria-labelledby="arch-title arch-desc"
+     style="font-family: Inter, ui-sans-serif, system-ui, sans-serif;">
+  <title id="arch-title">YOLO-Toys Runtime Topology</title>
+  <desc id="arch-desc">Layered architecture diagram showing Client Layer, Middleware chain, Core ModelManager, Dispatch HandlerRegistry, and five Execution Adapters.</desc>
 
-  <!-- Background -->
-  <rect class="canvas" width="1280" height="820" rx="36" />
-  <rect class="surface" x="28" y="28" width="1224" height="764" rx="28" stroke-width="2" />
+  <defs>
+    <!-- Arrow marker -->
+    <marker id="arrow-down" markerWidth="10" markerHeight="10" refX="5" refY="7" orient="auto">
+      <path d="M2,2 L5,8 L8,2" fill="none" stroke="var(--svg-wire)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-right" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M2,2 L8,5 L2,8" fill="none" stroke="var(--svg-wire)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-brand" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M2,2 L8,5 L2,8" fill="none" stroke="var(--svg-brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <!-- Drop shadow filter -->
+    <filter id="shadow-sm" x="-4%" y="-4%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="var(--svg-shadow)" flood-opacity="1"/>
+    </filter>
+    <filter id="shadow-md" x="-4%" y="-4%" width="108%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="var(--svg-shadow)" flood-opacity="1"/>
+    </filter>
+    <!-- Grid pattern for background texture -->
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="var(--svg-border)" stroke-width="0.4" opacity="0.5"/>
+    </pattern>
+  </defs>
 
-  <!-- Title -->
-  <text class="ink" x="84" y="104" font-size="22" font-weight="700" letter-spacing="2">YOLO-TOYS RUNTIME TOPOLOGY</text>
-  <text class="muted" x="84" y="138" font-size="28" font-weight="600">One service boundary, explicit execution adapters, and a readable control plane.</text>
+  <!-- ═══════════════════════════════════════════
+       CANVAS + OUTER FRAME
+  ═══════════════════════════════════════════ -->
+  <rect width="1400" height="900" rx="20" fill="var(--svg-canvas)"/>
+  <rect x="1" y="1" width="1398" height="898" rx="20" fill="none" stroke="var(--svg-border)" stroke-width="1.5"/>
+  <!-- Subtle grid texture -->
+  <rect x="1" y="1" width="1398" height="898" rx="20" fill="url(#grid)" opacity="0.35"/>
 
-  <!-- Client Surfaces -->
-  <rect class="surface-alt" x="84" y="198" width="264" height="152" rx="28" stroke-width="2" />
-  <rect class="brand-soft" x="108" y="224" width="148" height="28" rx="14" />
-  <text class="ink" x="118" y="244" font-size="13" font-weight="700" letter-spacing="1.4">CLIENT SURFACES</text>
-  <text class="ink" x="108" y="288" font-size="24" font-weight="700">HTTP, WebSocket,</text>
-  <text class="ink" x="108" y="320" font-size="24" font-weight="700">observability</text>
-  <text class="muted" x="108" y="346" font-size="16">Routes stay thin, transport-specific, and replaceable.</text>
+  <!-- ═══════════════════════════════════════════
+       HEADER AREA
+  ═══════════════════════════════════════════ -->
+  <!-- Header separator line -->
+  <line x1="60" y1="88" x2="1340" y2="88" stroke="var(--svg-border)" stroke-width="1"/>
 
-  <!-- Runtime Coordination -->
-  <rect class="surface-alt" x="400" y="198" width="470" height="220" rx="28" stroke-width="2" />
-  <rect class="brand-soft" x="424" y="224" width="192" height="28" rx="14" />
-  <text class="ink" x="434" y="244" font-size="13" font-weight="700" letter-spacing="1.4">RUNTIME COORDINATION</text>
-  <text class="ink" x="424" y="286" font-size="28" font-weight="760">ModelManager, concurrency guardrails,</text>
-  <text class="ink" x="424" y="322" font-size="28" font-weight="760">cache policy, and lifecycle control</text>
-  <text class="muted" x="424" y="360" font-size="17">This layer absorbs warm-model reuse, lazy loads, and operational constraints so they do not leak into every route.</text>
+  <!-- Title badge -->
+  <rect x="60" y="28" width="280" height="30" rx="6" fill="var(--svg-brand-soft)"/>
+  <text x="72" y="48" font-size="11" font-weight="700" fill="var(--svg-brand)" letter-spacing="2">YOLO-TOYS · RUNTIME TOPOLOGY</text>
 
-  <!-- Dispatch -->
-  <rect class="surface-alt" x="922" y="198" width="274" height="220" rx="28" stroke-width="2" />
-  <rect class="brand-soft" x="946" y="224" width="114" height="28" rx="14" />
-  <text class="ink" x="956" y="244" font-size="13" font-weight="700" letter-spacing="1.4">DISPATCH</text>
-  <text class="ink" x="946" y="286" font-size="25" font-weight="760">Registry-backed</text>
-  <text class="ink" x="946" y="320" font-size="25" font-weight="760">model resolution</text>
-  <text class="muted" x="946" y="360" font-size="16">Model identity, task type, and handler mapping stay explicit.</text>
+  <!-- Version pill -->
+  <rect x="356" y="30" width="64" height="26" rx="13" fill="var(--svg-surface-alt)"/>
+  <text x="388" y="47" font-size="10" font-weight="600" fill="var(--svg-muted)" text-anchor="middle" letter-spacing="0.5">v1.0</text>
 
-  <!-- Execution Adapters -->
-  <rect class="surface-alt" x="168" y="496" width="944" height="212" rx="32" stroke-width="2" />
-  <rect class="brand-soft" x="196" y="522" width="192" height="28" rx="14" />
-  <text class="ink" x="206" y="542" font-size="13" font-weight="700" letter-spacing="1.4">EXECUTION ADAPTERS</text>
+  <!-- Subtitle -->
+  <text x="60" y="114" font-size="13" font-weight="400" fill="var(--svg-ink-soft)" letter-spacing="0.3">One service boundary · Explicit execution adapters · Readable control plane</text>
 
-  <!-- YOLO -->
-  <rect class="surface-alt" x="206" y="572" width="170" height="94" rx="22" stroke-width="2" />
-  <text class="ink" x="228" y="610" font-size="24" font-weight="760">YOLO</text>
-  <text class="muted" x="228" y="636" font-size="15">detection, segment, pose</text>
+  <!-- Decorative dots (top-right) -->
+  <circle cx="1290" cy="48" r="5" fill="var(--svg-success)" opacity="0.8"/>
+  <circle cx="1308" cy="48" r="5" fill="var(--svg-warning)" opacity="0.8"/>
+  <circle cx="1326" cy="48" r="5" fill="var(--svg-danger)" opacity="0.8"/>
 
-  <!-- DETR -->
-  <rect class="surface-alt" x="392" y="572" width="170" height="94" rx="22" stroke-width="2" />
-  <text class="ink" x="414" y="610" font-size="24" font-weight="760">DETR</text>
-  <text class="muted" x="414" y="636" font-size="15">transformer detection</text>
+  <!-- ═══════════════════════════════════════════
+       LAYER 1 · CLIENT LAYER
+  ═══════════════════════════════════════════ -->
+  <!-- Layer band background -->
+  <rect x="60" y="132" width="1280" height="120" rx="12" fill="var(--svg-surface)" filter="url(#shadow-sm)"/>
+  <rect x="60" y="132" width="1280" height="120" rx="12" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
 
-  <!-- OWL-ViT -->
-  <rect class="surface-alt" x="578" y="572" width="170" height="94" rx="22" stroke-width="2" />
-  <text class="ink" x="600" y="610" font-size="24" font-weight="760">OWL-ViT</text>
-  <text class="muted" x="600" y="636" font-size="15">text-conditioned detection</text>
+  <!-- Layer label badge -->
+  <rect x="78" y="144" width="108" height="22" rx="11" fill="var(--svg-brand-soft)"/>
+  <text x="132" y="159" font-size="10" font-weight="700" fill="var(--svg-brand)" text-anchor="middle" letter-spacing="1.5">CLIENT LAYER</text>
 
-  <!-- Grounding DINO -->
-  <rect class="surface-alt" x="764" y="572" width="170" height="94" rx="22" stroke-width="2" />
-  <text class="ink" x="786" y="610" font-size="24" font-weight="760">Grounding DINO</text>
-  <text class="muted" x="786" y="636" font-size="15">grounded object localization</text>
+  <!-- 4 endpoint pills -->
+  <!-- HTTP REST -->
+  <rect x="200" y="140" width="158" height="88" rx="10" fill="var(--svg-surface-alt)" filter="url(#shadow-sm)"/>
+  <rect x="200" y="140" width="158" height="88" rx="10" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <rect x="214" y="154" width="40" height="16" rx="8" fill="var(--svg-brand-soft)"/>
+  <text x="234" y="165" font-size="9" font-weight="700" fill="var(--svg-brand)" text-anchor="middle">HTTP</text>
+  <text x="279" y="183" font-size="14" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">REST</text>
+  <text x="279" y="200" font-size="10" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">/api/v1/*</text>
+  <text x="279" y="217" font-size="10" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">multipart · JSON</text>
 
-  <!-- BLIP -->
-  <rect class="surface-alt" x="950" y="572" width="130" height="94" rx="22" stroke-width="2" />
-  <text class="ink" x="972" y="610" font-size="24" font-weight="760">BLIP</text>
-  <text class="muted" x="972" y="636" font-size="15">caption and VQA</text>
+  <!-- WebSocket -->
+  <rect x="374" y="140" width="158" height="88" rx="10" fill="var(--svg-surface-alt)" filter="url(#shadow-sm)"/>
+  <rect x="374" y="140" width="158" height="88" rx="10" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <rect x="388" y="154" width="54" height="16" rx="8" fill="var(--svg-accent-soft)"/>
+  <text x="415" y="165" font-size="9" font-weight="700" fill="var(--svg-accent)" text-anchor="middle">STREAM</text>
+  <text x="453" y="183" font-size="14" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">WebSocket</text>
+  <text x="453" y="200" font-size="10" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">/ws</text>
+  <text x="453" y="217" font-size="10" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">bidirectional frames</text>
 
-  <!-- Connections -->
-  <path class="wire" d="M348 274H400" />
-  <path class="wire" d="M870 308H922" />
-  <path class="wire" d="M640 418V472" />
-  <path class="wire" d="M640 472H640" />
-  <path class="wire" d="M640 472V496" />
-  <circle class="ink" cx="348" cy="274" r="6" />
-  <circle class="ink" cx="400" cy="274" r="6" />
-  <circle class="ink" cx="870" cy="308" r="6" />
-  <circle class="ink" cx="922" cy="308" r="6" />
-  <circle class="ink" cx="640" cy="418" r="6" />
-  <circle class="ink" cx="640" cy="496" r="6" />
+  <!-- Prometheus -->
+  <rect x="548" y="140" width="158" height="88" rx="10" fill="var(--svg-surface-alt)" filter="url(#shadow-sm)"/>
+  <rect x="548" y="140" width="158" height="88" rx="10" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <rect x="562" y="154" width="60" height="16" rx="8" fill="var(--svg-warning)" opacity="0.2"/>
+  <text x="592" y="165" font-size="9" font-weight="700" fill="var(--svg-warning)" text-anchor="middle">METRICS</text>
+  <text x="627" y="183" font-size="14" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">Prometheus</text>
+  <text x="627" y="200" font-size="10" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">/metrics</text>
+  <text x="627" y="217" font-size="10" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">scrape endpoint</text>
 
-  <!-- Footer -->
-  <text class="muted" x="84" y="748" font-size="16">Control stays centralized, execution stays specialized, public contracts stay normalized.</text>
+  <!-- Health -->
+  <rect x="722" y="140" width="158" height="88" rx="10" fill="var(--svg-surface-alt)" filter="url(#shadow-sm)"/>
+  <rect x="722" y="140" width="158" height="88" rx="10" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <rect x="736" y="154" width="46" height="16" rx="8" fill="var(--svg-success)" opacity="0.2"/>
+  <text x="759" y="165" font-size="9" font-weight="700" fill="var(--svg-success)" text-anchor="middle">PROBE</text>
+  <text x="801" y="183" font-size="14" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">Health</text>
+  <text x="801" y="200" font-size="10" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">/health</text>
+  <text x="801" y="217" font-size="10" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">liveness + readiness</text>
+
+  <!-- ═══════════════════════════════════════════
+       CONNECTOR: LAYER 1 → LAYER 2
+  ═══════════════════════════════════════════ -->
+  <line x1="700" y1="252" x2="700" y2="278" stroke="var(--svg-wire)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow-down)"/>
+
+  <!-- ═══════════════════════════════════════════
+       LAYER 2 · MIDDLEWARE CHAIN
+  ═══════════════════════════════════════════ -->
+  <rect x="60" y="284" width="1280" height="116" rx="12" fill="var(--svg-surface)" filter="url(#shadow-sm)"/>
+  <rect x="60" y="284" width="1280" height="116" rx="12" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+
+  <!-- Layer label -->
+  <rect x="78" y="296" width="96" height="22" rx="11" fill="var(--svg-surface-alt)"/>
+  <rect x="78" y="296" width="96" height="22" rx="11" fill="none" stroke="var(--svg-border-strong)" stroke-width="1"/>
+  <text x="126" y="311" font-size="10" font-weight="700" fill="var(--svg-ink-soft)" text-anchor="middle" letter-spacing="1.2">MIDDLEWARE</text>
+
+  <!-- Flow description -->
+  <text x="192" y="311" font-size="10" font-weight="400" fill="var(--svg-muted)">request pipeline →</text>
+
+  <!-- Middleware steps (chained) -->
+  <!-- SecurityHeaders -->
+  <rect x="78" y="326" width="162" height="60" rx="8" fill="var(--svg-brand-soft)" opacity="0.6"/>
+  <rect x="78" y="326" width="162" height="60" rx="8" fill="none" stroke="var(--svg-brand)" stroke-width="1" opacity="0.4"/>
+  <text x="159" y="351" font-size="13" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">SecurityHeaders</text>
+  <text x="159" y="368" font-size="9.5" font-weight="400" fill="var(--svg-ink-soft)" text-anchor="middle">CSP · HSTS · X-Frame</text>
+  <text x="159" y="381" font-size="9" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">inbound</text>
+
+  <path d="M242,356 L258,356" stroke="var(--svg-wire)" stroke-width="1.5" marker-end="url(#arrow-right)"/>
+
+  <!-- Metrics -->
+  <rect x="260" y="326" width="136" height="60" rx="8" fill="var(--svg-surface-alt)"/>
+  <rect x="260" y="326" width="136" height="60" rx="8" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="328" y="351" font-size="13" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">Metrics</text>
+  <text x="328" y="368" font-size="9.5" font-weight="400" fill="var(--svg-ink-soft)" text-anchor="middle">latency · counters</text>
+  <text x="328" y="381" font-size="9" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">observe</text>
+
+  <path d="M398,356 L414,356" stroke="var(--svg-wire)" stroke-width="1.5" marker-end="url(#arrow-right)"/>
+
+  <!-- Timeout -->
+  <rect x="416" y="326" width="136" height="60" rx="8" fill="var(--svg-surface-alt)"/>
+  <rect x="416" y="326" width="136" height="60" rx="8" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="484" y="351" font-size="13" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">Timeout</text>
+  <text x="484" y="368" font-size="9.5" font-weight="400" fill="var(--svg-ink-soft)" text-anchor="middle">per-request TTL</text>
+  <text x="484" y="381" font-size="9" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">guard</text>
+
+  <path d="M554,356 L570,356" stroke="var(--svg-wire)" stroke-width="1.5" marker-end="url(#arrow-right)"/>
+
+  <!-- RateLimit -->
+  <rect x="572" y="326" width="136" height="60" rx="8" fill="var(--svg-surface-alt)"/>
+  <rect x="572" y="326" width="136" height="60" rx="8" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="640" y="351" font-size="13" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">RateLimit</text>
+  <text x="640" y="368" font-size="9.5" font-weight="400" fill="var(--svg-ink-soft)" text-anchor="middle">req/min ceiling</text>
+  <text x="640" y="381" font-size="9" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">throttle</text>
+
+  <path d="M710,356 L726,356" stroke="var(--svg-wire)" stroke-width="1.5" marker-end="url(#arrow-right)"/>
+
+  <!-- GZip -->
+  <rect x="728" y="326" width="120" height="60" rx="8" fill="var(--svg-surface-alt)"/>
+  <rect x="728" y="326" width="120" height="60" rx="8" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="788" y="351" font-size="13" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">GZip</text>
+  <text x="788" y="368" font-size="9.5" font-weight="400" fill="var(--svg-ink-soft)" text-anchor="middle">response compress</text>
+  <text x="788" y="381" font-size="9" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">encode</text>
+
+  <path d="M850,356 L866,356" stroke="var(--svg-wire)" stroke-width="1.5" marker-end="url(#arrow-right)"/>
+
+  <!-- CORS -->
+  <rect x="868" y="326" width="120" height="60" rx="8" fill="var(--svg-brand-soft)" opacity="0.6"/>
+  <rect x="868" y="326" width="120" height="60" rx="8" fill="none" stroke="var(--svg-brand)" stroke-width="1" opacity="0.4"/>
+  <text x="928" y="351" font-size="13" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">CORS</text>
+  <text x="928" y="368" font-size="9.5" font-weight="400" fill="var(--svg-ink-soft)" text-anchor="middle">origin policy</text>
+  <text x="928" y="381" font-size="9" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">outbound</text>
+
+  <!-- ═══════════════════════════════════════════
+       CONNECTOR: LAYER 2 → LAYER 3
+  ═══════════════════════════════════════════ -->
+  <line x1="700" y1="400" x2="700" y2="426" stroke="var(--svg-brand)" stroke-width="2" marker-end="url(#arrow-brand)"/>
+
+  <!-- ═══════════════════════════════════════════
+       LAYER 3 · CORE — ModelManager
+  ═══════════════════════════════════════════ -->
+  <rect x="60" y="432" width="1280" height="114" rx="12" fill="var(--svg-brand-soft)" opacity="0.25"/>
+  <rect x="60" y="432" width="1280" height="114" rx="12" fill="none" stroke="var(--svg-brand)" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- Layer label -->
+  <rect x="78" y="444" width="50" height="22" rx="11" fill="var(--svg-brand)"/>
+  <text x="103" y="459" font-size="10" font-weight="700" fill="var(--svg-canvas)" text-anchor="middle" letter-spacing="1">CORE</text>
+
+  <!-- ModelManager box -->
+  <rect x="180" y="440" width="900" height="98" rx="10" fill="var(--svg-surface)" filter="url(#shadow-md)"/>
+  <rect x="180" y="440" width="900" height="98" rx="10" fill="none" stroke="var(--svg-brand)" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- Label inside -->
+  <rect x="196" y="452" width="120" height="20" rx="10" fill="var(--svg-brand)"/>
+  <text x="256" y="465" font-size="10" font-weight="700" fill="var(--svg-canvas)" text-anchor="middle" letter-spacing="0.5">ModelManager</text>
+
+  <!-- Three sub-concerns, evenly spaced -->
+  <!-- model lifecycle -->
+  <rect x="196" y="480" width="178" height="46" rx="8" fill="var(--svg-surface-alt)"/>
+  <rect x="196" y="480" width="178" height="46" rx="8" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="285" y="499" font-size="12" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">Model Lifecycle</text>
+  <text x="285" y="516" font-size="9.5" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">lazy-load · warm · evict</text>
+
+  <!-- cache policy -->
+  <rect x="391" y="480" width="178" height="46" rx="8" fill="var(--svg-surface-alt)"/>
+  <rect x="391" y="480" width="178" height="46" rx="8" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="480" y="499" font-size="12" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">Cache Policy</text>
+  <text x="480" y="516" font-size="9.5" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">LRU · TTL · max_models</text>
+
+  <!-- concurrency controls -->
+  <rect x="586" y="480" width="178" height="46" rx="8" fill="var(--svg-surface-alt)"/>
+  <rect x="586" y="480" width="178" height="46" rx="8" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="675" y="499" font-size="12" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">Concurrency</text>
+  <text x="675" y="516" font-size="9.5" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">semaphore · queue depth</text>
+
+  <!-- device/precision -->
+  <rect x="781" y="480" width="178" height="46" rx="8" fill="var(--svg-surface-alt)"/>
+  <rect x="781" y="480" width="178" height="46" rx="8" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="870" y="499" font-size="12" font-weight="700" fill="var(--svg-ink)" text-anchor="middle">Device / Precision</text>
+  <text x="870" y="516" font-size="9.5" font-weight="400" fill="var(--svg-muted)" text-anchor="middle">cuda · cpu · fp16</text>
+
+  <!-- ═══════════════════════════════════════════
+       CONNECTOR: LAYER 3 → LAYER 4
+  ═══════════════════════════════════════════ -->
+  <line x1="700" y1="546" x2="700" y2="572" stroke="var(--svg-wire)" stroke-width="1.5" marker-end="url(#arrow-down)"/>
+
+  <!-- ═══════════════════════════════════════════
+       LAYER 4 · DISPATCH — HandlerRegistry
+  ═══════════════════════════════════════════ -->
+  <rect x="60" y="578" width="1280" height="100" rx="12" fill="var(--svg-surface)" filter="url(#shadow-sm)"/>
+  <rect x="60" y="578" width="1280" height="100" rx="12" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+
+  <!-- Label -->
+  <rect x="78" y="590" width="74" height="22" rx="11" fill="var(--svg-surface-alt)"/>
+  <rect x="78" y="590" width="74" height="22" rx="11" fill="none" stroke="var(--svg-border-strong)" stroke-width="1"/>
+  <text x="115" y="605" font-size="10" font-weight="700" fill="var(--svg-ink-soft)" text-anchor="middle" letter-spacing="1">DISPATCH</text>
+
+  <!-- HandlerRegistry box -->
+  <rect x="200" y="586" width="820" height="84" rx="10" fill="var(--svg-surface-alt)" filter="url(#shadow-sm)"/>
+  <rect x="200" y="586" width="820" height="84" rx="10" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+
+  <rect x="216" y="596" width="130" height="20" rx="10" fill="var(--svg-accent-soft)"/>
+  <text x="281" y="609" font-size="10" font-weight="700" fill="var(--svg-accent)" text-anchor="middle" letter-spacing="0.5">HandlerRegistry</text>
+
+  <!-- three dispatch concerns -->
+  <text x="216" y="634" font-size="11.5" font-weight="600" fill="var(--svg-ink)">Category Inference</text>
+  <text x="216" y="650" font-size="9.5" font-weight="400" fill="var(--svg-muted)">model_id → task type</text>
+
+  <line x1="380" y1="620" x2="380" y2="660" stroke="var(--svg-border)" stroke-width="1"/>
+
+  <text x="396" y="634" font-size="11.5" font-weight="600" fill="var(--svg-ink)">Handler Mapping</text>
+  <text x="396" y="650" font-size="9.5" font-weight="400" fill="var(--svg-muted)">task type → adapter class</text>
+
+  <line x1="570" y1="620" x2="570" y2="660" stroke="var(--svg-border)" stroke-width="1"/>
+
+  <text x="586" y="634" font-size="11.5" font-weight="600" fill="var(--svg-ink)">Model Metadata</text>
+  <text x="586" y="650" font-size="9.5" font-weight="400" fill="var(--svg-muted)">capabilities · input spec</text>
+
+  <line x1="756" y1="620" x2="756" y2="660" stroke="var(--svg-border)" stroke-width="1"/>
+
+  <text x="772" y="634" font-size="11.5" font-weight="600" fill="var(--svg-ink)">Adapter Dispatch</text>
+  <text x="772" y="650" font-size="9.5" font-weight="400" fill="var(--svg-muted)">route to execution layer</text>
+
+  <!-- ═══════════════════════════════════════════
+       CONNECTOR: LAYER 4 → LAYER 5
+  ═══════════════════════════════════════════ -->
+  <line x1="700" y1="678" x2="700" y2="700" stroke="var(--svg-wire)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow-down)"/>
+
+  <!-- ═══════════════════════════════════════════
+       LAYER 5 · EXECUTION ADAPTERS
+  ═══════════════════════════════════════════ -->
+  <!-- Outer band -->
+  <rect x="60" y="706" width="1280" height="152" rx="12" fill="var(--svg-surface)" filter="url(#shadow-sm)"/>
+  <rect x="60" y="706" width="1280" height="152" rx="12" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+
+  <!-- Layer label -->
+  <rect x="78" y="718" width="162" height="22" rx="11" fill="var(--svg-surface-alt)"/>
+  <rect x="78" y="718" width="162" height="22" rx="11" fill="none" stroke="var(--svg-border-strong)" stroke-width="1"/>
+  <text x="159" y="733" font-size="10" font-weight="700" fill="var(--svg-ink-soft)" text-anchor="middle" letter-spacing="1">EXECUTION ADAPTERS</text>
+
+  <!-- === YOLO === -->
+  <rect x="78" y="748" width="226" height="98" rx="10" fill="var(--svg-brand-soft)" opacity="0.5"/>
+  <rect x="78" y="748" width="226" height="98" rx="10" fill="none" stroke="var(--svg-brand)" stroke-width="1.5" opacity="0.7"/>
+  <!-- icon area -->
+  <rect x="92" y="758" width="44" height="20" rx="10" fill="var(--svg-brand)"/>
+  <text x="114" y="771" font-size="10" font-weight="800" fill="var(--svg-canvas)" text-anchor="middle" letter-spacing="0.3">YOLO</text>
+  <!-- tag -->
+  <rect x="142" y="759" width="76" height="18" rx="9" fill="var(--svg-surface)"/>
+  <text x="180" y="771" font-size="8.5" font-weight="600" fill="var(--svg-ink-soft)" text-anchor="middle">anchor-free</text>
+  <!-- content -->
+  <text x="92" y="798" font-size="12.5" font-weight="700" fill="var(--svg-ink)">detect · seg · pose</text>
+  <text x="92" y="814" font-size="9.5" font-weight="400" fill="var(--svg-muted)">ultralytics · v8/v9/v10/v11</text>
+  <text x="92" y="830" font-size="9.5" font-weight="400" fill="var(--svg-muted)">boxes · masks · keypoints</text>
+
+  <!-- === DETR === -->
+  <rect x="318" y="748" width="218" height="98" rx="10" fill="var(--svg-surface-alt)"/>
+  <rect x="318" y="748" width="218" height="98" rx="10" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <rect x="332" y="758" width="44" height="20" rx="10" fill="var(--svg-accent-soft)"/>
+  <text x="354" y="771" font-size="10" font-weight="800" fill="var(--svg-accent)" text-anchor="middle" letter-spacing="0.3">DETR</text>
+  <rect x="382" y="759" width="80" height="18" rx="9" fill="var(--svg-surface)"/>
+  <text x="422" y="771" font-size="8.5" font-weight="600" fill="var(--svg-ink-soft)" text-anchor="middle">transformer</text>
+  <text x="332" y="798" font-size="12.5" font-weight="700" fill="var(--svg-ink)">detection</text>
+  <text x="332" y="814" font-size="9.5" font-weight="400" fill="var(--svg-muted)">facebook/detr · end-to-end</text>
+  <text x="332" y="830" font-size="9.5" font-weight="400" fill="var(--svg-muted)">no NMS · set prediction</text>
+
+  <!-- === OWL-ViT === -->
+  <rect x="550" y="748" width="218" height="98" rx="10" fill="var(--svg-surface-alt)"/>
+  <rect x="550" y="748" width="218" height="98" rx="10" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <rect x="564" y="758" width="58" height="20" rx="10" fill="var(--svg-accent-soft)"/>
+  <text x="593" y="771" font-size="10" font-weight="800" fill="var(--svg-accent)" text-anchor="middle" letter-spacing="0.3">OWL-ViT</text>
+  <rect x="628" y="759" width="72" height="18" rx="9" fill="var(--svg-surface)"/>
+  <text x="664" y="771" font-size="8.5" font-weight="600" fill="var(--svg-ink-soft)" text-anchor="middle">open-vocab</text>
+  <text x="564" y="798" font-size="12.5" font-weight="700" fill="var(--svg-ink)">text-conditioned det.</text>
+  <text x="564" y="814" font-size="9.5" font-weight="400" fill="var(--svg-muted)">google/owlvit · zero-shot</text>
+  <text x="564" y="830" font-size="9.5" font-weight="400" fill="var(--svg-muted)">query text → boxes</text>
+
+  <!-- === Grounding DINO === -->
+  <rect x="782" y="748" width="232" height="98" rx="10" fill="var(--svg-surface-alt)"/>
+  <rect x="782" y="748" width="232" height="98" rx="10" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <rect x="796" y="758" width="52" height="20" rx="10" fill="var(--svg-warning)" opacity="0.2"/>
+  <text x="822" y="771" font-size="10" font-weight="800" fill="var(--svg-warning)" text-anchor="middle">GDINO</text>
+  <rect x="854" y="759" width="98" height="18" rx="9" fill="var(--svg-surface)"/>
+  <text x="903" y="771" font-size="8.5" font-weight="600" fill="var(--svg-ink-soft)" text-anchor="middle">phrase-grounded</text>
+  <text x="796" y="798" font-size="12.5" font-weight="700" fill="var(--svg-ink)">Grounding DINO</text>
+  <text x="796" y="814" font-size="9.5" font-weight="400" fill="var(--svg-muted)">IDEA-Research · grounded</text>
+  <text x="796" y="830" font-size="9.5" font-weight="400" fill="var(--svg-muted)">phrase → localization</text>
+
+  <!-- === BLIP === -->
+  <rect x="1028" y="748" width="218" height="98" rx="10" fill="var(--svg-surface-alt)"/>
+  <rect x="1028" y="748" width="218" height="98" rx="10" fill="none" stroke="var(--svg-border)" stroke-width="1"/>
+  <rect x="1042" y="758" width="40" height="20" rx="10" fill="var(--svg-success)" opacity="0.25"/>
+  <text x="1062" y="771" font-size="10" font-weight="800" fill="var(--svg-success)" text-anchor="middle" letter-spacing="0.3">BLIP</text>
+  <rect x="1088" y="759" width="90" height="18" rx="9" fill="var(--svg-surface)"/>
+  <text x="1133" y="771" font-size="8.5" font-weight="600" fill="var(--svg-ink-soft)" text-anchor="middle">caption + VQA</text>
+  <text x="1042" y="798" font-size="12.5" font-weight="700" fill="var(--svg-ink)">captioning · VQA</text>
+  <text x="1042" y="814" font-size="9.5" font-weight="400" fill="var(--svg-muted)">Salesforce/BLIP · vision-lang</text>
+  <text x="1042" y="830" font-size="9.5" font-weight="400" fill="var(--svg-muted)">image → text generation</text>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════ -->
+  <line x1="60" y1="874" x2="1340" y2="874" stroke="var(--svg-border)" stroke-width="1"/>
+  <text x="700" y="892" font-size="10" font-weight="400" fill="var(--svg-muted)" text-anchor="middle" letter-spacing="0.3">Control stays centralized · Execution stays specialized · Public contracts stay normalized</text>
 </svg>

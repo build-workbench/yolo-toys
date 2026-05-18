@@ -80,6 +80,7 @@ export default withMermaid(defineConfig({
           { text: '学院', link: '/zh/academy/' },
           { text: '参考', link: '/zh/reference/' },
           { text: '研究', link: '/zh/research/' },
+          { text: 'API', link: '/zh/api/' },
         ],
         editLink: {
           pattern: 'https://github.com/LessUp/yolo-toys/edit/master/docs/:path',
@@ -219,6 +220,7 @@ export default withMermaid(defineConfig({
           { text: 'Academy', link: '/en/academy/' },
           { text: 'Reference', link: '/en/reference/' },
           { text: 'Research', link: '/en/research/' },
+          { text: 'API', link: '/en/api/' },
         ],
         editLink: {
           pattern: 'https://github.com/LessUp/yolo-toys/edit/master/docs/:path',

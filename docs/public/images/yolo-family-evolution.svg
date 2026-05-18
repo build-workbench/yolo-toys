@@ -1,125 +1,216 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
-  <title id="title">YOLO Family Evolution Timeline</title>
-  <desc id="desc">A timeline showing the evolution of YOLO object detection from v1 (2016) to v8 (2023), highlighting key architectural innovations at each generation.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 700" role="img" aria-labelledby="evo-title evo-desc">
+  <title id="evo-title">YOLO Family Evolution Timeline</title>
+  <desc id="evo-desc">Horizontal timeline showing YOLO object detection evolution from v1 (2016) to v8 (2023), with alternating card layout above and below the spine.</desc>
 
-  <!-- Background -->
-  <rect class="canvas" width="1200" height="720" rx="32" />
-  <rect class="surface" x="24" y="24" width="1152" height="672" rx="24" stroke-width="2" />
+  <!-- ── Canvas background ── -->
+  <rect class="canvas" width="1600" height="700" rx="28" />
+  <rect class="surface" x="20" y="20" width="1560" height="660" rx="20" stroke-width="1.5" />
 
-  <!-- Title -->
-  <text class="ink" x="72" y="84" font-size="22" font-weight="700" letter-spacing="2">YOLO FAMILY EVOLUTION</text>
-  <text class="muted" x="72" y="114" font-size="17">From single-shot pioneer to anchor-free production system — eight years of detection architecture innovation.</text>
+  <!-- ── Header ── -->
+  <text class="ink" x="60" y="68" font-size="24" font-weight="800" letter-spacing="3" font-family="Inter, ui-sans-serif, system-ui, sans-serif">YOLO FAMILY EVOLUTION</text>
+  <text class="muted" x="60" y="96" font-size="14" font-family="Inter, ui-sans-serif, system-ui, sans-serif">From grid-based prediction to anchor-free detection (2016–2023)</text>
 
-  <!-- Timeline spine -->
-  <line class="wire" x1="120" y1="400" x2="1080" y2="400" stroke-width="3" />
+  <!-- ── Year ruler ── -->
+  <!-- 2016 -->
+  <text class="muted" x="178" y="385" font-size="11" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">2016</text>
+  <!-- 2017 -->
+  <text class="muted" x="338" y="385" font-size="11" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">2017</text>
+  <!-- 2018 -->
+  <text class="muted" x="578" y="385" font-size="11" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">2018</text>
+  <!-- 2020 -->
+  <text class="muted" x="858" y="385" font-size="11" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">2020</text>
+  <!-- 2023 -->
+  <text class="muted" x="1378" y="385" font-size="11" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">2023</text>
 
-  <!-- YOLOv1 (2016) -->
-  <circle class="brand" cx="180" cy="400" r="10" />
-  <rect class="surface-alt" x="120" y="180" width="140" height="180" rx="18" stroke-width="2" />
-  <rect class="brand-soft" x="132" y="194" width="68" height="22" rx="11" />
-  <text class="ink" x="140" y="210" font-size="11" font-weight="700" letter-spacing="1">V1 · 2016</text>
-  <text class="ink" x="132" y="240" font-size="16" font-weight="760">YOLO</text>
-  <text class="muted" x="132" y="262" font-size="12">Grid-based</text>
-  <text class="muted" x="132" y="280" font-size="12">prediction</text>
-  <text class="muted" x="132" y="298" font-size="12">24 FC layers</text>
-  <text class="muted" x="132" y="316" font-size="12">GoogLeNet</text>
-  <text class="ink-soft" x="132" y="348" font-size="11" font-weight="600">45 FPS / 63.4 mAP</text>
+  <!-- ── Timeline spine ── -->
+  <line class="wire" x1="80" y1="370" x2="1520" y2="370" stroke-width="2.5" stroke-dasharray="none" />
 
-  <!-- YOLOv2 (2017) -->
-  <circle class="brand" cx="310" cy="400" r="10" />
-  <rect class="surface-alt" x="250" y="180" width="140" height="180" rx="18" stroke-width="2" />
-  <rect class="brand-soft" x="262" y="194" width="68" height="22" rx="11" />
-  <text class="ink" x="270" y="210" font-size="11" font-weight="700" letter-spacing="1">V2 · 2017</text>
-  <text class="ink" x="262" y="240" font-size="16" font-weight="760">YOLO9000</text>
-  <text class="muted" x="262" y="262" font-size="12">Anchor boxes</text>
-  <text class="muted" x="262" y="280" font-size="12">BatchNorm</text>
-  <text class="muted" x="262" y="298" font-size="12">Multi-scale</text>
-  <text class="muted" x="262" y="316" font-size="12">Darknet-19</text>
-  <text class="ink-soft" x="262" y="348" font-size="11" font-weight="600">67 FPS / 76.8 mAP</text>
+  <!-- ══════════════════════════════════════════
+       NODE POSITIONS (cx values):
+       v1=178  v2=338  v3=578  v4=778  v5=958  v8=1378
+       Odd (v1,v3,v5) = ABOVE spine  (cards top ~120, bottom ~340)
+       Even (v2,v4)   = BELOW spine  (cards top ~400, bottom ~600)
+       v8 special: ABOVE (highlighted)
+  ════════════════════════════════════════════ -->
 
-  <!-- YOLOv3 (2018) -->
-  <circle class="brand" cx="440" cy="400" r="10" />
-  <rect class="surface-alt" x="380" y="180" width="140" height="180" rx="18" stroke-width="2" />
-  <rect class="brand-soft" x="392" y="194" width="68" height="22" rx="11" />
-  <text class="ink" x="400" y="210" font-size="11" font-weight="700" letter-spacing="1">V3 · 2018</text>
-  <text class="ink" x="392" y="240" font-size="16" font-weight="760">YOLOv3</text>
-  <text class="muted" x="392" y="262" font-size="12">FPN</text>
-  <text class="muted" x="392" y="280" font-size="12">3-scale predict</text>
-  <text class="muted" x="392" y="298" font-size="12">Residual blocks</text>
-  <text class="muted" x="392" y="316" font-size="12">Darknet-53</text>
-  <text class="ink-soft" x="392" y="348" font-size="11" font-weight="600">30 FPS / 57.9 mAP</text>
+  <!-- ─────────────────────────────────────
+       YOLOv1 · 2016 · ABOVE
+  ───────────────────────────────────────── -->
+  <!-- vertical connector -->
+  <line class="wire" x1="178" y1="340" x2="178" y2="370" stroke-width="1.5" stroke-dasharray="4 3" />
+  <!-- timeline dot -->
+  <circle class="brand" cx="178" cy="370" r="9" />
+  <circle class="canvas" cx="178" cy="370" r="4" />
+  <!-- card -->
+  <rect class="surface-alt" x="108" y="116" width="142" height="224" rx="14" stroke-width="1.5" />
+  <!-- version badge -->
+  <rect class="brand-soft" x="116" y="126" width="78" height="22" rx="11" />
+  <text class="brand" x="155" y="141" font-size="11" font-weight="700" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">v1 · 2016</text>
+  <!-- title -->
+  <text class="ink" x="179" y="172" font-size="17" font-weight="800" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">YOLOv1</text>
+  <!-- divider -->
+  <line class="wire" x1="122" y1="182" x2="236" y2="182" stroke-width="1" stroke-dasharray="3 2" />
+  <!-- innovation lines -->
+  <text class="ink-soft" x="122" y="200" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">7×7 grid prediction</text>
+  <text class="muted" x="122" y="217" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">24 conv + 2 FC</text>
+  <text class="muted" x="122" y="234" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">GoogLeNet base</text>
+  <text class="muted" x="122" y="251" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">"You Only Look Once"</text>
+  <!-- divider -->
+  <line class="wire" x1="122" y1="261" x2="236" y2="261" stroke-width="1" stroke-dasharray="3 2" />
+  <!-- stats -->
+  <text class="brand" x="122" y="279" font-size="11" font-weight="700" font-family="Inter, ui-sans-serif, system-ui, sans-serif">45 FPS</text>
+  <text class="muted" x="122" y="295" font-size="10" font-family="Inter, ui-sans-serif, system-ui, sans-serif">VOC2007: 63.4 mAP</text>
+  <text class="muted" x="122" y="311" font-size="10" font-family="Inter, ui-sans-serif, system-ui, sans-serif">No COCO benchmark</text>
+  <!-- "YOLO - You Only Look Once" tag -->
+  <text class="muted" x="122" y="330" font-size="9" font-style="italic" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Redmon et al. CVPR 2016</text>
 
-  <!-- YOLOv4 (2020) -->
-  <circle class="brand" cx="570" cy="400" r="10" />
-  <rect class="surface-alt" x="510" y="180" width="140" height="180" rx="18" stroke-width="2" />
-  <rect class="brand-soft" x="522" y="194" width="72" height="22" rx="11" />
-  <text class="ink" x="530" y="210" font-size="11" font-weight="700" letter-spacing="1">V4 · 2020</text>
-  <text class="ink" x="522" y="240" font-size="16" font-weight="760">YOLOv4</text>
-  <text class="muted" x="522" y="262" font-size="12">CSPNet</text>
-  <text class="muted" x="522" y="280" font-size="12">PANet</text>
-  <text class="muted" x="522" y="298" font-size="12">Mosaic aug</text>
-  <text class="muted" x="522" y="316" font-size="12">CSPDarknet</text>
-  <text class="ink-soft" x="522" y="348" font-size="11" font-weight="600">38 FPS / 65.7 mAP</text>
+  <!-- ─────────────────────────────────────
+       YOLOv2 / YOLO9000 · 2016 · BELOW
+  ───────────────────────────────────────── -->
+  <line class="wire" x1="338" y1="370" x2="338" y2="400" stroke-width="1.5" stroke-dasharray="4 3" />
+  <circle class="brand" cx="338" cy="370" r="9" />
+  <circle class="canvas" cx="338" cy="370" r="4" />
+  <!-- card -->
+  <rect class="surface-alt" x="267" y="400" width="142" height="218" rx="14" stroke-width="1.5" />
+  <rect class="brand-soft" x="275" y="410" width="88" height="22" rx="11" />
+  <text class="brand" x="319" y="425" font-size="11" font-weight="700" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">v2 · 2016</text>
+  <text class="ink" x="338" y="456" font-size="15" font-weight="800" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">YOLO9000</text>
+  <line class="wire" x1="281" y1="464" x2="395" y2="464" stroke-width="1" stroke-dasharray="3 2" />
+  <text class="ink-soft" x="281" y="482" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Anchor boxes</text>
+  <text class="muted" x="281" y="499" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Batch normalisation</text>
+  <text class="muted" x="281" y="516" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Darknet-19</text>
+  <text class="muted" x="281" y="533" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">9000 classes (WN)</text>
+  <line class="wire" x1="281" y1="542" x2="395" y2="542" stroke-width="1" stroke-dasharray="3 2" />
+  <text class="brand" x="281" y="558" font-size="11" font-weight="700" font-family="Inter, ui-sans-serif, system-ui, sans-serif">67 FPS</text>
+  <text class="muted" x="281" y="574" font-size="10" font-family="Inter, ui-sans-serif, system-ui, sans-serif">VOC2007: 78.6 mAP</text>
+  <text class="muted" x="281" y="590" font-size="9" font-style="italic" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Redmon &amp; Farhadi 2017</text>
 
-  <!-- YOLOv5 (2020) -->
-  <circle class="brand" cx="700" cy="400" r="10" />
-  <rect class="surface-alt" x="640" y="180" width="140" height="180" rx="18" stroke-width="2" />
-  <rect class="brand-soft" x="652" y="194" width="72" height="22" rx="11" />
-  <text class="ink" x="660" y="210" font-size="11" font-weight="700" letter-spacing="1">V5 · 2020</text>
-  <text class="ink" x="652" y="240" font-size="16" font-weight="760">YOLOv5</text>
-  <text class="muted" x="652" y="262" font-size="12">PyTorch native</text>
-  <text class="muted" x="652" y="280" font-size="12">AutoAnchor</text>
-  <text class="muted" x="652" y="298" font-size="12">Focus module</text>
-  <text class="muted" x="652" y="316" font-size="12">CSP + SPP</text>
-  <text class="ink-soft" x="652" y="348" font-size="11" font-weight="600">45 FPS / 67.2 mAP</text>
+  <!-- ─────────────────────────────────────
+       YOLOv3 · 2018 · ABOVE
+  ───────────────────────────────────────── -->
+  <line class="wire" x1="578" y1="338" x2="578" y2="370" stroke-width="1.5" stroke-dasharray="4 3" />
+  <circle class="brand" cx="578" cy="370" r="9" />
+  <circle class="canvas" cx="578" cy="370" r="4" />
+  <rect class="surface-alt" x="507" y="116" width="142" height="222" rx="14" stroke-width="1.5" />
+  <rect class="brand-soft" x="515" y="126" width="78" height="22" rx="11" />
+  <text class="brand" x="554" y="141" font-size="11" font-weight="700" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">v3 · 2018</text>
+  <text class="ink" x="578" y="172" font-size="17" font-weight="800" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">YOLOv3</text>
+  <line class="wire" x1="521" y1="182" x2="635" y2="182" stroke-width="1" stroke-dasharray="3 2" />
+  <text class="ink-soft" x="521" y="200" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Multi-scale preds</text>
+  <text class="muted" x="521" y="217" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">3 detection scales</text>
+  <text class="muted" x="521" y="234" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Darknet-53</text>
+  <text class="muted" x="521" y="251" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Residual shortcuts</text>
+  <line class="wire" x1="521" y1="261" x2="635" y2="261" stroke-width="1" stroke-dasharray="3 2" />
+  <text class="brand" x="521" y="279" font-size="11" font-weight="700" font-family="Inter, ui-sans-serif, system-ui, sans-serif">30 FPS</text>
+  <!-- mAP COCO -->
+  <text class="accent-blue" x="521" y="295" font-size="11" font-weight="600" font-family="Inter, ui-sans-serif, system-ui, sans-serif">COCO: 33.0 mAP</text>
+  <text class="muted" x="521" y="311" font-size="9" font-style="italic" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Redmon &amp; Farhadi 2018</text>
 
-  <!-- YOLOv8 (2023) -->
-  <circle class="brand" cx="870" cy="400" r="14" />
-  <rect class="surface-alt" x="790" y="170" width="160" height="200" rx="20" stroke-width="2.5" />
-  <rect class="brand-soft" x="802" y="186" width="96" height="24" rx="12" />
-  <text class="brand" x="810" y="204" font-size="12" font-weight="700" letter-spacing="1">V8 · 2023 ★</text>
-  <text class="ink" x="802" y="238" font-size="18" font-weight="760">YOLOv8</text>
-  <text class="muted" x="802" y="262" font-size="12">Anchor-free</text>
-  <text class="muted" x="802" y="280" font-size="12">Decoupled Head</text>
-  <text class="muted" x="802" y="298" font-size="12">VFL + DFL + CIoU</text>
-  <text class="muted" x="802" y="316" font-size="12">C2f module</text>
-  <text class="muted" x="802" y="334" font-size="12">Mosaic + MixUp</text>
-  <text class="ink-soft" x="802" y="358" font-size="11" font-weight="600">80 FPS / 53.9 mAP</text>
+  <!-- ─────────────────────────────────────
+       YOLOv4 · 2020 · BELOW
+  ───────────────────────────────────────── -->
+  <line class="wire" x1="778" y1="370" x2="778" y2="400" stroke-width="1.5" stroke-dasharray="4 3" />
+  <circle class="brand" cx="778" cy="370" r="9" />
+  <circle class="canvas" cx="778" cy="370" r="4" />
+  <rect class="surface-alt" x="707" y="400" width="142" height="224" rx="14" stroke-width="1.5" />
+  <rect class="brand-soft" x="715" y="410" width="78" height="22" rx="11" />
+  <text class="brand" x="754" y="425" font-size="11" font-weight="700" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">v4 · 2020</text>
+  <text class="ink" x="778" y="456" font-size="17" font-weight="800" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">YOLOv4</text>
+  <line class="wire" x1="721" y1="464" x2="835" y2="464" stroke-width="1" stroke-dasharray="3 2" />
+  <text class="ink-soft" x="721" y="482" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">CSPDarknet-53</text>
+  <text class="muted" x="721" y="499" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">PANet + SAM attn</text>
+  <text class="muted" x="721" y="516" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Mosaic augment</text>
+  <text class="muted" x="721" y="533" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Optimal spd/acc</text>
+  <line class="wire" x1="721" y1="543" x2="835" y2="543" stroke-width="1" stroke-dasharray="3 2" />
+  <text class="brand" x="721" y="559" font-size="11" font-weight="700" font-family="Inter, ui-sans-serif, system-ui, sans-serif">62 FPS</text>
+  <text class="accent-blue" x="721" y="575" font-size="11" font-weight="600" font-family="Inter, ui-sans-serif, system-ui, sans-serif">COCO: 43.5 mAP</text>
+  <text class="muted" x="721" y="591" font-size="9" font-style="italic" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Bochkovskiy et al. 2020</text>
+  <text class="muted" x="721" y="606" font-size="9" font-style="italic" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Optimal speed/accuracy</text>
 
-  <!-- Innovation arrows (below timeline) -->
-  <text class="muted" x="72" y="460" font-size="14" font-weight="700" letter-spacing="1">KEY INNOVATIONS</text>
+  <!-- ─────────────────────────────────────
+       YOLOv5 · 2020 · ABOVE
+  ───────────────────────────────────────── -->
+  <line class="wire" x1="958" y1="338" x2="958" y2="370" stroke-width="1.5" stroke-dasharray="4 3" />
+  <circle class="brand" cx="958" cy="370" r="9" />
+  <circle class="canvas" cx="958" cy="370" r="4" />
+  <rect class="surface-alt" x="887" y="116" width="142" height="222" rx="14" stroke-width="1.5" />
+  <rect class="brand-soft" x="895" y="126" width="78" height="22" rx="11" />
+  <text class="brand" x="934" y="141" font-size="11" font-weight="700" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">v5 · 2020</text>
+  <text class="ink" x="958" y="172" font-size="17" font-weight="800" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">YOLOv5</text>
+  <line class="wire" x1="901" y1="182" x2="1015" y2="182" stroke-width="1" stroke-dasharray="3 2" />
+  <text class="ink-soft" x="901" y="200" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">PyTorch-first</text>
+  <text class="muted" x="901" y="217" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">AutoAnchor</text>
+  <text class="muted" x="901" y="234" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">CSP + SPP head</text>
+  <text class="muted" x="901" y="251" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Community adoption</text>
+  <line class="wire" x1="901" y1="261" x2="1015" y2="261" stroke-width="1" stroke-dasharray="3 2" />
+  <text class="brand" x="901" y="279" font-size="11" font-weight="700" font-family="Inter, ui-sans-serif, system-ui, sans-serif">140 FPS (s)</text>
+  <text class="accent-blue" x="901" y="295" font-size="11" font-weight="600" font-family="Inter, ui-sans-serif, system-ui, sans-serif">COCO: 37.0 mAP (s)</text>
+  <text class="muted" x="901" y="311" font-size="9" font-style="italic" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Jocher / Ultralytics 2020</text>
 
-  <!-- Innovation badges -->
-  <rect class="brand-soft" x="72" y="478" width="180" height="36" rx="18" />
-  <text class="brand" x="82" y="502" font-size="12" font-weight="700">Anchor-free (V8)</text>
+  <!-- ─────────────────────────────────────
+       YOLOv8 · 2023 · ABOVE  ★ highlighted
+  ───────────────────────────────────────── -->
+  <!-- glow ring -->
+  <circle class="brand-soft" cx="1378" cy="370" r="18" />
+  <line class="wire" x1="1378" y1="330" x2="1378" y2="370" stroke-width="1.5" stroke-dasharray="4 3" />
+  <circle class="brand" cx="1378" cy="370" r="11" />
+  <circle class="canvas" cx="1378" cy="370" r="5" />
+  <!-- card – wider, taller for latest -->
+  <rect class="surface-alt" x="1298" y="106" width="160" height="244" rx="16" stroke-width="2" />
+  <!-- star badge -->
+  <rect class="brand" x="1306" y="116" width="98" height="24" rx="12" />
+  <text class="canvas" x="1355" y="133" font-size="11" font-weight="800" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">v8 · 2023  ★</text>
+  <text class="brand" x="1378" y="163" font-size="19" font-weight="900" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">YOLOv8</text>
+  <line class="wire" x1="1312" y1="173" x2="1444" y2="173" stroke-width="1" stroke-dasharray="3 2" />
+  <text class="ink-soft" x="1312" y="191" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Anchor-free ✓</text>
+  <text class="muted" x="1312" y="208" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">C2f blocks</text>
+  <text class="muted" x="1312" y="225" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Decoupled head</text>
+  <text class="muted" x="1312" y="242" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Detect/Seg/Pose/Cls</text>
+  <text class="muted" x="1312" y="259" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">DFL + VFL losses</text>
+  <line class="wire" x1="1312" y1="269" x2="1444" y2="269" stroke-width="1" stroke-dasharray="3 2" />
+  <text class="brand" x="1312" y="287" font-size="11" font-weight="700" font-family="Inter, ui-sans-serif, system-ui, sans-serif">160 FPS (n, A100)</text>
+  <text class="accent-blue" x="1312" y="303" font-size="11" font-weight="600" font-family="Inter, ui-sans-serif, system-ui, sans-serif">COCO: 37.3 mAP (n)</text>
+  <text class="muted" x="1312" y="319" font-size="9" font-style="italic" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Jocher / Ultralytics 2023</text>
+  <text class="success" x="1312" y="336" font-size="9" font-weight="600" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Multi-task production</text>
 
-  <rect class="brand-soft" x="268" y="478" width="200" height="36" rx="18" />
-  <text class="brand" x="278" y="502" font-size="12" font-weight="700">Decoupled Head (V8)</text>
+  <!-- ── Flow connector arrows between nodes ── -->
+  <!-- v1 → v2 -->
+  <path class="wire" d="M 195 370 Q 266 370 321 370" stroke-width="1.5" fill="none" marker-end="url(#arr)" />
+  <!-- v2 → v3 -->
+  <path class="wire" d="M 355 370 Q 466 370 561 370" stroke-width="1.5" fill="none" marker-end="url(#arr)" />
+  <!-- v3 → v4 -->
+  <path class="wire" d="M 595 370 Q 686 370 761 370" stroke-width="1.5" fill="none" marker-end="url(#arr)" />
+  <!-- v4 → v5 -->
+  <path class="wire" d="M 795 370 Q 876 370 941 370" stroke-width="1.5" fill="none" marker-end="url(#arr)" />
+  <!-- v5 → v8 (long gap) -->
+  <path class="wire" d="M 975 370 Q 1176 370 1359 370" stroke-width="1.5" fill="none" stroke-dasharray="6 4" marker-end="url(#arr)" />
 
-  <rect class="accent-soft" x="484" y="478" width="180" height="36" rx="18" />
-  <text class="accent-blue" x="494" y="502" font-size="12" font-weight="700">FPN (V3→V8)</text>
+  <!-- v6/v7 implied gap label -->
+  <rect class="surface" x="1040" y="356" width="130" height="26" rx="13" stroke-width="1" />
+  <text class="muted" x="1105" y="373" font-size="10" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif">v6 · v7 iterations</text>
 
-  <rect class="accent-soft" x="680" y="478" width="200" height="36" rx="18" />
-  <text class="accent-blue" x="690" y="502" font-size="12" font-weight="700">CSP Backbone (V4→)</text>
+  <!-- ── Arrow marker def ── -->
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+      <path class="wire" d="M0,0 L0,7 L7,3.5 Z" />
+    </marker>
+  </defs>
 
-  <rect class="brand-soft" x="896" y="478" width="210" height="36" rx="18" />
-  <text class="brand" x="906" y="502" font-size="12" font-weight="700">Mosaic Augment (V4→)</text>
+  <!-- ── Bottom paradigm shift legend ── -->
+  <rect class="surface-alt" x="60" y="628" width="280" height="48" rx="12" stroke-width="1.2" />
+  <text class="ink" x="76" y="650" font-size="12" font-weight="700" font-family="Inter, ui-sans-serif, system-ui, sans-serif">v1–v5: Anchor-based</text>
+  <text class="muted" x="76" y="666" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Grid offsets + predefined anchor priors</text>
 
-  <!-- Paradigm shift labels -->
-  <text class="muted" x="72" y="560" font-size="14" font-weight="700" letter-spacing="1">PARADIGM SHIFTS</text>
+  <rect class="surface-alt" x="360" y="628" width="260" height="48" rx="12" stroke-width="1.2" />
+  <text class="ink" x="376" y="650" font-size="12" font-weight="700" font-family="Inter, ui-sans-serif, system-ui, sans-serif">v8: Anchor-free</text>
+  <text class="muted" x="376" y="666" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Point prediction + DFL regression</text>
 
-  <rect class="surface-alt" x="72" y="578" width="300" height="64" rx="14" stroke-width="1.5" />
-  <text class="ink" x="88" y="604" font-size="13" font-weight="700">V1–V5: Anchor-based</text>
-  <text class="muted" x="88" y="626" font-size="11">Predefined grid + offset regression</text>
+  <rect class="surface-alt" x="640" y="628" width="300" height="48" rx="12" stroke-width="1.2" />
+  <text class="ink" x="656" y="650" font-size="12" font-weight="700" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Multi-task (v5 → v8)</text>
+  <text class="muted" x="656" y="666" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">Detect → Segment → Pose → Classify</text>
 
-  <rect class="surface-alt" x="392" y="578" width="300" height="64" rx="14" stroke-width="1.5" />
-  <text class="ink" x="408" y="604" font-size="13" font-weight="700">V6–V8: Anchor-free</text>
-  <text class="muted" x="408" y="626" font-size="11">Point-based prediction + DFL</text>
+  <rect class="surface-alt" x="960" y="628" width="340" height="48" rx="12" stroke-width="1.2" />
+  <text class="accent-blue" x="976" y="650" font-size="12" font-weight="700" font-family="Inter, ui-sans-serif, system-ui, sans-serif">COCO mAP shown</text>
+  <text class="muted" x="976" y="666" font-size="11" font-family="Inter, ui-sans-serif, system-ui, sans-serif">val2017 @ 640 px input, small-size variant</text>
 
-  <rect class="surface-alt" x="712" y="578" width="300" height="64" rx="14" stroke-width="1.5" />
-  <text class="ink" x="728" y="604" font-size="13" font-weight="700">Multi-task (V5→V8)</text>
-  <text class="muted" x="728" y="626" font-size="11">Detect → Segment → Pose → Classify</text>
-
-  <!-- Footer -->
-  <text class="muted" x="72" y="684" font-size="14">mAP values are COCO val2017 at 640px input. FPS measured on A100. V8's lower mAP reflects its anchor-free transition; the gap closes at larger model sizes.</text>
 </svg>
