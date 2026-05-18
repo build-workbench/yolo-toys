@@ -131,17 +131,25 @@ body {
   letter-spacing: -0.05em;
   font-weight: var(--font-extrabold);
   text-wrap: balance;
-  background: linear-gradient(135deg, var(--yt-text) 0%, var(--yt-brand) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  /* Fallback: solid color for browsers without background-clip: text support */
+  color: var(--yt-text);
 }
 
-.dark .yt-whitepaper__title {
-  background: linear-gradient(135deg, var(--yt-text) 0%, var(--yt-brand) 60%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Gradient text only for browsers that support it */
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .yt-whitepaper__title {
+    background: linear-gradient(135deg, var(--yt-text) 0%, var(--yt-brand) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dark .yt-whitepaper__title {
+    background: linear-gradient(135deg, var(--yt-text) 0%, var(--yt-brand) 60%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
 /* ---- Abstract ---- */
@@ -187,7 +195,7 @@ body {
 .yt-button--primary {
   background: var(--yt-brand);
   border-color: color-mix(in oklab, var(--yt-brand) 72%, var(--color-brand-400));
-  color: var(--yt-brand-text);
+  color: var(--yt-brand-text) !important;
   box-shadow: 0 4px 16px color-mix(in oklab, var(--yt-brand) 25%, transparent);
 }
 
