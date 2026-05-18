@@ -56,3 +56,10 @@ docs/.vitepress/.temp/
 node_modules/
 .next/
 out/
+
+# AI tools
+.devin/
+~/
+
+# Benchmarks
+.benchmarks/
