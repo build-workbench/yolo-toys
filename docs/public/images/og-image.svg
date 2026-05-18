@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#faf8f5"/>
+      <stop offset="100%" style="stop-color:#fffdfa"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="40" y="40" width="1120" height="550" rx="16" fill="none" stroke="#e0dbe8" stroke-width="2"/>
+  <text x="600" y="280" font-family="Inter, system-ui, sans-serif" font-size="72" font-weight="700" fill="#1c1a22" text-anchor="middle">YOLO-Toys</text>
+  <text x="600" y="360" font-family="Inter, system-ui, sans-serif" font-size="28" fill="#6b6785" text-anchor="middle">Multi-model Vision Inference Platform</text>
+  <text x="600" y="410" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#9b96b0" text-anchor="middle">YOLOv8 · DETR · OWL-ViT · Grounding DINO · BLIP</text>
+  <rect x="520" y="460" width="160" height="48" rx="8" fill="#e85524"/>
+  <text x="600" y="492" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">lessup.github.io</text>
+</svg>

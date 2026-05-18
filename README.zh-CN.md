@@ -2,7 +2,7 @@
 
 > 一个把 **YOLOv8、DETR、OWL-ViT、Grounding DINO、BLIP** 统一到 FastAPI + WebSocket 接口下的多模型视觉推理平台。
 
-[English](README.md) · [GitHub Pages](https://lessup.github.io/yolo-toys/) · [文档](https://lessup.github.io/yolo-toys/docs/) · [问题反馈](https://github.com/LessUp/yolo-toys/issues)
+[English](README.md) · [GitHub Pages](https://lessup.github.io/yolo-toys/) · [问题反馈](https://github.com/LessUp/yolo-toys/issues)
 
 ## 这个项目解决什么问题
 
@@ -93,5 +93,5 @@ make test
 ## 下一步
 
 - 想先看项目展示：进入 [GitHub Pages](https://lessup.github.io/yolo-toys/)
-- 想看部署/API/架构：进入 [文档](https://lessup.github.io/yolo-toys/docs/)
+- 想看部署/API/架构：进入 [文档](https://lessup.github.io/yolo-toys/zh/)
 - 想参与后续收尾或维护：看 [CONTRIBUTING.md](CONTRIBUTING.md)

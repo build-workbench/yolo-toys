@@ -2,7 +2,7 @@
 
 > Multi-model vision inference platform for **YOLOv8, DETR, OWL-ViT, Grounding DINO, and BLIP** behind one FastAPI + WebSocket interface.
 
-[简体中文](README.zh-CN.md) · [GitHub Pages](https://lessup.github.io/yolo-toys/) · [Docs](https://lessup.github.io/yolo-toys/docs/) · [Issues](https://github.com/LessUp/yolo-toys/issues)
+[简体中文](README.zh-CN.md) · [GitHub Pages](https://lessup.github.io/yolo-toys/) · [Issues](https://github.com/LessUp/yolo-toys/issues)
 
 ## Why this project exists
 
@@ -89,5 +89,5 @@ make test
 ## Next step
 
 - Want a guided overview? Start at the [GitHub Pages landing site](https://lessup.github.io/yolo-toys/).
-- Want setup and API details? Go to [docs](https://lessup.github.io/yolo-toys/docs/).
+- Want setup and API details? Go to [docs](https://lessup.github.io/yolo-toys/en/).
 - Want to contribute or finish repository cleanup? Read [CONTRIBUTING.md](CONTRIBUTING.md).
