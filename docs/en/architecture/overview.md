@@ -6,7 +6,7 @@ YOLO-Toys is easiest to understand as a **normalized serving runtime**. The goal
   title="Figure 1. Runtime topology"
   caption="The service is deliberately layered so route handling, model resolution, execution, caching, and result shaping do not collapse into the same abstraction."
 >
-  <ThemeAwareSvg src="/images/hero-architecture.svg" alt="YOLO-Toys runtime topology" title="Runtime Topology" />
+  <SvgRenderer src="/images/hero-architecture.svg" alt="YOLO-Toys runtime topology" title="Runtime Topology" />
 </FigureFrame>
 
 ## Layer model

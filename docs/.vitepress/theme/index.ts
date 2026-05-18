@@ -43,9 +43,6 @@ export default {
     app.component('MermaidDiagram', MermaidDiagram)
     app.component('CitationBlock', CitationBlock)
     app.component('CrossReference', CrossReference)
-
-    // Legacy alias for backwards compatibility during transition
-    app.component('ThemeAwareSvg', SvgRenderer)
   },
   setup() {
     const route = useRoute()

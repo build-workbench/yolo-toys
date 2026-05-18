@@ -76,6 +76,7 @@ export default withMermaid(defineConfig({
           { text: '总览', link: '/zh/' },
           { text: '导读', link: '/zh/primer/' },
           { text: '架构', link: '/zh/architecture/' },
+          { text: '理论', link: '/zh/theory/' },
           { text: '学院', link: '/zh/academy/' },
           { text: '参考', link: '/zh/reference/' },
           { text: '研究', link: '/zh/research/' },
@@ -125,6 +126,39 @@ export default withMermaid(defineConfig({
                 { text: '001: Handler Pattern', link: '/zh/architecture/adr/001-handler-pattern' },
                 { text: '002: Registry Pattern', link: '/zh/architecture/adr/002-registry-pattern' },
                 { text: '003: Caching Strategy', link: '/zh/architecture/adr/003-caching-strategy' },
+              ],
+            },
+          ],
+          '/zh/theory/': [
+            {
+              text: '理论与算法',
+              items: [
+                { text: '章节首页', link: '/zh/theory/' },
+              ],
+            },
+            {
+              text: '检测算法',
+              items: [
+                { text: '检测概览', link: '/zh/theory/detection/' },
+                { text: 'YOLO 家族演进', link: '/zh/theory/detection/yolo-family' },
+                { text: 'DETR 架构', link: '/zh/theory/detection/detr-transformer' },
+                { text: '检测范式对比', link: '/zh/theory/detection/detection-paradigms' },
+              ],
+            },
+            {
+              text: '视觉语言模型',
+              items: [
+                { text: 'VLM 概览', link: '/zh/theory/vlm/' },
+                { text: 'OWL-ViT', link: '/zh/theory/vlm/owl-vit' },
+                { text: 'Grounding DINO', link: '/zh/theory/vlm/grounding-dino' },
+                { text: 'BLIP', link: '/zh/theory/vlm/blip' },
+              ],
+            },
+            {
+              text: '训练背景',
+              items: [
+                { text: '训练概览', link: '/zh/theory/training/' },
+                { text: '损失函数', link: '/zh/theory/training/loss-functions' },
               ],
             },
           ],
@@ -181,6 +215,7 @@ export default withMermaid(defineConfig({
           { text: 'Overview', link: '/en/' },
           { text: 'Primer', link: '/en/primer/' },
           { text: 'Architecture', link: '/en/architecture/' },
+          { text: 'Theory', link: '/en/theory/' },
           { text: 'Academy', link: '/en/academy/' },
           { text: 'Reference', link: '/en/reference/' },
           { text: 'Research', link: '/en/research/' },
@@ -230,6 +265,39 @@ export default withMermaid(defineConfig({
                 { text: '001: Handler Pattern', link: '/en/architecture/adr/001-handler-pattern' },
                 { text: '002: Registry Pattern', link: '/en/architecture/adr/002-registry-pattern' },
                 { text: '003: Caching Strategy', link: '/en/architecture/adr/003-caching-strategy' },
+              ],
+            },
+          ],
+          '/en/theory/': [
+            {
+              text: 'Theory & Algorithms',
+              items: [
+                { text: 'Chapter Home', link: '/en/theory/' },
+              ],
+            },
+            {
+              text: 'Detection',
+              items: [
+                { text: 'Detection Overview', link: '/en/theory/detection/' },
+                { text: 'YOLO Family Evolution', link: '/en/theory/detection/yolo-family' },
+                { text: 'DETR Architecture', link: '/en/theory/detection/detr-transformer' },
+                { text: 'Detection Paradigms', link: '/en/theory/detection/detection-paradigms' },
+              ],
+            },
+            {
+              text: 'Vision-Language',
+              items: [
+                { text: 'VLM Overview', link: '/en/theory/vlm/' },
+                { text: 'OWL-ViT', link: '/en/theory/vlm/owl-vit' },
+                { text: 'Grounding DINO', link: '/en/theory/vlm/grounding-dino' },
+                { text: 'BLIP', link: '/en/theory/vlm/blip' },
+              ],
+            },
+            {
+              text: 'Training',
+              items: [
+                { text: 'Training Overview', link: '/en/theory/training/' },
+                { text: 'Loss Functions', link: '/en/theory/training/loss-functions' },
               ],
             },
           ],

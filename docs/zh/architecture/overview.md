@@ -6,7 +6,7 @@ YOLO-Toys 最易于理解的方式是将其视为一个**归一化服务运行�
   title="图 1. 运行时拓扑"
   caption="服务被刻意分层，使路由处理、模型解析、执行、缓存和结果整形不会坍缩到同一个抽象中。"
 >
-  <ThemeAwareSvg src="/images/hero-architecture.svg" alt="YOLO-Toys runtime topology" title="Runtime Topology" />
+  <SvgRenderer src="/images/hero-architecture.svg" alt="YOLO-Toys runtime topology" title="Runtime Topology" />
 </FigureFrame>
 
 ## 分层模型

@@ -301,37 +301,37 @@
    ================================================================ */
 
 .dark {
-  /* Canvas & Surfaces */
-  --svg-canvas: #1a1a1f;
-  --svg-surface: #232329;
-  --svg-surface-alt: #2a2a32;
+  /* Canvas & Surfaces - enhanced contrast */
+  --svg-canvas: #12121a;
+  --svg-surface: #1e1e28;
+  --svg-surface-alt: #262632;
 
-  /* Text */
-  --svg-ink: #e8e6f0;
-  --svg-ink-soft: #c8c6d4;
-  --svg-muted: #a09eb8;
-  --svg-muted-soft: #78768f;
+  /* Text - higher contrast for readability */
+  --svg-ink: #f0f0f8;
+  --svg-ink-soft: #d4d4e0;
+  --svg-muted: #b0b0c0;
+  --svg-muted-soft: #8888a0;
 
-  /* Brand & Accent */
-  --svg-brand: #ff8c5a;
-  --svg-brand-soft: rgba(255, 140, 90, 0.15);
-  --svg-accent: #8ba3ff;
-  --svg-accent-soft: rgba(139, 163, 255, 0.15);
+  /* Brand & Accent - brighter for dark bg */
+  --svg-brand: #ff9058;
+  --svg-brand-soft: rgba(255, 144, 88, 0.18);
+  --svg-accent: #94adff;
+  --svg-accent-soft: rgba(148, 173, 255, 0.18);
 
-  /* Structure */
-  --svg-wire: #6b6880;
-  --svg-wire-alt: #4a4860;
-  --svg-border: #3d3d4a;
-  --svg-border-strong: #5a5a6a;
+  /* Structure - more visible borders */
+  --svg-wire: #7878a0;
+  --svg-wire-alt: #5858780;
+  --svg-border: #38384a;
+  --svg-border-strong: #58586a;
 
-  /* Effects */
-  --svg-shadow: rgba(0, 0, 0, 0.40);
-  --svg-shadow-strong: rgba(0, 0, 0, 0.60);
+  /* Effects - deeper shadows */
+  --svg-shadow: rgba(0, 0, 0, 0.50);
+  --svg-shadow-strong: rgba(0, 0, 0, 0.70);
 
   /* Semantic */
-  --svg-success: #4ade80;
-  --svg-warning: #fbbf24;
-  --svg-danger: #f87171;
+  --svg-success: #5aee90;
+  --svg-warning: #ffcc30;
+  --svg-danger: #ff6060;
 }
 
 /* ================================================================

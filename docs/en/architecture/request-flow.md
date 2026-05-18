@@ -6,7 +6,7 @@ This page follows one inference request through the runtime. The lifecycle matte
   title="Figure 2. End-to-end lifecycle"
   caption="Requests enter through transport-specific surfaces but converge on a single coordination path before model-specific execution begins."
 >
-  <ThemeAwareSvg src="/images/request-lifecycle.svg" alt="YOLO-Toys request lifecycle" title="Request Lifecycle" />
+  <SvgRenderer src="/images/request-lifecycle.svg" alt="YOLO-Toys request lifecycle" title="Request Lifecycle" />
 </FigureFrame>
 
 ## The path, step by step

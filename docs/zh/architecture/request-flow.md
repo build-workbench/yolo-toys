@@ -6,7 +6,7 @@
   title="图 2. 端到端生命周期"
   caption="请求通过传输特定的表面进入，但在模型特定执行开始之前，会汇聚到单一的协调路径上。"
 >
-  <ThemeAwareSvg src="/images/request-lifecycle.svg" alt="YOLO-Toys request lifecycle" title="Request Lifecycle" />
+  <SvgRenderer src="/images/request-lifecycle.svg" alt="YOLO-Toys request lifecycle" title="Request Lifecycle" />
 </FigureFrame>
 
 ## 分步路径

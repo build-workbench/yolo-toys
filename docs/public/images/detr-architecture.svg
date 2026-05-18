@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">DETR Architecture</title>
+  <desc id="desc">Detection Transformer architecture showing the end-to-end object detection pipeline with CNN backbone, transformer encoder-decoder, and bipartite matching loss.</desc>
+
+  <!-- Background -->
+  <rect class="canvas" width="1200" height="800" rx="32" />
+  <rect class="surface" x="24" y="24" width="1152" height="752" rx="24" stroke-width="2" />
+
+  <!-- Title -->
+  <text class="ink" x="72" y="84" font-size="22" font-weight="700" letter-spacing="2">DETR: DETECTION TRANSFORMER</text>
+  <text class="muted" x="72" y="114" font-size="17">End-to-end object detection with transformers — no anchors, no NMS, just set prediction.</text>
+
+  <!-- Input Image -->
+  <rect class="surface-alt" x="72" y="160" width="140" height="140" rx="16" stroke-width="2" />
+  <text class="ink" x="88" y="190" font-size="13" font-weight="700">Input Image</text>
+  <rect class="canvas" x="88" y="210" width="108" height="72" rx="8" />
+  <text class="muted" x="130" y="250" font-size="11">H × W × 3</text>
+
+  <!-- Arrow -->
+  <path class="wire" d="M212 230 L260 230" marker-end="url(#arrowhead)" />
+
+  <!-- CNN Backbone -->
+  <rect class="surface-alt" x="260" y="160" width="180" height="140" rx="16" stroke-width="2" />
+  <rect class="brand-soft" x="272" y="172" width="92" height="22" rx="11" />
+  <text class="ink" x="280" y="188" font-size="11" font-weight="700" letter-spacing="0.5">CNN BACKBONE</text>
+  <text class="ink" x="272" y="220" font-size="14" font-weight="760">ResNet-50/101</text>
+  <text class="muted" x="272" y="244" font-size="12">Extract features</text>
+  <text class="muted" x="272" y="262" font-size="12">H/32 × W/32 × 2048</text>
+  <text class="muted" x="272" y="280" font-size="12">(C5 feature map)</text>
+
+  <!-- Arrow -->
+  <path class="wire" d="M440 230 L488 230" marker-end="url(#arrowhead)" />
+
+  <!-- Positional Encoding -->
+  <rect class="surface-alt" x="488" y="140" width="140" height="80" rx="14" stroke-width="1.5" />
+  <text class="ink" x="500" y="166" font-size="12" font-weight="700">Positional</text>
+  <text class="ink" x="500" y="182" font-size="12" font-weight="700">Encoding</text>
+  <text class="muted" x="500" y="204" font-size="11">Sinusoidal 2D</text>
+
+  <!-- Arrow down from PE -->
+  <path class="wire" d="M558 220 L558 260" />
+
+  <!-- Transformer Encoder -->
+  <rect class="surface-alt" x="488" y="260" width="180" height="160" rx="16" stroke-width="2" />
+  <rect class="brand-soft" x="500" y="272" width="120" height="22" rx="11" />
+  <text class="ink" x="508" y="288" font-size="11" font-weight="700" letter-spacing="0.5">TRANSFORMER ENCODER</text>
+  <text class="muted" x="500" y="318" font-size="12">Self-attention layers</text>
+  <text class="muted" x="500" y="336" font-size="12">× 6 (default)</text>
+
+  <!-- Encoder block detail -->
+  <rect class="canvas" x="500" y="350" width="156" height="56" rx="8" />
+  <text class="ink-soft" x="508" y="370" font-size="10">Multi-Head Attn</text>
+  <text class="ink-soft" x="508" y="384" font-size="10">+ Add & Norm</text>
+  <text class="ink-soft" x="508" y="398" font-size="10">+ FFN</text>
+
+  <!-- Arrow -->
+  <path class="wire" d="M668 340 L716 340" marker-end="url(#arrowhead)" />
+
+  <!-- Object Queries -->
+  <rect class="surface-alt" x="716" y="140" width="140" height="80" rx="14" stroke-width="1.5" />
+  <text class="ink" x="728" y="166" font-size="12" font-weight="700">Object Queries</text>
+  <text class="muted" x="728" y="188" font-size="11">N learned embeddings</text>
+  <text class="muted" x="728" y="206" font-size="11">(N = 100 default)</text>
+
+  <!-- Arrow down from queries -->
+  <path class="wire" d="M786 220 L786 300" />
+
+  <!-- Transformer Decoder -->
+  <rect class="surface-alt" x="716" y="300" width="200" height="160" rx="16" stroke-width="2" />
+  <rect class="brand-soft" x="728" y="312" width="130" height="22" rx="11" />
+  <text class="ink" x="736" y="328" font-size="11" font-weight="700" letter-spacing="0.5">TRANSFORMER DECODER</text>
+  <text class="muted" x="728" y="358" font-size="12">Self-attention</text>
+  <text class="muted" x="728" y="376" font-size="12">+ Cross-attention</text>
+  <text class="muted" x="728" y="394" font-size="12">× 6 layers</text>
+
+  <!-- Decoder detail -->
+  <rect class="canvas" x="728" y="408" width="176" height="44" rx="8" />
+  <text class="ink-soft" x="736" y="426" font-size="10">Query ↔ Encoder features</text>
+  <text class="ink-soft" x="736" y="442" font-size="10">Learned positional queries</text>
+
+  <!-- Arrow -->
+  <path class="wire" d="M916 380 L964 380" marker-end="url(#arrowhead)" />
+
+  <!-- FFN Heads -->
+  <rect class="surface-alt" x="964" y="260" width="160" height="240" rx="16" stroke-width="2" />
+  <rect class="brand-soft" x="976" y="272" width="80" height="22" rx="11" />
+  <text class="ink" x="984" y="288" font-size="11" font-weight="700" letter-spacing="0.5">FFN HEADS</text>
+
+  <!-- Class head -->
+  <rect class="canvas" x="976" y="306" width="136" height="56" rx="10" />
+  <text class="ink" x="988" y="328" font-size="12" font-weight="700">Class Head</text>
+  <text class="muted" x="988" y="348" font-size="11">N × (C+1) logits</text>
+
+  <!-- Box head -->
+  <rect class="canvas" x="976" y="372" width="136" height="56" rx="10" />
+  <text class="ink" x="988" y="394" font-size="12" font-weight="700">Box Head</text>
+  <text class="muted" x="988" y="414" font-size="11">N × 4 (cx,cy,w,h)</text>
+
+  <!-- Output -->
+  <text class="muted" x="976" y="452" font-size="11">Predicted set:</text>
+  <text class="ink" x="976" y="472" font-size="11" font-weight="600">{(class, box)₁...ₙ}</text>
+
+  <!-- Bipartite Matching Loss -->
+  <rect class="surface-alt" x="72" y="540" width="500" height="120" rx="16" stroke-width="2" />
+  <rect class="accent-soft" x="84" y="552" width="200" height="24" rx="12" />
+  <text class="accent-blue" x="92" y="570" font-size="12" font-weight="700" letter-spacing="0.5">BIPARTITE MATCHING LOSS</text>
+
+  <text class="ink" x="84" y="602" font-size="13" font-weight="700">Hungarian Matching</text>
+  <text class="muted" x="84" y="622" font-size="12">Find optimal assignment between predictions and ground truth</text>
+  <text class="muted" x="84" y="640" font-size="12">σ̂ = argmin Σ L_match(y_i, ŷ_σ(i))</text>
+
+  <!-- No NMS / No Anchors -->
+  <rect class="surface-alt" x="600" y="540" width="260" height="120" rx="16" stroke-width="2" />
+  <rect class="brand-soft" x="612" y="552" width="160" height="24" rx="12" />
+  <text class="brand" x="620" y="570" font-size="12" font-weight="700" letter-spacing="0.5">KEY ADVANTAGES</text>
+
+  <text class="ink" x="612" y="602" font-size="13" font-weight="700">✓ No NMS required</text>
+  <text class="muted" x="612" y="622" font-size="12">Set prediction handles duplicates</text>
+  <text class="ink" x="612" y="644" font-size="13" font-weight="700">✓ No anchor design</text>
+  <text class="muted" x="612" y="664" font-size="12">Learned queries replace handcrafted boxes</text>
+
+  <!-- Performance -->
+  <rect class="surface-alt" x="880" y="540" width="260" height="120" rx="16" stroke-width="2" />
+  <rect class="brand-soft" x="892" y="552" width="80" height="24" rx="12" />
+  <text class="brand" x="900" y="570" font-size="12" font-weight="700" letter-spacing="0.5">PERFORMANCE</text>
+
+  <text class="ink" x="892" y="602" font-size="13">ResNet-50: <tspan font-weight="700">42.0 mAP</tspan></text>
+  <text class="ink" x="892" y="624" font-size="13">ResNet-101: <tspan font-weight="700">43.5 mAP</tspan></text>
+  <text class="muted" x="892" y="648" font-size="11">COCO val2017, 1500 queries</text>
+
+  <!-- Footer -->
+  <text class="muted" x="72" y="720" font-size="14">Carion et al., "End-to-End Object Detection with Transformers", ECCV 2020. The transformer decoder directly predicts a set of objects without any post-processing.</text>
+
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon class="ink" points="0 0, 10 3.5, 0 7" />
+    </marker>
+  </defs>
+</svg>

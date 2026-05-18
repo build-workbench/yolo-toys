@@ -9,6 +9,8 @@
     "preview": "vitepress preview"
   },
   "devDependencies": {
+    "postcss": "^8.5.3",
+    "postcss-preset-env": "^10.1.5",
     "vitepress": "^1.6.4"
   },
   "dependencies": {

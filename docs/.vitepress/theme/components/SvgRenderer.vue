@@ -9,25 +9,34 @@
  * The SVG should use var(--svg-*) variables directly.
  * These variables are defined at document level and update automatically
  * when the theme changes.
+ *
+ * OPTIMIZATION: SVG content is cached to avoid repeated fetches.
  */
 
 import { ref, onMounted, watch } from 'vue'
-import { isDark } from '../index'
 
 const props = defineProps<{
   src: string
   alt?: string
   title?: string
-  /** Optional: Force reload on theme change (usually not needed) */
-  reloadOnThemeChange?: boolean
 }>()
 
 const svgContent = ref('')
 const isLoading = ref(true)
 const error = ref('')
 
+// SVG content cache - shared across all instances
+const svgCache = new Map<string, string>()
+
 async function loadSvg() {
   if (!props.src) return
+
+  // Check cache first
+  if (svgCache.has(props.src)) {
+    svgContent.value = svgCache.get(props.src)!
+    isLoading.value = false
+    return
+  }
 
   isLoading.value = true
   error.value = ''
@@ -42,9 +51,7 @@ async function loadSvg() {
 
     // Sanitize: Remove any existing <style> blocks that might have
     // hardcoded colors (from older SVG versions)
-    // This is a migration aid - new SVGs should not have these
     svg = svg.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, (match) => {
-      // Keep the style block only if it uses CSS variables
       if (match.includes('var(--')) {
         return match
       }
@@ -52,7 +59,6 @@ async function loadSvg() {
     })
 
     // Inject a minimal style block that references document-level CSS variables
-    // SVGs use var(--svg-canvas), var(--svg-ink), etc.
     const styleBlock = `<style>
   .canvas, .bg { fill: var(--svg-canvas); }
   .surface, .panel { fill: var(--svg-surface); stroke: var(--svg-border); }
@@ -74,9 +80,10 @@ async function loadSvg() {
   .danger { fill: var(--svg-danger); }
 </style>`
 
-    // Insert style block right after opening <svg> tag
     svg = svg.replace(/<svg([^>]*)>/i, `<svg$1>${styleBlock}`)
 
+    // Cache the result
+    svgCache.set(props.src, svg)
     svgContent.value = svg
   } catch (err) {
     console.error('[SvgRenderer] Failed to load SVG:', err)
@@ -91,17 +98,8 @@ onMounted(() => {
   loadSvg()
 })
 
-// Watch for src changes
 watch(() => props.src, () => {
   loadSvg()
-})
-
-// Optional: Reload on theme change (usually not needed since CSS vars handle this)
-// Only enable if SVG has dynamic content that needs recalculation
-watch(isDark, () => {
-  if (props.reloadOnThemeChange) {
-    loadSvg()
-  }
 })
 </script>
 
