@@ -519,18 +519,30 @@ def test_cache_clear():
 def test_labels_endpoint():
     """测试 labels 端点"""
     import os
+    from types import SimpleNamespace
 
     from fastapi.testclient import TestClient
 
     os.environ["SKIP_WARMUP"] = "1"
     from app.main import app
+    from app.model_manager import model_manager
+
+    # Mock load_model 返回带有 names 属性的模型
+    def fake_load_model(model_id: str):
+        return SimpleNamespace(model=SimpleNamespace(names={0: "cat", 1: "person"}))
 
     with TestClient(app) as client:
-        response = client.get("/labels?model=yolov8n.pt")
-        assert response.status_code == 200
-        data = response.json()
-        # API 返回的是字典格式
-        assert "labels" in data or isinstance(data, dict)
+        # 使用 monkeypatch 替代方案
+        original_load = model_manager.load_model
+        model_manager.load_model = fake_load_model
+        try:
+            response = client.get("/labels?model=yolov8n.pt")
+            assert response.status_code == 200
+            data = response.json()
+            # API 返回的是字典格式
+            assert "labels" in data or isinstance(data, dict)
+        finally:
+            model_manager.load_model = original_load
 
 
 # ------------------------------------------------------------------
