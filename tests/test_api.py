@@ -37,7 +37,8 @@ def image_bytes() -> bytes:
 
 @pytest.fixture()
 def mock_infer(monkeypatch):
-    from app.model_manager import model_manager
+    """Mock ModelManager.infer 方法，适配依赖注入模式"""
+    from app.dependencies import get_model_manager
 
     def fake_infer(*, model_id: str, image, text_queries=None, question=None, **kwargs):
         h, w = image.shape[:2]
@@ -75,6 +76,8 @@ def mock_infer(monkeypatch):
             "text_queries": text_queries,
         }
 
+    # 通过依赖注入工厂获取 model_manager，然后 mock 其 infer 方法
+    model_manager = get_model_manager()
     monkeypatch.setattr(model_manager, "infer", fake_infer)
     return fake_infer
 
@@ -264,7 +267,7 @@ def test_websocket_config_update(client: TestClient, mock_infer):
 def test_websocket_config_can_clear_queries_and_question(
     client: TestClient, image_bytes: bytes, monkeypatch
 ):
-    from app.model_manager import model_manager
+    from app.dependencies import get_model_manager
 
     calls = []
 
@@ -287,6 +290,7 @@ def test_websocket_config_can_clear_queries_and_question(
             "question": question,
         }
 
+    model_manager = get_model_manager()
     monkeypatch.setattr(model_manager, "infer", fake_infer)
 
     with client.websocket_connect("/ws?model=yolov8n.pt&text_queries=cat,dog&question=what") as ws:
@@ -312,7 +316,7 @@ def test_websocket_config_can_clear_queries_and_question(
 def test_websocket_query_params_preserve_zero_and_false_values(
     client: TestClient, image_bytes: bytes, monkeypatch
 ):
-    from app.model_manager import model_manager
+    from app.dependencies import get_model_manager
 
     calls = []
 
@@ -335,6 +339,7 @@ def test_websocket_query_params_preserve_zero_and_false_values(
             "task": "detect",
         }
 
+    model_manager = get_model_manager()
     monkeypatch.setattr(model_manager, "infer", fake_infer)
 
     with client.websocket_connect("/ws?model=yolov8n.pt&conf=0&iou=0&max_det=0&half=0") as ws:
@@ -387,11 +392,12 @@ def test_websocket_invalid_json_config(client: TestClient):
 
 def test_websocket_inference_error(client: TestClient, image_bytes: bytes, monkeypatch):
     """测试 WebSocket 推理错误处理"""
-    from app.model_manager import model_manager
+    from app.dependencies import get_model_manager
 
     def fake_infer_error(*, model_id: str, image, **kwargs):
         raise RuntimeError("Inference failed")
 
+    model_manager = get_model_manager()
     monkeypatch.setattr(model_manager, "infer", fake_infer_error)
 
     with client.websocket_connect("/ws?model=yolov8n.pt") as ws:

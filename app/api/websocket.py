@@ -11,7 +11,6 @@ import logging
 import time
 from typing import Any
 
-import cv2
 import numpy as np
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from starlette.datastructures import QueryParams
@@ -24,18 +23,17 @@ from app.api.utils import (
     validate_image_mime,
 )
 from app.config import get_settings, parse_bool_string
+from app.dependencies import get_concurrency_control, get_image_decoder, get_model_manager
 from app.metrics import (
     INFERENCE_LATENCY,
     INFERENCE_REQUESTS,
     WEBSOCKET_CONNECTIONS,
     WEBSOCKET_MESSAGES,
 )
-from app.model_manager import model_manager
 
 router = APIRouter(tags=["WebSocket"])
 logger = logging.getLogger(__name__)
 settings = get_settings()
-semaphore = asyncio.Semaphore(settings.max_concurrency)
 
 
 def _parse_ws_state(params: QueryParams) -> dict[str, Any]:
@@ -70,12 +68,11 @@ def _apply_ws_config(state: dict[str, Any], config: dict[str, Any]) -> None:
         state["question"] = config["question"] or None
 
 
-def _decode_ws_frame(data: bytes) -> np.ndarray | None:
+def _decode_ws_frame(data: bytes, decoder: Any) -> np.ndarray | None:
     """解码 WebSocket 二进制帧为 OpenCV 图像"""
     if not validate_image_mime(data):
         return None
-    nparr = np.frombuffer(data, np.uint8)
-    return cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return decoder.decode(data)
 
 
 async def _ws_send_json(websocket: WebSocket, payload: dict[str, Any]) -> None:
@@ -86,6 +83,11 @@ async def _ws_send_json(websocket: WebSocket, payload: dict[str, Any]) -> None:
 @router.websocket("/ws")
 async def websocket_infer(websocket: WebSocket) -> None:
     """WebSocket 实时推理 - 增强版"""
+    # 获取依赖（WebSocket 不支持 Depends，手动调用工厂函数）
+    model_manager = get_model_manager()
+    concurrency = get_concurrency_control()
+    decoder = get_image_decoder()
+
     state = _parse_ws_state(websocket.query_params)
     logger.info("WebSocket 连接: model=%s, client=%s", state["model_id"], websocket.client)
 
@@ -172,7 +174,7 @@ async def websocket_infer(websocket: WebSocket) -> None:
                 WEBSOCKET_MESSAGES.labels(message_type="error", direction="out").inc()
                 continue
 
-            img = _decode_ws_frame(data)
+            img = _decode_ws_frame(data, decoder)
             if img is None:
                 logger.warning("WebSocket 图像解码失败或格式无效")
                 await _ws_send_json(websocket, {"type": "error", "detail": "invalid image format"})
@@ -182,7 +184,7 @@ async def websocket_infer(websocket: WebSocket) -> None:
             # 执行推理
             start_time = time.time()
             try:
-                async with semaphore:
+                async with concurrency.acquire():
                     result = await loop.run_in_executor(
                         None,
                         lambda s=state, i=img: model_manager.infer(

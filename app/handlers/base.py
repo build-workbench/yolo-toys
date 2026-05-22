@@ -67,7 +67,8 @@ class LoadedModel:
         Returns:
             推理结果字典
         """
-        return self._handler._infer_impl(self._model, self._processor, image, params)
+        # 调用公开方法，恢复封装（而非私有 _infer_impl）
+        return self._handler.infer(self._model, self._processor, image, params)
 
     @property
     def model_id(self) -> str:

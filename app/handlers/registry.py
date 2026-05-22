@@ -1,36 +1,26 @@
 """
 模型注册表 - 管理模型处理器映射
+
+支持动态注册 Handler，允许运行时扩展和测试替换。
 """
 
 from typing import TYPE_CHECKING, Any
 
 from app.handlers.base import BaseHandler
-from app.handlers.blip_handler import BLIPCaptionHandler, BLIPVQAHandler
-from app.handlers.hf_handler import DETRHandler, GroundingDINOHandler, OWLViTHandler
-from app.handlers.yolo_handler import YOLOHandler
 from app.models_metadata import MODEL_REGISTRY, ModelCategory
 
 if TYPE_CHECKING:
     from app.config_protocols import HandlerConfig
 
-# 类别 → 处理器类映射
-_CATEGORY_HANDLER_MAP = {
-    ModelCategory.YOLO_DETECT: YOLOHandler,
-    ModelCategory.YOLO_SEGMENT: YOLOHandler,
-    ModelCategory.YOLO_POSE: YOLOHandler,
-    ModelCategory.HF_DETR: DETRHandler,
-    ModelCategory.HF_OWLVIT: OWLViTHandler,
-    ModelCategory.HF_GROUNDING_DINO: GroundingDINOHandler,
-    ModelCategory.MULTIMODAL_CAPTION: BLIPCaptionHandler,
-    ModelCategory.MULTIMODAL_VQA: BLIPVQAHandler,
-}
-
-# 类别显示名称（使用枚举的 display_name 属性）
-# 保留此映射用于向后兼容，但优先使用 ModelCategory.display_name
-
 
 class HandlerRegistry:
-    """处理器注册表 - 根据模型 ID 获取对应 Handler"""
+    """处理器注册表 - 根据模型 ID 获取对应 Handler
+
+    支持动态注册 Handler，允许运行时扩展和测试替换。
+    """
+
+    # 默认类别 → 处理器类映射（使用 None 延迟初始化）
+    _default_handlers: dict[ModelCategory, type[BaseHandler]] | None = None
 
     def __init__(self, config_or_device: "HandlerConfig | str"):
         """
@@ -41,11 +31,60 @@ class HandlerRegistry:
         """
         self._config_or_device = config_or_device
         self._handler_cache: dict[str, BaseHandler] = {}
+        self._custom_handlers: dict[ModelCategory, type[BaseHandler]] = {}
+
+        # 延迟导入以避免循环依赖，只初始化一次
+        if HandlerRegistry._default_handlers is None:
+            from app.handlers.blip_handler import BLIPCaptionHandler, BLIPVQAHandler
+            from app.handlers.hf_handler import DETRHandler, GroundingDINOHandler, OWLViTHandler
+            from app.handlers.yolo_handler import YOLOHandler
+
+            HandlerRegistry._default_handlers = {
+                ModelCategory.YOLO_DETECT: YOLOHandler,
+                ModelCategory.YOLO_SEGMENT: YOLOHandler,
+                ModelCategory.YOLO_POSE: YOLOHandler,
+                ModelCategory.HF_DETR: DETRHandler,
+                ModelCategory.HF_OWLVIT: OWLViTHandler,
+                ModelCategory.HF_GROUNDING_DINO: GroundingDINOHandler,
+                ModelCategory.MULTIMODAL_CAPTION: BLIPCaptionHandler,
+                ModelCategory.MULTIMODAL_VQA: BLIPVQAHandler,
+            }
+
+    def register_handler(self, category: ModelCategory, handler_cls: type[BaseHandler]) -> None:
+        """
+        动态注册 Handler。
+
+        Args:
+            category: 模型类别
+            handler_cls: Handler 类
+
+        注册后会清除缓存，确保使用新的 Handler。
+        """
+        self._custom_handlers[category] = handler_cls
+        self._handler_cache.clear()
+
+    def unregister_handler(self, category: ModelCategory) -> bool:
+        """
+        移除自定义注册的 Handler。
+
+        Args:
+            category: 模型类别
+
+        Returns:
+            是否成功移除
+        """
+        if category in self._custom_handlers:
+            del self._custom_handlers[category]
+            self._handler_cache.clear()
+            return True
+        return False
 
     def get_handler(self, model_id: str) -> BaseHandler:
         """获取模型对应的处理器实例（带缓存）"""
         category = self._resolve_category(model_id)
-        handler_cls = _CATEGORY_HANDLER_MAP.get(category)
+        # 优先使用自定义注册，然后是默认映射
+        default_handlers = self._default_handlers or {}
+        handler_cls = self._custom_handlers.get(category) or default_handlers.get(category)
         if handler_cls is None:
             raise ValueError(f"Unknown model category for {model_id}")
 
@@ -58,6 +97,11 @@ class HandlerRegistry:
     def _resolve_category(self, model_id: str) -> ModelCategory:
         """推断模型类别"""
         return ModelCategory.infer_from_id(model_id, MODEL_REGISTRY)
+
+    @classmethod
+    def get_default_handlers(cls) -> dict[ModelCategory, type[BaseHandler]]:
+        """获取默认 Handler 映射（只读）"""
+        return (cls._default_handlers or {}).copy()
 
 
 def get_available_models() -> dict[str, dict[str, Any]]:

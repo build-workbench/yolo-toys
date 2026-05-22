@@ -186,8 +186,8 @@ class TestModelManagerInfer:
         mock_loaded = create_mock_loaded_model(mock_model, mock_handler)
         mock_handler.load.return_value = mock_loaded
 
-        # 设置 _infer_impl 的返回值
-        mock_handler._infer_impl.return_value = {
+        # 设置 infer 的返回值
+        mock_handler.infer.return_value = {
             "width": 640,
             "height": 480,
             "detections": [],
@@ -233,9 +233,9 @@ class TestModelManagerInfer:
             max_det=100,
         )
 
-        # 验证 _infer_impl 被调用，参数通过 InferenceParams 传递
-        assert mock_handler._infer_impl.called
-        call_args = mock_handler._infer_impl.call_args
+        # 验证 infer 被调用，参数通过 InferenceParams 传递
+        assert mock_handler.infer.called
+        call_args = mock_handler.infer.call_args
         # 第4个参数应该是 InferenceParams
         params = call_args[0][3]  # (model, processor, image, params)
         assert isinstance(params, InferenceParams)

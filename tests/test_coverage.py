@@ -653,9 +653,11 @@ async def test_websocket_apply_config():
 def test_ws_decode_frame():
     """测试 WebSocket 帧解码 - 无效数据"""
     from app.api.websocket import _decode_ws_frame
+    from app.decoders import OpenCVDecoder
 
+    decoder = OpenCVDecoder()
     invalid_data = b"not an image"
-    result = _decode_ws_frame(invalid_data)
+    result = _decode_ws_frame(invalid_data, decoder)
     assert result is None
 
 

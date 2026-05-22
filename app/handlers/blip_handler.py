@@ -8,7 +8,6 @@ from typing import Any
 
 import numpy as np
 
-from app.config import get_settings
 from app.handlers.base import BaseHandler
 from app.handlers.error_handling import handle_inference_errors
 from app.handlers.hf_handler import _require_hf
@@ -20,7 +19,6 @@ except ImportError:
     torch = None
 
 logger = logging.getLogger(__name__)
-settings = get_settings()
 
 
 def _require_torch() -> Any:
@@ -56,7 +54,9 @@ class BLIPCaptionHandler(BaseHandler):
         inputs = processor(pil_image, return_tensors="pt")
         inputs = self._to_device(inputs)
 
-        out = self._call_model_blip_caption(torch_module, model, inputs)
+        # 从配置获取 max_tokens，向后兼容默认值 50
+        max_tokens = self._config.blip_max_tokens if self._config else 50
+        out = self._call_model_blip_caption(torch_module, model, inputs, max_tokens)
 
         caption = processor.decode(out[0], skip_special_tokens=True)
         elapsed = (time.time() - t0) * 1000.0
@@ -65,10 +65,12 @@ class BLIPCaptionHandler(BaseHandler):
 
     @staticmethod
     @handle_inference_errors("BLIP Caption")
-    def _call_model_blip_caption(torch_module: Any, model: Any, inputs: dict[str, Any]) -> Any:
+    def _call_model_blip_caption(
+        torch_module: Any, model: Any, inputs: dict[str, Any], max_tokens: int
+    ) -> Any:
         """调用 BLIP Caption 模型推理（带统一错误处理）"""
         with torch_module.no_grad():
-            return model.generate(**inputs, max_new_tokens=settings.blip_max_tokens)
+            return model.generate(**inputs, max_new_tokens=max_tokens)
 
 
 class BLIPVQAHandler(BaseHandler):
@@ -99,7 +101,9 @@ class BLIPVQAHandler(BaseHandler):
         inputs = processor(pil_image, q, return_tensors="pt")
         inputs = self._to_device(inputs)
 
-        out = self._call_model_blip_vqa(torch_module, model, inputs)
+        # 从配置获取 max_tokens，向后兼容默认值 50
+        max_tokens = self._config.blip_max_tokens if self._config else 50
+        out = self._call_model_blip_vqa(torch_module, model, inputs, max_tokens)
 
         answer = processor.decode(out[0], skip_special_tokens=True)
         elapsed = (time.time() - t0) * 1000.0
@@ -110,7 +114,9 @@ class BLIPVQAHandler(BaseHandler):
 
     @staticmethod
     @handle_inference_errors("BLIP VQA")
-    def _call_model_blip_vqa(torch_module: Any, model: Any, inputs: dict[str, Any]) -> Any:
+    def _call_model_blip_vqa(
+        torch_module: Any, model: Any, inputs: dict[str, Any], max_tokens: int
+    ) -> Any:
         """调用 BLIP VQA 模型推理（带统一错误处理）"""
         with torch_module.no_grad():
-            return model.generate(**inputs, max_new_tokens=settings.blip_max_tokens)
+            return model.generate(**inputs, max_new_tokens=max_tokens)

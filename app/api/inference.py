@@ -15,19 +15,20 @@ from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 
 from app.api.utils import parse_text_queries, read_upload_image
 from app.config import get_settings
+from app.dependencies import ConcurrencyDep, ModelManagerDep
 from app.metrics import INFERENCE_INPUT_SIZE, INFERENCE_LATENCY, INFERENCE_REQUESTS
-from app.model_manager import model_manager
 from app.schemas import InferenceResponse
 
 router = APIRouter(tags=["Inference"])
 logger = logging.getLogger(__name__)
 settings = get_settings()
-semaphore = asyncio.Semaphore(settings.max_concurrency)
 
 
 @router.post("/infer", response_model=InferenceResponse, response_model_exclude_none=True)
 async def infer(
     file: Annotated[UploadFile, File()],
+    model_manager: ModelManagerDep,
+    concurrency: ConcurrencyDep,
     conf: Annotated[float | None, Query(ge=0.0, le=1.0, description="置信度阈值 (0.0-1.0)")] = None,
     iou: Annotated[float | None, Query(ge=0.0, le=1.0, description="IoU 阈值 (0.0-1.0)")] = None,
     device: Annotated[str | None, Query(description="设备 (cpu/cuda/mps)")] = None,
@@ -48,7 +49,7 @@ async def infer(
 
     INFERENCE_INPUT_SIZE.observe(file_size)
 
-    async with semaphore:
+    async with concurrency.acquire():
         try:
             result = await asyncio.to_thread(
                 model_manager.infer,
@@ -90,6 +91,8 @@ async def infer(
 @router.post("/caption", response_model=InferenceResponse, response_model_exclude_none=True)
 async def caption(
     file: Annotated[UploadFile, File()],
+    model_manager: ModelManagerDep,
+    concurrency: ConcurrencyDep,
     model: Annotated[str | None, Query(description="模型 ID")] = None,
 ):
     """图像描述生成"""
@@ -99,7 +102,7 @@ async def caption(
 
     INFERENCE_INPUT_SIZE.observe(file_size)
 
-    async with semaphore:
+    async with concurrency.acquire():
         try:
             result = await asyncio.to_thread(
                 model_manager.infer,
@@ -124,6 +127,8 @@ async def caption(
 @router.post("/vqa", response_model=InferenceResponse, response_model_exclude_none=True)
 async def vqa(
     file: Annotated[UploadFile, File()],
+    model_manager: ModelManagerDep,
+    concurrency: ConcurrencyDep,
     question: Annotated[str, Query(description="要问的问题")],
     model: Annotated[str | None, Query(description="模型 ID")] = None,
 ):
@@ -134,7 +139,7 @@ async def vqa(
 
     INFERENCE_INPUT_SIZE.observe(file_size)
 
-    async with semaphore:
+    async with concurrency.acquire():
         try:
             result = await asyncio.to_thread(
                 model_manager.infer,

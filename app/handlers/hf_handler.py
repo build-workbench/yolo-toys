@@ -9,7 +9,6 @@ from typing import Any
 
 import numpy as np
 
-from app.config import get_settings
 from app.handlers.base import BaseHandler
 from app.handlers.error_handling import handle_inference_errors
 from app.params import InferenceParams
@@ -22,7 +21,6 @@ except ImportError:
 _HF_AVAILABLE = importlib.util.find_spec("transformers") is not None
 
 logger = logging.getLogger(__name__)
-settings = get_settings()
 
 
 def _require_hf() -> None:
@@ -225,11 +223,13 @@ class GroundingDINOHandler(BaseHandler):
         if not hasattr(processor, "post_process_grounded_object_detection"):
             raise RuntimeError("transformers 版本过低，缺少 GroundingDINO 后处理方法")
 
+        # 从配置获取 text_threshold，向后兼容默认值 0.25
+        text_threshold = self._config.grounding_text_threshold if self._config else 0.25
         results = processor.post_process_grounded_object_detection(
             outputs=outputs,
             input_ids=inputs.get("input_ids"),
             threshold=float(params.conf),
-            text_threshold=settings.grounding_text_threshold,
+            text_threshold=text_threshold,
             target_sizes=[pil_image.size[::-1]],
             text_labels=[labels],
         )

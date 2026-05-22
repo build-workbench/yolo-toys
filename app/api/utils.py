@@ -2,11 +2,15 @@
 API 工具函数 - 图像处理、验证、解析
 """
 
-import cv2
+from typing import TYPE_CHECKING
+
 import numpy as np
 from fastapi import HTTPException, UploadFile
 
 from app.config import get_settings
+
+if TYPE_CHECKING:
+    from app.protocols import ImageDecoder
 
 settings = get_settings()
 
@@ -32,9 +36,15 @@ def validate_image_mime(data: bytes) -> bool:
     return bool(data.startswith(b"RIFF") and b"WEBP" in data[:12])
 
 
-async def read_upload_image(file: UploadFile) -> tuple[np.ndarray, int]:
+async def read_upload_image(
+    file: UploadFile, decoder: "ImageDecoder | None" = None
+) -> tuple[np.ndarray, int]:
     """
     读取上传的图像文件，返回图像数组和文件大小
+
+    Args:
+        file: 上传的文件
+        decoder: 图像解码器（可选，默认使用 OpenCV）
 
     Raises:
         HTTPException: 文件类型错误、空文件、过大或无法解码
@@ -58,30 +68,75 @@ async def read_upload_image(file: UploadFile) -> tuple[np.ndarray, int]:
     if not validate_image_mime(data):
         raise HTTPException(status_code=400, detail="Invalid image file format")
 
-    nparr = np.frombuffer(data, np.uint8)
-    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    # 使用注入的 decoder 或默认的 OpenCV 解码
+    if decoder is not None:
+        img = decoder.decode(data)
+    else:
+        import cv2
+
+        nparr = np.frombuffer(data, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
     if img is None:
         raise HTTPException(status_code=400, detail="Failed to decode image")
 
     return img, file_size
 
 
-def parse_optional_float(value: str | None) -> float | None:
-    """Parse optional float from query param."""
+def parse_optional_float(
+    value: str | None,
+    min_val: float | None = None,
+    max_val: float | None = None,
+) -> float | None:
+    """
+    Parse optional float from query param with optional range validation.
+
+    Args:
+        value: The string value to parse
+        min_val: Optional minimum value (inclusive)
+        max_val: Optional maximum value (inclusive)
+
+    Returns:
+        Parsed float, or None if invalid or out of range
+    """
     if value is None or value == "":
         return None
     try:
-        return float(value)
+        result = float(value)
+        if min_val is not None and result < min_val:
+            return None
+        if max_val is not None and result > max_val:
+            return None
+        return result
     except (TypeError, ValueError):
         return None
 
 
-def parse_optional_int(value: str | None) -> int | None:
-    """Parse optional int from query param."""
+def parse_optional_int(
+    value: str | None,
+    min_val: int | None = None,
+    max_val: int | None = None,
+) -> int | None:
+    """
+    Parse optional int from query param with optional range validation.
+
+    Args:
+        value: The string value to parse
+        min_val: Optional minimum value (inclusive)
+        max_val: Optional maximum value (inclusive)
+
+    Returns:
+        Parsed int, or None if invalid or out of range
+    """
     if value is None or value == "":
         return None
     try:
-        return int(value)
+        result = int(value)
+        if min_val is not None and result < min_val:
+            return None
+        if max_val is not None and result > max_val:
+            return None
+        return result
     except (TypeError, ValueError):
         return None
 
