@@ -133,6 +133,6 @@ OpenSpec 工作流：
 
 ## 接下来阅读
 
-- [参考文献](/en/citations)，了解影响这些决策的论文和项目
-- [Handler 模式](/en/academy/handler-pattern)，了解设计模式的深入解析
-- [缓存策略](/en/academy/caching-strategy)，了解缓存设计原理
+- [参考文献](/zh/citations)，了解影响这些决策的论文和项目
+- [Handler 模式](/zh/academy/handler-pattern)，了解设计模式的深入解析
+- [缓存策略](/zh/academy/caching-strategy)，了解缓存设计原理

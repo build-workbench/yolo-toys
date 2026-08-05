@@ -97,6 +97,6 @@ def __setitem__(self, key: str, value: Any) -> None:
 
 ## 接下来阅读
 
-- [系统概览](/en/architecture/overview)，了解缓存在运行时拓扑中的位置
-- [请求生命周期](/en/architecture/request-flow)，了解缓存交互如何影响用户可见的行为
-- [缓存策略](/en/academy/caching-strategy)，了解混合方法背后的设计原理
+- [系统概览](/zh/architecture/overview)，了解缓存在运行时拓扑中的位置
+- [请求生命周期](/zh/architecture/request-flow)，了解缓存交互如何影响用户可见的行为
+- [缓存策略](/zh/academy/caching-strategy)，了解混合方法背后的设计原理

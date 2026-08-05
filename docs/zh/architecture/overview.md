@@ -103,13 +103,13 @@ SecurityHeaders → Metrics → Timeout → RateLimit → GZip → CORS → Appl
 | `GZipMiddleware` | 带宽 | 对超过大小阈值的响应进行压缩 |
 | `CORSMiddleware` | 跨域 | 限制为配置的来源列表；当使用 `*` 时禁用凭证 |
 
-在 [Middleware Stack](/en/architecture/middleware-stack) 中阅读完整的中间件分析。
+在 [Middleware Stack](/zh/architecture/middleware-stack) 中阅读完整的中间件分析。
 
 ## 下一步阅读
 
-- [Request Lifecycle](/en/architecture/request-flow)，了解端到端推理路径
-- [Handler Pattern](/en/academy/handler-pattern)，了解适配器边界
-- [Registry Pattern](/en/academy/registry-pattern)，了解模型元数据与分发推理
-- [Middleware Stack](/en/architecture/middleware-stack)，了解运维层
-- [Config Injection](/en/architecture/config-injection)，了解设置如何流经系统
-- [Model Cache](/en/architecture/model-cache)，深入了解缓存策略
+- [Request Lifecycle](/zh/architecture/request-flow)，了解端到端推理路径
+- [Handler Pattern](/zh/academy/handler-pattern)，了解适配器边界
+- [Registry Pattern](/zh/academy/registry-pattern)，了解模型元数据与分发推理
+- [Middleware Stack](/zh/architecture/middleware-stack)，了解运维层
+- [Config Injection](/zh/architecture/config-injection)，了解设置如何流经系统
+- [Model Cache](/zh/architecture/model-cache)，深入了解缓存策略

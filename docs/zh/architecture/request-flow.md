@@ -111,7 +111,7 @@ class InferenceParams(BaseModel):
 
 ## 下一步阅读
 
-- [System Overview](/en/architecture/overview)，了解分层运行时映射
-- [Handler Topology](/en/architecture/handlers)，了解执行边界如何保持清晰
-- [Middleware Stack](/en/architecture/middleware-stack)，了解可观测性和防护栏如何适配
-- [Model Cache](/en/architecture/model-cache)，深入了解缓存策略
+- [System Overview](/zh/architecture/overview)，了解分层运行时映射
+- [Handler Topology](/zh/architecture/handlers)，了解执行边界如何保持清晰
+- [Middleware Stack](/zh/architecture/middleware-stack)，了解可观测性和防护栏如何适配
+- [Model Cache](/zh/architecture/model-cache)，深入了解缓存策略
