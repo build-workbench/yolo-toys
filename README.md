@@ -1,21 +1,25 @@
 # YOLO-Toys
 
-> Multi-model vision inference platform for **YOLOv8, DETR, OWL-ViT, Grounding DINO, and BLIP** behind one FastAPI + WebSocket interface.
+> 一个把 **YOLOv8、DETR、OWL-ViT、Grounding DINO、BLIP** 统一到 FastAPI + WebSocket 接口下的多模型视觉推理平台。
 
-[简体中文](README.zh-CN.md) · [GitHub Pages](https://lessup.github.io/yolo-toys/) · [Issues](https://github.com/LessUp/yolo-toys/issues)
+[GitHub Pages](https://lessup.github.io/yolo-toys/) · [问题反馈](https://github.com/LessUp/yolo-toys/issues)
 
-## Why this project exists
+## 这个项目解决什么问题
 
-YOLO-Toys packages several practical vision tasks behind one consistent API:
+YOLO-Toys 让多种视觉任务共用一套统一入口：
 
-- object detection, segmentation, and pose estimation
-- open-vocabulary detection
-- image captioning and visual question answering
-- REST inference and low-latency WebSocket streaming
+- 目标检测、实例分割、姿态估计
+- 开放词汇 / 零样本文本检测
+- 图像描述与视觉问答
+- REST 推理与低延迟 WebSocket 流式推理
 
-The project is optimized for people who want to **compare model families quickly**, build a lightweight demo/backend, or study how to unify mixed vision stacks under one handler architecture.
+它适合用来：
 
-## Quick start
+- 快速比较不同视觉模型家族
+- 搭建轻量视觉 demo / 后端
+- 学习如何用统一 handler 架构整合混合模型栈
+
+## 快速开始
 
 ### Docker
 
@@ -23,9 +27,9 @@ The project is optimized for people who want to **compare model families quickly
 docker run -p 8000:8000 ghcr.io/lessup/yolo-toys:latest
 ```
 
-Open <http://localhost:8000>.
+然后打开 <http://localhost:8000>。
 
-### Local development
+### 本地开发
 
 ```bash
 git clone https://github.com/LessUp/yolo-toys.git
@@ -35,48 +39,48 @@ bash scripts/dev.sh setup
 make run
 ```
 
-## What you get
+## 你会得到什么
 
-| Surface | What it is for |
+| 入口 | 作用 |
 | --- | --- |
-| `/infer` | Detection / segmentation / pose / open-vocabulary inference |
-| `/caption` | BLIP image captioning |
-| `/vqa` | BLIP visual QA |
-| `/models`, `/labels` | Model discovery |
-| `/ws` | Real-time streaming inference |
-| `/metrics`, `/health`, `/system/*` | Operations and observability |
+| `/infer` | 检测 / 分割 / 姿态 / 开放词汇推理 |
+| `/caption` | BLIP 图像描述 |
+| `/vqa` | BLIP 视觉问答 |
+| `/models`, `/labels` | 模型发现 |
+| `/ws` | 实时流式推理 |
+| `/metrics`, `/health`, `/system/*` | 运维与可观测性 |
 
-## Model families
+## 支持的模型家族
 
-| Family | Examples | Tasks |
+| 家族 | 示例 | 任务 |
 | --- | --- | --- |
-| YOLOv8 | `yolov8n.pt`, `yolov8n-seg.pt`, `yolov8n-pose.pt` | detect / segment / pose |
+| YOLOv8 | `yolov8n.pt`、`yolov8n-seg.pt`、`yolov8n-pose.pt` | detect / segment / pose |
 | DETR | `facebook/detr-resnet-50` | detect |
-| OWL-ViT / Grounding DINO | `google/owlvit-base-patch32` | zero-shot detect |
-| BLIP | `Salesforce/blip-image-captioning-base`, `Salesforce/blip-vqa-base` | caption / vqa |
+| OWL-ViT / Grounding DINO | `google/owlvit-base-patch32` | 零样本检测 |
+| BLIP | `Salesforce/blip-image-captioning-base`、`Salesforce/blip-vqa-base` | caption / vqa |
 
-## Repository guide
+## 仓库导航
 
-| Path | Role |
+| 路径 | 角色 |
 | --- | --- |
-| `app/` | backend runtime |
-| `tests/` | pytest suite |
-| `openspec/` | current specs and change workflow |
-| `docs/` | long-form docs |
-| root Jekyll files | GitHub Pages landing + navigation |
-| `.github/` | workflows, templates, Copilot instructions |
+| `app/` | 后端运行时 |
+| `tests/` | pytest 测试 |
+| `openspec/` | 当前规范与变更流程 |
+| `docs/` | 长文档与参考资料 |
+| 根目录 Jekyll 文件 | GitHub Pages 落地页与导航 |
+| `.github/` | workflow、模板、Copilot 指令 |
 
-## Development workflow
+## 开发流程
 
-Non-trivial work is **OpenSpec-first**:
+非简单修改统一走 **OpenSpec-first**：
 
-1. explore or clarify
-2. propose a change
-3. implement from tasks
-4. review at phase boundaries
-5. archive the completed change
+1. 先探索或澄清
+2. 创建 change proposal
+3. 按 tasks 实施
+4. 在阶段边界做 review
+5. 完成后 archive
 
-Canonical local commands:
+本地标准命令：
 
 ```bash
 make lint
@@ -86,8 +90,8 @@ make typecheck
 make test
 ```
 
-## Next step
+## 下一步
 
-- Want a guided overview? Start at the [GitHub Pages landing site](https://lessup.github.io/yolo-toys/).
-- Want setup and API details? Go to [docs](https://lessup.github.io/yolo-toys/en/).
-- Want to contribute or finish repository cleanup? Read [CONTRIBUTING.md](CONTRIBUTING.md).
+- 想先看项目展示：进入 [GitHub Pages](https://lessup.github.io/yolo-toys/)
+- 想看部署/API/架构：进入 [文档](https://lessup.github.io/yolo-toys/zh/)
+- 想参与后续收尾或维护：看 [CONTRIBUTING.md](CONTRIBUTING.md)
