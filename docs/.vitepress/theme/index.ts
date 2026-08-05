@@ -54,8 +54,6 @@ export default {
         (path) => {
           if (path.includes('/zh/')) {
             localStorage.setItem(STORAGE_KEY, 'zh')
-          } else if (path.includes('/en/')) {
-            localStorage.setItem(STORAGE_KEY, 'en')
           }
         },
         { immediate: true }

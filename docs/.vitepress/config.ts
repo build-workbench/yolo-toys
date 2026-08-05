@@ -12,31 +12,20 @@ const base = rawBase
 const sharedHead = [
   ['meta', { name: 'theme-color', content: '#e85524' }],
   ['meta', { name: 'og:type', content: 'website' }],
-  ['meta', { property: 'og:title', content: 'YOLO-Toys Whitepaper' }],
-  ['meta', { property: 'og:description', content: 'A whitepaper-grade architecture and research guide for the YOLO-Toys multi-model vision serving stack.' }],
+  ['meta', { property: 'og:title', content: 'YOLO-Toys 白皮书' }],
+  ['meta', { property: 'og:description', content: 'YOLO-Toys 多模型视觉推理平台的架构白皮书与研究导读。' }],
   ['meta', { property: 'og:image', content: 'https://lessup.github.io/yolo-toys/assets/images/og-image.svg' }],
   ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-  ['meta', { name: 'twitter:title', content: 'YOLO-Toys Whitepaper' }],
-  ['meta', { name: 'twitter:description', content: 'Architecture atlas, academy, reference, and research guide for YOLO-Toys.' }],
+  ['meta', { name: 'twitter:title', content: 'YOLO-Toys 白皮书' }],
+  ['meta', { name: 'twitter:description', content: 'YOLO-Toys 架构图谱、学院、参考与研究导读。' }],
   ['meta', { name: 'twitter:image', content: 'https://lessup.github.io/yolo-toys/assets/images/og-image.svg' }],
   [
     'script',
     { id: 'lang-redirect' },
     `((() => {
-  if (location.pathname.match(/\\/(zh|en)(\\/|$)/)) return;
+  if (location.pathname.match(/\\/(zh)(\\/|\$)/)) return;
 
-  const STORAGE_KEY = 'yolo-toys-lang-preference';
-  const saved = localStorage.getItem(STORAGE_KEY);
-
-  if (saved === 'zh' || saved === 'en') {
-    window.location.replace(saved + '/');
-    return;
-  }
-
-  const lang = navigator.language || navigator.userLanguage || '';
-  const target = lang.startsWith('zh') ? 'zh' : 'en';
-  localStorage.setItem(STORAGE_KEY, target);
-  window.location.replace(target + '/');
+  window.location.replace('zh/');
 })())`,
   ],
 ]
@@ -55,8 +44,8 @@ const sharedThemeConfig = {
 
 export default withMermaid(defineConfig({
   base,
-  title: 'YOLO-Toys Whitepaper',
-  description: 'A bilingual architecture and research guide for the YOLO-Toys multi-model vision serving stack.',
+  title: 'YOLO-Toys 白皮书',
+  description: 'YOLO-Toys 多模型视觉推理平台的架构白皮书与研究导读。',
   lastUpdated: true,
   cleanUrls: true,
   ignoreDeadLinks: [/^http:\/\/localhost/],
@@ -199,146 +188,6 @@ export default withMermaid(defineConfig({
                 { text: '参考文献', link: '/zh/citations' },
                 { text: '竞品探究', link: '/zh/reference/comparisons' },
                 { text: '演进思考', link: '/zh/research/evolution' },
-              ],
-            },
-          ],
-        },
-      },
-    },
-    en: {
-      label: 'English',
-      lang: 'en-US',
-      link: '/en/',
-      title: 'YOLO-Toys Whitepaper',
-      description: 'A whitepaper-grade architecture and research guide for the YOLO-Toys serving stack.',
-      themeConfig: {
-        nav: [
-          { text: 'Overview', link: '/en/' },
-          { text: 'Primer', link: '/en/primer/' },
-          { text: 'Architecture', link: '/en/architecture/' },
-          { text: 'Theory', link: '/en/theory/' },
-          { text: 'Academy', link: '/en/academy/' },
-          { text: 'Reference', link: '/en/reference/' },
-          { text: 'Research', link: '/en/research/' },
-          { text: 'API', link: '/en/api/' },
-        ],
-        editLink: {
-          pattern: 'https://github.com/LessUp/yolo-toys/edit/master/docs/:path',
-          text: 'Edit this page on GitHub',
-        },
-        lastUpdatedText: 'Last updated',
-        docFooter: {
-          prev: 'Previous',
-          next: 'Next',
-        },
-        outline: {
-          label: 'On this page',
-        },
-        sidebar: {
-          '/en/primer/': [
-            {
-              text: 'Primer',
-              items: [
-                { text: 'Primer Home', link: '/en/primer/' },
-                { text: 'Quickstart', link: '/en/getting-started/quickstart' },
-                { text: 'Installation', link: '/en/getting-started/installation' },
-                { text: 'Deployment Overview', link: '/en/deployment/' },
-              ],
-            },
-          ],
-          '/en/architecture/': [
-            {
-              text: 'Architecture Atlas',
-              items: [
-                { text: 'Chapter Home', link: '/en/architecture/' },
-                { text: 'System Overview', link: '/en/architecture/overview' },
-                { text: 'Request Lifecycle', link: '/en/architecture/request-flow' },
-                { text: 'Handler Topology', link: '/en/architecture/handlers' },
-                { text: 'Model Loading', link: '/en/architecture/model-loading' },
-                { text: 'Middleware Stack', link: '/en/architecture/middleware-stack' },
-                { text: 'Config Injection', link: '/en/architecture/config-injection' },
-                { text: 'Model Cache', link: '/en/architecture/model-cache' },
-                { text: 'Security Model', link: '/en/architecture/security-model' },
-              ],
-            },
-            {
-              text: 'Decision Records',
-              items: [
-                { text: '001: Handler Pattern', link: '/en/architecture/adr/001-handler-pattern' },
-                { text: '002: Registry Pattern', link: '/en/architecture/adr/002-registry-pattern' },
-                { text: '003: Caching Strategy', link: '/en/architecture/adr/003-caching-strategy' },
-              ],
-            },
-          ],
-          '/en/theory/': [
-            {
-              text: 'Theory & Algorithms',
-              items: [
-                { text: 'Chapter Home', link: '/en/theory/' },
-              ],
-            },
-            {
-              text: 'Detection',
-              items: [
-                { text: 'Detection Overview', link: '/en/theory/detection/' },
-                { text: 'YOLO Family Evolution', link: '/en/theory/detection/yolo-family' },
-                { text: 'DETR Architecture', link: '/en/theory/detection/detr-transformer' },
-                { text: 'Detection Paradigms', link: '/en/theory/detection/detection-paradigms' },
-              ],
-            },
-            {
-              text: 'Vision-Language',
-              items: [
-                { text: 'VLM Overview', link: '/en/theory/vlm/' },
-                { text: 'OWL-ViT', link: '/en/theory/vlm/owl-vit' },
-                { text: 'Grounding DINO', link: '/en/theory/vlm/grounding-dino' },
-                { text: 'BLIP', link: '/en/theory/vlm/blip' },
-              ],
-            },
-            {
-              text: 'Training',
-              items: [
-                { text: 'Training Overview', link: '/en/theory/training/' },
-                { text: 'Loss Functions', link: '/en/theory/training/loss-functions' },
-              ],
-            },
-          ],
-          '/en/academy/': [
-            {
-              text: 'Academy',
-              items: [
-                { text: 'Academy Home', link: '/en/academy/' },
-                { text: 'Deep Modules', link: '/en/academy/deep-modules' },
-                { text: 'Handler Pattern', link: '/en/academy/handler-pattern' },
-                { text: 'Registry Pattern', link: '/en/academy/registry-pattern' },
-                { text: 'Caching Strategy', link: '/en/academy/caching-strategy' },
-                { text: 'OpenSpec System', link: '/en/academy/openspec-system' },
-              ],
-            },
-          ],
-          '/en/reference/': [
-            {
-              text: 'Reference',
-              items: [
-                { text: 'Reference Home', link: '/en/reference/' },
-                { text: 'Model Matrix', link: '/en/reference/models' },
-                { text: 'Configuration', link: '/en/reference/configuration-reference' },
-                { text: 'Prometheus Metrics', link: '/en/reference/metrics-reference' },
-                { text: 'Benchmarks', link: '/en/reference/benchmarks' },
-                { text: 'Comparisons', link: '/en/reference/comparisons' },
-                { text: 'FAQ', link: '/en/reference/faq' },
-                { text: 'Changelog', link: '/en/reference/changelog' },
-              ],
-            },
-          ],
-          '/en/research/': [
-            {
-              text: 'Research',
-              items: [
-                { text: 'Research Home', link: '/en/research/' },
-                { text: 'Bibliography', link: '/en/citations' },
-                { text: 'Comparative Analysis', link: '/en/reference/comparisons' },
-                { text: 'Evolution', link: '/en/research/evolution' },
               ],
             },
           ],

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Sync CHANGELOG.md to docs/en/reference/changelog.md and docs/zh/reference/changelog.md
+ * Sync CHANGELOG.md to docs/zh/reference/changelog.md
  *
  * This script copies the content from changelog/CHANGELOG.md to the docs site,
- * with formatting changes for both English and Chinese versions.
+ * with formatting changes for the Chinese version.
  *
  * Run from the docs directory: node scripts/sync-changelog.mjs
  */
@@ -17,14 +17,7 @@ const docsDir = join(__dirname, "..");
 const rootDir = join(docsDir, "..");
 
 const sourcePath = join(rootDir, "changelog", "CHANGELOG.md");
-const targetPathEn = join(docsDir, "en", "reference", "changelog.md");
 const targetPathZh = join(docsDir, "zh", "reference", "changelog.md");
-
-const HEADER_EN = `# Changelog
-
-This page documents the changes in each YOLO-Toys release.
-
-`;
 
 const HEADER_ZH = `# 更新日志
 
@@ -56,21 +49,14 @@ content = content.replace(
 // Remove subsection headers like ### Added, ### Changed, ### Fixed
 content = content.replace(/^### (Added|Changed|Fixed|Improved)\n+/gm, "");
 
-// Ensure target directories exist
-const targetDirEn = dirname(targetPathEn);
+// Ensure target directory exists
 const targetDirZh = dirname(targetPathZh);
-
-if (!existsSync(targetDirEn)) {
-  mkdirSync(targetDirEn, { recursive: true });
-}
 if (!existsSync(targetDirZh)) {
   mkdirSync(targetDirZh, { recursive: true });
 }
 
-// Write the target files
-writeFileSync(targetPathEn, HEADER_EN + content.trim() + "\n");
+// Write the target file
 writeFileSync(targetPathZh, HEADER_ZH + content.trim() + "\n");
 
 console.log("✅ Changelog synced successfully");
-console.log(`   EN: ${targetPathEn}`);
 console.log(`   ZH: ${targetPathZh}`);
