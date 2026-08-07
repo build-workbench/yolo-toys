@@ -67,9 +67,7 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://lessup.github.io/yolo-toys/"
 Repository = "https://github.com/LessUp/yolo-toys"
-Documentation = "https://lessup.github.io/yolo-toys/docs/"
 Issues = "https://github.com/LessUp/yolo-toys/issues"
 
 # Package discovery - only include the app package

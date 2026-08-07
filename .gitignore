@@ -31,10 +31,6 @@ runs/
 *.onnx
 *.engine
 
-# BMad Method V6
-_bmad/
-_bbmad-output/
-
 # Test coverage
 .coverage
 htmlcov/
@@ -42,24 +38,6 @@ htmlcov/
 
 # Type checker
 pyrightconfig.json
-.omc/
-
-# Build output
-.site/
-
-# VitePress
-docs/.vitepress/dist/
-docs/.vitepress/cache/
-docs/.vitepress/.temp/
-
-# Node
-node_modules/
-.next/
-out/
 
 # AI tools
 .devin/
-~/
-
-# Benchmarks
-.benchmarks/
