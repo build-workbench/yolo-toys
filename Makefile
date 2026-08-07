@@ -28,7 +28,6 @@ help:
 	@echo "  docker-run    Run Docker container"
 	@echo "  compose-up    Start with docker-compose"
 	@echo "  compose-down  Stop docker-compose"
-	@echo "  compose-monitor  Start with monitoring stack"
 	@echo ""
 	@echo "Utility Commands:"
 	@echo "  clean         Clean cache and temporary files"
@@ -90,10 +89,6 @@ compose-up:
 .PHONY: compose-down
 compose-down:
 	docker compose down --remove-orphans
-
-.PHONY: compose-monitor
-compose-monitor:
-	docker compose --profile monitoring up --build -d
 
 # Utility commands
 .PHONY: clean
