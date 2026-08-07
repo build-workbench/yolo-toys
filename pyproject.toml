@@ -67,8 +67,8 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/LessUp/yolo-toys"
-Issues = "https://github.com/LessUp/yolo-toys/issues"
+Repository = "https://github.com/vibe-knight/yolo-toys"
+Issues = "https://github.com/vibe-knight/yolo-toys/issues"
 
 # Package discovery - only include the app package
 [tool.setuptools.packages.find]
