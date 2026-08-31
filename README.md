@@ -2,6 +2,8 @@
 
 > 把 YOLOv8、DETR、OWL-ViT、Grounding DINO、BLIP 统一到 FastAPI + WebSocket 接口下的多模型视觉推理服务。
 
+![YOLO-Toys 界面预览](docs/screenshot.png)
+
 ## 快速开始
 
 ### Docker
