@@ -9,7 +9,7 @@
 ### Docker
 
 ```bash
-docker run -p 8000:8000 ghcr.io/vibe-knight/yolo-toys:latest
+docker run -p 8000:8000 ghcr.io/build-workbench/yolo-toys:latest
 ```
 
 打开 <http://localhost:8000>。
@@ -17,7 +17,7 @@ docker run -p 8000:8000 ghcr.io/vibe-knight/yolo-toys:latest
 ### 本地开发
 
 ```bash
-git clone https://github.com/vibe-knight/yolo-toys.git
+git clone https://github.com/build-workbench/yolo-toys.git
 cd yolo-toys
 bash scripts/dev.sh setup
 . .venv/bin/activate
