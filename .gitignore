@@ -41,3 +41,8 @@ pyrightconfig.json
 
 # AI tools
 .devin/
+.commandcode/
+.claude/
+.codex/
+.agents/
+.superpowers/
