@@ -5,6 +5,9 @@ yolo-toys 是一个基于 FastAPI 的浏览器端目标检测与多模态推理�
 
 ## [Unreleased]
 
+_(暂无)_
+
+## [v0.1.0] - 2026-09-28
 ### 新增
 
 - 摄像头实时推理：权限预检查、浏览器/HTTPS 兼容性检测，以及 info/warning/error 分级提示。
