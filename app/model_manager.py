@@ -21,6 +21,7 @@ from app.config_adapters import SettingsModelManagerConfig
 from app.config_protocols import ModelManagerConfig
 from app.handlers.base import LoadedModel
 from app.handlers.registry import HandlerRegistry
+from app.models_metadata import MODEL_REGISTRY
 from app.params import InferenceParams
 
 logger = logging.getLogger(__name__)
@@ -177,6 +178,11 @@ class ModelManager:
         for pattern in forbidden_patterns:
             if pattern in model_id or pattern in decoded_id:
                 raise ValueError("Invalid model ID: contains forbidden character sequence")
+
+        # 白名单校验：只允许加载 MODEL_REGISTRY 中登记的模型，拒绝任意路径/任意
+        # 模型名的下载与加载（防止资源耗尽与恶意权重反序列化）。
+        if model_id not in MODEL_REGISTRY:
+            raise ValueError(f"Unknown model ID: {model_id!r}; only models in MODEL_REGISTRY are allowed")
 
         if model_id in self._cache:
             self._access_count[model_id] = self._access_count.get(model_id, 0) + 1

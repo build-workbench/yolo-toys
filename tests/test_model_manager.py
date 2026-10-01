@@ -303,3 +303,28 @@ class TestModelManagerValidation:
 
         with pytest.raises(ValueError, match="forbidden character"):
             manager.load_model("%2e%2e%2fetc%2fpasswd")
+
+    def test_unknown_model_id_rejected_by_whitelist(self):
+        """测试白名单外模型 ID 被拒绝（防任意模型加载）"""
+        from app.model_manager import ModelManager
+
+        manager = ModelManager()
+
+        with pytest.raises(ValueError, match="MODEL_REGISTRY"):
+            manager.load_model("evil-model.pt")
+
+    def test_registered_model_id_accepted(self):
+        """测试注册表内模型 ID 可通过白名单校验"""
+        from unittest.mock import MagicMock
+
+        from app.model_manager import ModelManager
+        from app.handlers.base import LoadedModel
+
+        manager = ModelManager()
+        mock_handler = MagicMock()
+        mock_loaded = LoadedModel(MagicMock(), None, mock_handler, "yolov8s.pt")
+        mock_handler.load.return_value = mock_loaded
+        manager._registry.get_handler = lambda _: mock_handler  # type: ignore[method-assign]
+
+        loaded = manager.load_model("yolov8s.pt")
+        assert loaded.model is not None
