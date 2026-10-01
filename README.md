@@ -1,3 +1,7 @@
+**English** | [中文](#chinese)
+
+<a id="top"></a>
+
 # YOLO-Toys
 
 > A multi-model visual inference service that unifies YOLOv8, DETR, OWL-ViT, Grounding DINO, and BLIP behind FastAPI + WebSocket interfaces.
@@ -58,6 +62,8 @@ make typecheck  # 类型检查
 ---
 
 <a id="chinese"></a>
+[English](#top) | **中文**
+
 # YOLO-Toys
 
 > 把 YOLOv8、DETR、OWL-ViT、Grounding DINO、BLIP 统一到 FastAPI + WebSocket 接口下的多模型视觉推理服务。
