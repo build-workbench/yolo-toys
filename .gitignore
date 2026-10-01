@@ -12,6 +12,8 @@ build/
 
 # Environment
 .env
+config/.env.*
+!config/.env.example
 
 # OS
 .DS_Store
