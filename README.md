@@ -90,6 +90,10 @@ make test       # 测试
 make typecheck  # 类型检查
 ```
 
+## License
+
+[MIT](LICENSE)
+
 ---
 
 <a id="chinese"></a>
@@ -182,3 +186,7 @@ make format     # 自动格式化
 make test       # 测试
 make typecheck  # 类型检查
 ```
+
+## 开源协议
+
+[MIT](LICENSE)
