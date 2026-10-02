@@ -317,8 +317,8 @@ class TestModelManagerValidation:
         """测试注册表内模型 ID 可通过白名单校验"""
         from unittest.mock import MagicMock
 
-        from app.model_manager import ModelManager
         from app.handlers.base import LoadedModel
+        from app.model_manager import ModelManager
 
         manager = ModelManager()
         mock_handler = MagicMock()

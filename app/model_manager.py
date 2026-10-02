@@ -182,7 +182,9 @@ class ModelManager:
         # 白名单校验：只允许加载 MODEL_REGISTRY 中登记的模型，拒绝任意路径/任意
         # 模型名的下载与加载（防止资源耗尽与恶意权重反序列化）。
         if model_id not in MODEL_REGISTRY:
-            raise ValueError(f"Unknown model ID: {model_id!r}; only models in MODEL_REGISTRY are allowed")
+            raise ValueError(
+                f"Unknown model ID: {model_id!r}; only models in MODEL_REGISTRY are allowed"
+            )
 
         if model_id in self._cache:
             self._access_count[model_id] = self._access_count.get(model_id, 0) + 1
